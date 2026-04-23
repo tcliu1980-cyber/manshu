@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>形式 A：□ × y = △</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-yellow-50 to-blue-50 text-slate-800">
+  <div class="max-w-5xl mx-auto px-6 py-10">
+    <header class="text-center mb-10">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-blue-700">
+        形式 A：□ × y = △
+      </h1>
+      <p class="text-lg md:text-xl text-slate-700">
+        認識未知數 <span class="font-bold text-purple-700">y</span>，學會把它找出來
+      </p>
+      <div class="mt-6">
+        <a
+          href="index.html"
+          class="inline-block bg-white border border-blue-200 rounded-2xl px-5 py-3 font-bold text-blue-700 shadow hover:shadow-md transition"
+        >
+          返回目錄
+        </a>
+      </div>
+    </header>
+
+    <section class="bg-white rounded-3xl shadow-lg p-8 mb-8 border border-blue-100">
+      <h2 class="text-2xl font-bold mb-4 text-sky-700">一、什麼是代數？</h2>
+      <p class="text-lg leading-9">
+        在代數裡，我們有時候不知道某一個數字是多少，這時候就會先用一個字母來代替它，
+        例如 <span class="font-bold text-purple-700">y</span>。
+        這個 <span class="font-bold text-purple-700">y</span> 就叫做
+        <span class="font-bold">未知數</span>，也就是我們想要找出來的數字。
+      </p>
+    </section>
+
+    <section class="bg-white rounded-3xl shadow-lg p-8 mb-8 border border-blue-100">
+      <h2 class="text-2xl font-bold mb-5 text-sky-700">二、基本形式（形式 A）</h2>
+
+      <div class="bg-blue-50 rounded-2xl p-6 text-center mb-6">
+        <div class="text-3xl md:text-4xl font-bold text-blue-800">□ × y = △</div>
+      </div>
+
+      <div class="space-y-4 text-lg leading-9">
+        <p>
+          這裡的 <span class="font-bold">□</span> 和 <span class="font-bold">△</span> 都是數字，
+          <span class="font-bold text-purple-700">y</span> 是代數，代表我們想知道的那個數字。
+        </p>
+        <p>
+          也就是說，我們的目標是找到：
+          <span class="font-bold text-purple-700 text-2xl"> y = ? </span>
+        </p>
+        <p>
+          這個形式最後的答案會是：
+        </p>
+      </div>
+
+      <div class="bg-green-50 border border-green-200 rounded-2xl p-6 text-center mt-5">
+        <div class="text-3xl md:text-4xl font-bold text-green-700">y = △ / □</div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-3xl shadow-lg p-8 mb-8 border border-blue-100">
+      <h2 class="text-2xl font-bold mb-5 text-sky-700">三、為什麼會這樣？</h2>
+
+      <div class="space-y-5 text-lg leading-9">
+        <p>
+          我們想要知道 <span class="font-bold text-purple-700">y</span> 所代表的數字。
+          可是現在 <span class="font-bold text-purple-700">y</span> 前面有一個係數
+          <span class="font-bold"> □ </span>，也就是說：
+        </p>
+
+        <div class="bg-slate-50 rounded-2xl p-5 text-center text-2xl font-bold">
+          □ × y = △
+        </div>
+
+        <p>
+          這表示「<span class="font-bold text-purple-700">y 被乘上 □ 倍</span>，結果等於 △」。
+        </p>
+        <p>
+          可是我們真正想知道的是 <span class="font-bold text-purple-700">1 倍的 y</span>。
+          所以我們要想辦法把前面的 <span class="font-bold">□</span> 消掉。
+        </p>
+
+        <div class="bg-red-50 border-2 border-red-300 rounded-2xl p-5 text-center">
+          <p class="text-2xl font-bold text-red-600">
+            乘法與除法是一組，<br>
+            要銷掉乘法必須要除法，<br>
+            要銷掉除法必須用乘法。
+          </p>
+        </div>
+
+        <p>
+          因為我們知道：
+          <span class="font-bold text-2xl"> □ / □ = 1 </span>
+        </p>
+        <p>
+          所以等號兩邊要<strong>同時除以 □</strong>，這樣方程式的關係才不會改變。
+        </p>
+
+        <div class="bg-yellow-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>□ × y = △</div>
+          <div>↓ 等號兩邊同除以 □</div>
+          <div>□ × y / □ = △ / □</div>
+          <div>↓ 把左邊的 □ 消掉</div>
+          <div class="text-green-700">y = △ / □</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-3xl shadow-lg p-8 mb-8 border border-blue-100">
+      <h2 class="text-2xl font-bold mb-5 text-sky-700">四、例題</h2>
+
+      <div class="bg-purple-50 rounded-2xl p-6 mb-6">
+        <h3 class="text-2xl font-bold text-purple-700 mb-3">例題 1：2y = 3</h3>
+        <p class="text-lg leading-9">
+          我們想要得到 <span class="font-bold text-purple-700">y = ?</span>
+          ，所以必須把 <span class="font-bold text-purple-700">y</span> 前面的係數消掉。
+        </p>
+      </div>
+
+      <div class="space-y-5 text-lg leading-9 mb-10">
+        <p>
+          在 <span class="font-bold">2y = 3</span> 裡，
+          <span class="font-bold">2y</span> 其實就是
+          <span class="font-bold">2 × y</span>，這是一個<span class="font-bold">乘法</span>。
+        </p>
+
+        <div class="bg-red-50 border-2 border-red-300 rounded-2xl p-5 text-center">
+          <p class="text-2xl font-bold text-red-600">
+            因為乘法與除法為一組，<br>
+            所以要把 2 消掉，就必須用除法。
+          </p>
+        </div>
+
+        <p>所以等號兩邊都要同除以 2：</p>
+
+        <div class="bg-slate-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>2y = 3</div>
+          <div>2y / 2 = 3 / 2</div>
+          <div>因為 2 / 2 = 1</div>
+          <div class="text-green-700">y = 3 / 2</div>
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-5">
+          <p class="text-xl font-bold text-green-700 mb-2">答案：</p>
+          <p class="text-2xl font-bold">y = 3 / 2</p>
+        </div>
+      </div>
+
+      <div class="bg-purple-50 rounded-2xl p-6 mb-6">
+        <h3 class="text-2xl font-bold text-purple-700 mb-3">例題 2：5y = 20</h3>
+        <p class="text-lg leading-9">
+          這一題也是要找出 <span class="font-bold text-purple-700">y = ?</span>
+          ，所以要把 <span class="font-bold">y</span> 前面的 5 消掉。
+        </p>
+      </div>
+
+      <div class="space-y-5 text-lg leading-9 mb-10">
+        <p>
+          在 <span class="font-bold">5y = 20</span> 裡，
+          <span class="font-bold">5y</span> 就是 <span class="font-bold">5 × y</span>。
+        </p>
+
+        <p>
+          因為前面的 5 是乘上去的，所以我們要用<span class="text-red-600 font-bold">除法</span>把它消掉。
+        </p>
+
+        <p>等號兩邊同除以 5：</p>
+
+        <div class="bg-slate-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>5y = 20</div>
+          <div>5y / 5 = 20 / 5</div>
+          <div>因為 5 / 5 = 1</div>
+          <div class="text-green-700">y = 4</div>
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-5">
+          <p class="text-xl font-bold text-green-700 mb-2">答案：</p>
+          <p class="text-2xl font-bold">y = 4</p>
+        </div>
+      </div>
+
+      <div class="bg-purple-50 rounded-2xl p-6 mb-6">
+        <h3 class="text-2xl font-bold text-purple-700 mb-3">例題 3：4y = 7</h3>
+        <p class="text-lg leading-9">
+          我們一樣要找出 <span class="font-bold text-purple-700">y</span> 是多少，
+          所以要把 <span class="font-bold">y</span> 前面的 4 消掉。
+        </p>
+      </div>
+
+      <div class="space-y-5 text-lg leading-9">
+        <p>
+          在 <span class="font-bold">4y = 7</span> 裡，
+          <span class="font-bold">4y</span> 就是 <span class="font-bold">4 × y</span>，所以這也是乘法。
+        </p>
+
+        <p>
+          因為要消掉乘法，所以要用<span class="text-red-600 font-bold">除法</span>。
+        </p>
+
+        <p>等號兩邊同除以 4：</p>
+
+        <div class="bg-slate-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>4y = 7</div>
+          <div>4y / 4 = 7 / 4</div>
+          <div>因為 4 / 4 = 1</div>
+          <div class="text-green-700">y = 7 / 4</div>
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-5">
+          <p class="text-xl font-bold text-green-700 mb-2">答案：</p>
+          <p class="text-2xl font-bold">y = 7 / 4</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-3xl shadow-lg p-8 border border-blue-100">
+      <h2 class="text-2xl font-bold mb-5 text-sky-700">五、重點整理</h2>
+      <div class="grid md:grid-cols-2 gap-4 text-lg">
+        <div class="bg-blue-50 rounded-2xl p-5">
+          <p class="font-bold mb-2">重點 1</p>
+          <p>y 是未知數，就是我們想找的數字。</p>
+        </div>
+        <div class="bg-blue-50 rounded-2xl p-5">
+          <p class="font-bold mb-2">重點 2</p>
+          <p>□ × y = △ 代表 y 被乘上 □ 倍。</p>
+        </div>
+        <div class="bg-blue-50 rounded-2xl p-5">
+          <p class="font-bold mb-2">重點 3</p>
+          <p class="text-red-600 font-bold">要銷掉乘法，用除法。</p>
+        </div>
+        <div class="bg-blue-50 rounded-2xl p-5">
+          <p class="font-bold mb-2">重點 4</p>
+          <p>所以 □ × y = △ 的解是 y = △ / □。</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
