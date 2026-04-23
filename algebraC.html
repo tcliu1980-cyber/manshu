@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>形式 C：(y + □) / (y + △) = ◯</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-yellow-50 to-blue-50 text-slate-800">
+  <div class="max-w-5xl mx-auto px-6 py-10">
+    <header class="text-center mb-10">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-blue-700">
+        形式 C：(y + □) / (y + △) = ◯
+      </h1>
+      <p class="text-lg md:text-xl text-slate-700">
+        先消掉除法，再整理有 <span class="font-bold text-purple-700">y</span> 的項目
+      </p>
+      <div class="mt-6">
+        <a
+          href="index.html"
+          class="inline-block bg-white border border-blue-200 rounded-2xl px-5 py-3 font-bold text-blue-700 shadow hover:shadow-md transition"
+        >
+          返回目錄
+        </a>
+      </div>
+    </header>
+
+    <section class="bg-white rounded-3xl shadow-lg p-8 mb-8 border border-blue-100">
+      <h2 class="text-2xl font-bold mb-4 text-sky-700">一、基本形式（形式 C）</h2>
+
+      <div class="bg-blue-50 rounded-2xl p-6 text-center mb-6">
+        <div class="text-3xl md:text-4xl font-bold text-blue-800">(y + □) / (y + △) = ◯</div>
+      </div>
+
+      <div class="space-y-4 text-lg leading-9">
+        <p>
+          這裡我們把式子看成：
+          <span class="font-bold">(y + □) ÷ (y + △) = ◯</span>。
+        </p>
+        <p>
+          也就是說，<span class="font-bold">y + □</span> 除以
+          <span class="font-bold">y + △</span>，結果等於
+          <span class="font-bold">◯</span>。
+        </p>
+        <p>
+          我們一樣想要求出：
+          <span class="font-bold text-purple-700 text-2xl"> y = ? </span>
+        </p>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-3xl shadow-lg p-8 mb-8 border border-blue-100">
+      <h2 class="text-2xl font-bold mb-5 text-sky-700">二、形式 C 要怎麼做？</h2>
+
+      <div class="space-y-5 text-lg leading-9">
+        <p>
+          這一題和前面不同，因為 <span class="font-bold">y</span> 同時出現在上面和下面。
+          但是我們還是可以用前面的想法，一步一步把它整理乾淨。
+        </p>
+
+        <div class="bg-red-50 border-2 border-red-300 rounded-2xl p-5 text-center">
+          <p class="text-2xl font-bold text-red-600">
+            乘法與除法是一組，<br>
+            要銷掉除法必須用乘法，<br>
+            要銷掉乘法必須用除法。
+          </p>
+        </div>
+
+        <p>
+          因為左邊有「除以 <span class="font-bold">(y + △)</span>」，
+          所以我們先在等號兩邊都乘上 <span class="font-bold">(y + △)</span>。
+        </p>
+
+        <div class="bg-yellow-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>(y + □) / (y + △) = ◯</div>
+          <div>↓ 等號兩邊同乘 (y + △)</div>
+          <div>(y + □) = ◯(y + △)</div>
+        </div>
+
+        <p>接著把右邊打開：</p>
+
+        <div class="bg-slate-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>y + □ = ◯y + ◯△</div>
+        </div>
+
+        <div class="bg-red-50 border-2 border-red-300 rounded-2xl p-5 text-center">
+          <p class="text-2xl font-bold text-red-600">
+            加法與減法是一組，<br>
+            要銷掉加法必須要減法，<br>
+            要銷掉減法必須用加法。
+          </p>
+        </div>
+
+        <p>
+          現在我們要把
+          <span class="font-bold text-red-600">有 y 的項目放一邊，數字放另一邊。</span>
+          所以等號兩邊同減 <span class="font-bold">◯y</span>，再同減
+          <span class="font-bold">□</span>。
+        </p>
+
+        <div class="bg-yellow-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>y + □ = ◯y + ◯△</div>
+          <div>y - ◯y = ◯△ - □</div>
+        </div>
+
+        <p>把左邊合起來，就會變成：</p>
+
+        <div class="bg-slate-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>(1 - ◯)y = ◯△ - □</div>
+        </div>
+
+        <p>
+          這時候又回到<span class="font-bold">形式 A</span>了，
+          因為現在的式子已經變成
+          <span class="font-bold text-blue-700">□ × y = △</span>
+          的模式。
+          在這裡，<span class="font-bold">□</span> 可以看成
+          <span class="font-bold">(1 - ◯)</span>，
+          而 <span class="font-bold">△</span> 可以看成
+          <span class="font-bold">◯△ - □</span>。
+          所以我們就能像狀況 A 一樣，等號兩邊同除以前面的係數，把 y 單獨留下來。
+        </p>
+
+        <p>
+          所以等號兩邊同除以 <span class="font-bold">(1 - ◯)</span>，得到：
+        </p>
+
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-6 text-center mt-5">
+          <div class="text-3xl md:text-4xl font-bold text-green-700">
+            y = (◯△ - □) / (1 - ◯)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-3xl shadow-lg p-8 mb-8 border border-blue-100">
+      <h2 class="text-2xl font-bold mb-5 text-sky-700">三、例題</h2>
+
+      <div class="bg-purple-50 rounded-2xl p-6 mb-6">
+        <h3 class="text-2xl font-bold text-purple-700 mb-3">例題 1：(y + 1) / (y + 3) = 2</h3>
+        <p class="text-lg leading-9">
+          先把左邊的除法消掉，所以等號兩邊同乘
+          <span class="font-bold">(y + 3)</span>。
+        </p>
+      </div>
+
+      <div class="space-y-5 text-lg leading-9 mb-10">
+        <div class="bg-slate-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>(y + 1) / (y + 3) = 2</div>
+          <div>y + 1 = 2(y + 3)</div>
+          <div>y + 1 = 2y + 6</div>
+          <div>1 = y + 6</div>
+          <div>1 - 6 = y</div>
+          <div class="text-green-700">y = -5</div>
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-5">
+          <p class="text-xl font-bold text-green-700 mb-2">答案：</p>
+          <p class="text-2xl font-bold">y = -5</p>
+        </div>
+      </div>
+
+      <div class="bg-purple-50 rounded-2xl p-6 mb-6">
+        <h3 class="text-2xl font-bold text-purple-700 mb-3">例題 2：(3y + 1) / (y + 3) = 2</h3>
+        <p class="text-lg leading-9">
+          這一題是第一題的變體。前一題的分子是
+          <span class="font-bold">y + 1</span>，
+          這一題改成 <span class="font-bold">3y + 1</span>，
+          也就是分子前面的 y 多了一個係數 3。
+          但做法還是一樣：先把除法消掉，再把有 y 的項目放一邊，數字放另一邊。
+        </p>
+      </div>
+
+      <div class="space-y-5 text-lg leading-9 mb-10">
+        <div class="bg-slate-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>(3y + 1) / (y + 3) = 2</div>
+          <div>3y + 1 = 2(y + 3)</div>
+          <div>3y + 1 = 2y + 6</div>
+          <div>3y - 2y = 6 - 1</div>
+          <div class="text-green-700">y = 5</div>
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-5">
+          <p class="text-xl font-bold text-green-700 mb-2">答案：</p>
+          <p class="text-2xl font-bold">y = 5</p>
+        </div>
+      </div>
+
+      <div class="bg-purple-50 rounded-2xl p-6 mb-6">
+        <h3 class="text-2xl font-bold text-purple-700 mb-3">例題 3：(3y + 1) / (2y + 3) = 2</h3>
+        <p class="text-lg leading-9">
+          這一題的分子和分母前面都有 y 的係數，所以一樣先乘掉分母，
+          然後把有 y 的項目放一邊，數字放另一邊。
+        </p>
+      </div>
+
+      <div class="space-y-5 text-lg leading-9">
+        <div class="bg-slate-50 rounded-2xl p-6 space-y-3 text-center text-xl md:text-2xl font-bold">
+          <div>(3y + 1) / (2y + 3) = 2</div>
+          <div>3y + 1 = 2(2y + 3)</div>
+          <div>3y + 1 = 4y + 6</div>
+          <div>1 = y + 6</div>
+          <div>1 - 6 = y</div>
+          <div class="text-green-700">y = -5</div>
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-5">
+          <p class="text-xl font-bold text-green-700 mb-2">答案：</p>
+          <p class="text-2xl font-bold">y = -5</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-3xl shadow-lg p-8 border border-blue-100">
+      <h2 class="text-2xl font-bold mb-5 text-sky-700">四、重點整理</h2>
+      <div class="grid md:grid-cols-2 gap-4 text-lg">
+        <div class="bg-blue-50 rounded-2xl p-5">
+          <p class="font-bold mb-2">重點 1</p>
+          <p>先把除法消掉，所以等號兩邊同乘分母。</p>
+        </div>
+        <div class="bg-blue-50 rounded-2xl p-5">
+          <p class="font-bold mb-2">重點 2</p>
+          <p class="text-red-600 font-bold">乘法與除法是一組，加法與減法是一組。</p>
+        </div>
+        <div class="bg-blue-50 rounded-2xl p-5">
+          <p class="font-bold mb-2">重點 3</p>
+          <p class="font-bold text-red-600">把有 y 的項目放一邊，數字放另一邊。</p>
+        </div>
+        <div class="bg-blue-50 rounded-2xl p-5">
+          <p class="font-bold mb-2">重點 4</p>
+          <p>整理後會回到形式 A，再用同除係數的方法解出 y。</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
