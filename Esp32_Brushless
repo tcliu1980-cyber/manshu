@@ -98,16 +98,6 @@
 </head>
 <body>
 
-<div class="mt-6">
-        <a
-          href="index.html"
-          class="inline-block bg-white border border-blue-200 rounded-2xl px-5 py-3 font-bold text-blue-700 shadow hover:shadow-md transition"
-        >
-          返回目錄
-        </a>
-      </div>
-
-
 <header>
     <h1>ESP32-CAM 無刷馬達控制技術講義</h1>
     <p>ESP32-CAM and Brushless Motor Control Guide</p>
