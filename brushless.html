@@ -2,6 +2,16 @@
 html_content = """
 <!DOCTYPE html>
 <html lang="zh-TW">
+
+      <div class="mt-6">
+        <a
+          href="index.html"
+          class="inline-block bg-white border border-blue-200 rounded-2xl px-5 py-3 font-bold text-blue-700 shadow hover:shadow-md transition"
+        >
+          返回目錄
+        </a>
+      </div>
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,15 +79,12 @@ html_content = """
         <p>無刷馬達是一種利用電子換向代替機械電刷的馬達，具有高效率與長壽命的特點。它需要接收三相交流電才能運轉。</p>
         <div class="img-container">
             <img src="images/brushlessMotor.png" alt="Brushless Motor">
-            <p>圖示：無刷馬達 (Brushless Motor)</p>
+            <p>圖示：(A)無刷馬達(Brushless Motor):右上角馬達. (B)電子變速器:圖中右下方的紅色方塊, 三條藍色線是電子變速器供給無刷馬達三相交流電. 紅色與黑線的兩條粗線是由來自電池的供電, 另外三條線為外部控制源(例如esp32)給予的油門控制指令. </p>
         </div>
 
         <h3>電子變速器 (Electronic Speed Controller, ESC)</h3>
         <p>電子變速器的功能是將電池的直流電 (Direct Current, DC) 轉換為無刷馬達所需的三相交流電 (Alternating Current, AC)，並根據接收器的訊號控制馬達轉速。</p>
-        <div class="img-container">
-            <img src="images/ESC.png" alt="Electronic Speed Controller">
-            <p>圖示：電子變速器 (ESC)</p>
-        </div>
+
 
         <h3>鋰聚合物電池 (Lithium Polymer Battery, LiPo)</h3>
         <p>電池規格中的 S 代表電池芯的串聯 (Series)。每個鋰電池芯的標準電壓約為 3.7V。</p>
