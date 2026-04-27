@@ -1,0 +1,192 @@
+from weasyprint import HTML
+
+html_content = """
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32-CAM 實作講義</title>
+    <style>
+        body {
+            font-family: "Segoe UI", "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8fafc;
+        }
+        header {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 { margin: 0; font-size: 22pt; letter-spacing: 1px; }
+        h2 {
+            color: #0f172a;
+            border-left: 6px solid #3b82f6;
+            padding-left: 15px;
+            margin-top: 45px;
+            font-size: 18pt;
+        }
+        h3 {
+            color: #334155;
+            margin-top: 30px;
+            font-size: 14pt;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        .img-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .img-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .img-caption {
+            font-size: 0.9em;
+            color: #64748b;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 11pt;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+        .highlight {
+            color: #ef4444;
+            font-weight: bold;
+            background-color: #fee2e2;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .step-box {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        ul, ol {
+            padding-left: 25px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ESP32 與 ESP32-CAM 開發講義</h1>
+    <p>ESP32 and ESP32-CAM Development Guide</p>
+</header>
+
+<div class="section">
+    <h2>1. ESP32-CAM 硬體架構</h2>
+    <p>ESP32-CAM 是一款整合了 ESP32 晶片與 OV2640 攝影機模組的微型開發板。由於其體積限制，並未內建 USB 燒錄晶片。</p>
+    
+    <h3>腳位圖示 (Pinout Diagram)</h3>
+    <div class="img-container">
+        <img src="images/ESP32_CAM_pins.png" alt="ESP32-CAM Pinout Diagram">
+        <div class="img-caption">圖 1：ESP32-CAM 腳位定義圖 (Source: ESP32_CAM_pins.png)</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>2. 程式燒錄接線步驟</h2>
+    <p>請使用 USB 轉 TTL (USB-to-TTL) 線進行連接，並依照下表完成電路跳線：</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>USB-to-TTL 腳位</th>
+                <th>ESP32-CAM 腳位</th>
+                <th>功能說明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>5V</td>
+                <td>5V</td>
+                <td>電源輸入 (Power)</td>
+            </tr>
+            <tr>
+                <td>GND</td>
+                <td>GND</td>
+                <td>共地 (Ground)</td>
+            </tr>
+            <tr>
+                <td>TXD</td>
+                <td>U0R</td>
+                <td>資料接收 (Receive)</td>
+            </tr>
+            <tr>
+                <td>RXD</td>
+                <td>U0T</td>
+                <td>資料傳送 (Transmit)</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">GND</span></td>
+                <td><span class="highlight">GPIO 0</span></td>
+                <td>燒錄模式跳線 (Flash Mode Jumper)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="step-box">
+        <h3>上傳程式作業流程 (Upload Workflow)</h3>
+        <ol>
+            <li><strong>進入燒錄模式</strong>：務必將 <span class="highlight">GPIO 0</span> 與 <span class="highlight">GND</span> 用跳線連接（短路）。</li>
+            <li><strong>通電</strong>：將 USB-to-TTL 插入電腦。</li>
+            <li><strong>編譯與上傳</strong>：在 Arduino IDE 按下上傳。若出現「Connecting...」，請按下開發板背面的 <strong>Reset</strong> 鍵。</li>
+            <li><strong>回復執行模式</strong>：上傳完成後，<span class="highlight">移除 GPIO 0 的跳線</span>，並再次按下 <strong>Reset</strong> 鍵。</li>
+        </ol>
+    </div>
+</div>
+
+<div class="section">
+    <h2>3. 基礎規格概覽 (Technical Specs)</h2>
+    <ul>
+        <li><strong>Wi-Fi</strong>: 802.11 b/g/n/e/i</li>
+        <li><strong>Bluetooth</strong>: Bluetooth 4.2 BR/EDR and BLE standards</li>
+        <li><strong>Memory</strong>: Internal 520KB SRAM + External 4MB PSRAM</li>
+        <li><strong>Storage</strong>: MicroSD card slot supported</li>
+    </ul>
+</div>
+
+</body>
+</html>
+"""
+
+with open("esp32_cam_lecture_v2.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
