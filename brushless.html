@@ -1,0 +1,139 @@
+# Generate HTML file for Brushless Motor, ESC, and Battery connection guide
+html_content = """
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>無刷馬達與電子變速器連接指南</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        h1, h2, h3 {
+            color: #1e293b;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .danger-text {
+            /* User explicitly requested red text for warnings */
+            color: red;
+            background-color: #fee2e2;
+            padding: 10px;
+            border-left: 5px solid red;
+            margin: 15px 0;
+        }
+        .img-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .img-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>無刷馬達與電子變速器連接指南 (Brushless Motor and ESC Connection Guide)</h1>
+
+    <div class="section">
+        <h2>1. 核心元件介紹 (Core Components)</h2>
+        
+        <h3>無刷馬達 (Brushless Motor)</h3>
+        <p>無刷馬達是一種利用電子換向代替機械電刷的馬達，具有高效率與長壽命的特點。它需要接收三相交流電才能運轉。</p>
+        <div class="img-container">
+            <img src="images/brushlessMotor.png" alt="Brushless Motor">
+            <p>圖示：無刷馬達 (Brushless Motor)</p>
+        </div>
+
+        <h3>電子變速器 (Electronic Speed Controller, ESC)</h3>
+        <p>電子變速器的功能是將電池的直流電 (Direct Current, DC) 轉換為無刷馬達所需的三相交流電 (Alternating Current, AC)，並根據接收器的訊號控制馬達轉速。</p>
+        <div class="img-container">
+            <img src="images/ESC.png" alt="Electronic Speed Controller">
+            <p>圖示：電子變速器 (ESC)</p>
+        </div>
+
+        <h3>鋰聚合物電池 (Lithium Polymer Battery, LiPo)</h3>
+        <p>電池規格中的 S 代表電池芯的串聯 (Series)。每個鋰電池芯的標準電壓約為 3.7V。</p>
+        <ul>
+            <li>1S 電池：單芯，電壓 3.7V。</li>
+            <li>2S 電池：雙芯串聯，電壓 7.4V。</li>
+            <li>3S 電池：三芯串聯，電壓 11.1V。馬達與 ESC 必須支援此電壓範圍才能使用 3S 電池。</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>2. 接線用途說明 (Wiring Layout)</h2>
+        <p>連接系統時，請參考以下線路定義：</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>連接端 (Connection)</th>
+                    <th>線材描述 (Wire Description)</th>
+                    <th>用途說明 (Purpose)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ESC 至 電池 (ESC to Battery)</td>
+                    <td>紅線 (Red) 與 黑線 (Black)</td>
+                    <td>紅線連接電池正極 (Positive)，黑線連接電池負極 (Negative)，負責提供系統主電源。</td>
+                </tr>
+                <tr>
+                    <td>ESC 至 馬達 (ESC to Motor)</td>
+                    <td>三根粗線 (Three identical wires)</td>
+                    <td>傳輸三相電流至馬達。若馬達轉向相反，只需將這三根線中的任意兩根對調即可改變轉向。</td>
+                </tr>
+                <tr>
+                    <td>ESC 至 接收器 (ESC to Receiver)</td>
+                    <td>三色細線 (PWM Signal Cable)</td>
+                    <td>通常包含接地 (Ground)、5V電源輸出 (BEC) 以及 PWM 訊號線 (Signal)，用於接收油門控制指令。</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>3. 安全警示事項 (Safety Warnings)</h2>
+        
+        <div class="danger-text">
+            警告：ESC 連接電池時，紅線與黑線絕對不可接反，極性反接會導致 ESC 瞬間燒毀，甚至引發電池起火爆炸。
+        </div>
+
+        <div class="danger-text">
+            嚴禁提早安裝螺旋槳 (Propeller)：在進行線路連接、方向測試與油門校正的過程中，絕對不要將螺旋槳安裝在馬達上。無刷馬達扭力極大且轉速極高，若程式錯誤或誤觸油門導致馬達意外啟動，未固定的機體與高速旋轉的螺旋槳會造成嚴重的割傷與人員危險。必須等到所有設定皆確認無誤，且準備進行實際飛行測試前，才能將螺旋槳鎖上。
+        </div>
+    </div>
+
+</body>
+</html>
+"""
+
+with open("motor_esc_lecture.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
