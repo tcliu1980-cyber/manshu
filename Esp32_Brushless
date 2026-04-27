@@ -1,0 +1,215 @@
+import os
+
+html_content = """
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32-CAM 與無刷馬達控制講義</title>
+    <style>
+        body {
+            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+            line-height: 1.7;
+            color: #334155;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f1f5f9;
+        }
+        header {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 { font-size: 20pt; margin: 0; }
+        h2 {
+            color: #2563eb;
+            border-left: 5px solid #2563eb;
+            padding-left: 15px;
+            margin-top: 40px;
+            font-size: 16pt;
+        }
+        h3 {
+            color: #475569;
+            margin-top: 25px;
+            font-size: 13pt;
+        }
+        .content-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+        .img-box {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        .img-box img {
+            max-width: 100%;
+            height: auto;
+        }
+        .img-label {
+            font-size: 0.9em;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+        }
+        th { background-color: #f8fafc; color: #1e293b; }
+        .warning-box {
+            background-color: #fef2f2;
+            border: 2px solid #ef4444;
+            color: #b91c1c;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        .warning-title {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-decoration: underline;
+        }
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 10pt;
+        }
+        .code-comment { color: #94a3b8; }
+        .highlight-blue { color: #3b82f6; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ESP32-CAM 無刷馬達控制技術講義</h1>
+    <p>ESP32-CAM and Brushless Motor Control Guide</p>
+</header>
+
+<div class="content-card">
+    <h2>1. 硬體元件介紹 (Core Components)</h2>
+    
+    <h3>無刷馬達 (Brushless Motor)</h3>
+    <p>無刷馬達利用電子換向運作，效率極高。其內部不含碳刷，需依靠外部訊號驅動。</p>
+    <div class="img-box">
+        <img src="images/brushlessMotor.png" alt="Brushless Motor">
+        <div class="img-label">圖 1：無刷馬達 (Source: brushlessMotor.png)</div>
+    </div>
+
+    <h3>電子變速器 (Electronic Speed Controller, ESC)</h3>
+    <p>簡稱電變。它負責接收控制器的 PWM 訊號，並將電池的直流電轉換為驅動馬達的三相交流電。</p>
+    <div class="img-box">
+        <img src="images/ESC.png" alt="Electronic Speed Controller">
+        <div class="img-label">圖 2：電子變速器 (Source: ESC.png)</div>
+    </div>
+
+    <h3>鋰聚合物電池 (LiPo Battery)</h3>
+    <p>S 代表電池芯 (Cell) 的串聯數量。單芯標準電壓為 3.7V：</p>
+    <ul>
+        <li>1S 電池：3.7V</li>
+        <li>2S 電池：7.4V</li>
+        <li>3S 電池：11.1V (本專案建議規格)</li>
+    </ul>
+</div>
+
+<div class="content-card">
+    <h2>2. 接線定義與用途 (Wiring Definition)</h2>
+    <div class="img-box">
+        <img src="images/ESP32Brushless.jpg" alt="ESP32 Brushless Setup">
+        <div class="img-label">圖 3：系統整體連接參考圖</div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>連接點</th>
+                <th>用途 (Purpose)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ESC 三根粗黑線</td>
+                <td>連接無刷馬達。對調其中任意兩根線可改變馬達旋轉方向。</td>
+            </tr>
+            <tr>
+                <td>ESC 紅/黑粗線</td>
+                <td>連接電池。紅線為正極，黑線為負極。</td>
+            </tr>
+            <tr>
+                <td>ESC 白/黃細線</td>
+                <td>PWM 訊號線。連接至 ESP32-CAM 的 GPIO 14。</td>
+            </tr>
+            <tr>
+                <td>ESC 黑/棕細線</td>
+                <td>接地線 (GND)。必須與 ESP32-CAM 的 GND 共地。</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="content-card">
+    <h2>3. 程式控制邏輯 (Control Logic)</h2>
+    <p>ESP32 透過產生 50Hz 的 PWM 訊號模擬油門。脈衝寬度 1000us 代表最低油門，2000us 代表最高油門。</p>
+    
+<pre>
+#include &lt;ESP32Servo.h&gt;
+
+<span class="code-comment">// Define the signal pin</span>
+const int escPin = 14; 
+Servo esc;
+
+void setup() {
+  Serial.begin(115200);
+  
+  <span class="code-comment">// Hardware timer allocation for ESP32</span>
+  ESP32PWM::allocateTimer(0);
+  esc.setPeriodHertz(50);
+  esc.attach(escPin, 1000, 2000);
+
+  <span class="code-comment">// ESC Arming: Sending minimum throttle to initialize</span>
+  Serial.println("Arming...");
+  esc.writeMicroseconds(1000); 
+  delay(3000); 
+}
+
+void loop() {
+  <span class="code-comment">// Example: Set throttle to 10% (approx 1100us)</span>
+  esc.writeMicroseconds(1100);
+  delay(2000);
+}
+</pre>
+</div>
+
+<div class="warning-box">
+    <span class="warning-title">極重要安全警示 (Safety Precautions)</span>
+    <p>1. 電源極性：絕對不可將電池正負極接反，否則電子變速器會立即燒毀，並有起火風險。</p>
+    <p>2. 螺旋槳安全：在測試程式碼或接線階段，禁止安裝螺旋槳。無刷馬達瞬間轉速極高且力量巨大，若意外啟動會造成嚴重肢體傷害。</p>
+    <p>3. 斷電順序：調整線路前務必先移除電池電源。</p>
+</div>
+
+</body>
+</html>
+"""
+
+with open("esp32_Brush.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
