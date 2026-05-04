@@ -118,14 +118,336 @@
     <p>強尼 史基基</p>
 </header>
 
-<div class="section">
-    <div class="img-container">
-        <img src="images/Gianni.png" alt="ESP32-CAM Pinout Diagram">
-        <div class="img-caption">圖 1：ESP32-CAM 腳位定義圖 (Source: ESP32_CAM_pins.png)</div>
-    </div>
+
+
+<!DOCTYPE html>
+
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>說書人帶你看 Puccini《Gianni Schicchi》</title>
+<meta content="用說書人口吻、黑色喜劇風格介紹普契尼歌劇 Gianni Schicchi。" name="description"/>
+<style>
+    :root {
+      --paper: #fff7e6;
+      --ink: #2f1d12;
+      --brown: #7a4b25;
+      --brown-dark: #4a2d18;
+      --gold: #d8a24a;
+      --red: #a8322d;
+      --soft: rgba(122,75,37,.14);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", serif;
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(216,162,74,.22), transparent 34rem),
+        radial-gradient(circle at 92% 8%, rgba(168,50,45,.12), transparent 28rem),
+        linear-gradient(180deg, #f1dfbd, #ead2a6 45%, #d9b77b);
+    }
+    .page {
+      width: min(1100px, calc(100% - 28px));
+      margin: 24px auto 56px;
+      background: var(--paper);
+      border: 3px solid var(--brown-dark);
+      border-radius: 22px;
+      box-shadow: 0 20px 60px rgba(38, 24, 13, .28);
+      overflow: hidden;
+      position: relative;
+    }
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(74,45,24,.28);
+      border-radius: 15px;
+      pointer-events: none;
+    }
+    header {
+      padding: 44px 34px 32px;
+      text-align: center;
+      background:
+        linear-gradient(rgba(255,247,230,.90), rgba(255,247,230,.88)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 12px);
+      border-bottom: 3px double var(--brown);
+    }
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 2px solid var(--brown);
+      border-radius: 999px;
+      background: #fff2d0;
+      color: var(--red);
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    h1 {
+      margin: 16px 0 8px;
+      font-size: clamp(2.1rem, 5vw, 4.6rem);
+      line-height: 1.1;
+      color: var(--brown-dark);
+      text-shadow: 2px 2px 0 rgba(216,162,74,.35);
+    }
+    .subtitle {
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      max-width: 820px;
+      margin: 0 auto;
+      font-weight: 650;
+    }
+    .ribbon {
+      margin: 22px auto 0;
+      width: fit-content;
+      max-width: 100%;
+      padding: 10px 18px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 var(--gold);
+      font-weight: 900;
+    }
+    main { padding: 28px; }
+    .intro {
+      padding: 22px 24px;
+      margin: 0 0 28px;
+      background: rgba(255,255,255,.48);
+      border: 2px solid rgba(122,75,37,.35);
+      border-radius: 18px;
+    }
+    .speaker {
+      font-size: 1.12rem;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 40px 0 18px;
+      color: var(--brown-dark);
+    }
+    .section-title::before, .section-title::after {
+      content: "";
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--brown), transparent);
+      flex: 1;
+    }
+    h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      white-space: nowrap;
+    }
+    .roles-img {
+      display: block;
+      width: 100%;
+      border-radius: 16px;
+      border: 2px solid var(--brown);
+      box-shadow: 0 10px 22px rgba(74,45,24,.18);
+      margin-bottom: 20px;
+    }
+    .cast {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .cast-card {
+      background: rgba(255,255,255,.58);
+      border: 2px solid rgba(122,75,37,.32);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 5px 0 rgba(122,75,37,.12);
+    }
+    .cast-card h3 {
+      margin: 0 0 6px;
+      color: var(--red);
+      font-size: 1.15rem;
+    }
+    .cast-card p { margin: 0; }
+    .act {
+      display: block;
+      margin: 28px 0;
+      padding: 22px;
+      border: 2px solid rgba(74,45,24,.35);
+      border-radius: 22px;
+      background: rgba(255,255,255,.42);
+      box-shadow: 0 10px 0 rgba(122,75,37,.10);
+    }
+    .act h3 {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 8px 14px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 12px;
+      font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+      line-height: 1.35;
+    }
+    .act p { margin: 0 0 12px; }
+    figure {
+      margin: 18px 0 0;
+    }
+    figure img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 18px;
+      border: 3px solid var(--brown-dark);
+      box-shadow: 0 12px 24px rgba(74,45,24,.22);
+      background: #f3dfba;
+      display: block;
+    }
+    figcaption {
+      font-size: .92rem;
+      color: #60412b;
+      margin-top: 8px;
+      text-align: center;
+    }
+    .quote {
+      margin: 14px 0;
+      padding: 14px 16px;
+      border-left: 6px solid var(--red);
+      background: rgba(216,162,74,.18);
+      border-radius: 12px;
+      font-weight: 760;
+    }
+    .punchline {
+      font-size: 1.08rem;
+      font-weight: 850;
+      color: var(--red);
+    }
+    .ending-box {
+      margin-top: 34px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(216,162,74,.30), rgba(255,255,255,.55));
+      border: 3px double var(--brown);
+      border-radius: 20px;
+    }
+    footer {
+      text-align: center;
+      padding: 26px 24px 34px;
+      border-top: 3px double var(--brown);
+      background: rgba(74,45,24,.08);
+      font-weight: 700;
+    }
+    .small { font-size: .92rem; opacity: .86; }
+    @media (max-width: 820px) {
+      main { padding: 18px; }
+      .cast { grid-template-columns: 1fr; }
+      .section-title::before, .section-title::after { display: none; }
+      h2 { white-space: normal; }
+    }
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; margin: 0; width: 100%; }
+      .act { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+<header>
+<div class="eyebrow">說書人開講</div>
+<h1>Puccini《Gianni Schicchi》</h1>
+<p class="subtitle">豪門爭產黑色喜劇：一張遺囑、一屋子貪親戚，以及一位把法律漏洞鑽得像義大利麵一樣滑順的狠角色。</p>
+<div class="ribbon">1299 年佛羅倫斯：哭聲很大，算盤聲更大。</div>
+</header>
+<main>
+<section class="intro speaker">
+<p>各位鄉親父老、各位準備進劇院卻怕看不懂義大利文的善男信女，說書人今天要來講一齣普契尼的短歌劇 <strong>《Gianni Schicchi》</strong>。這不是王子公主的童話，也不是英雄拯救世界的史詩，而是一場貨真價實的「豪門爭產災難現場」。</p>
+<p>普契尼用這部作品證明：人類文明進步了幾百年，但親戚聽到「遺產」兩個字時，眼神還是可以瞬間從悲傷切換成會計模式。這齣戲短、狠、準，笑點像公證人的筆一樣尖，專門戳破大家口中的孝心。</p>
+</section>
+<section>
+<div class="section-title"><h2>角色介紹：先認識這些「演員」們</h2></div>
+<img alt="Gianni Schicchi cast character diagram" class="roles-img" src="images/GianniCast.png"/>
+<div class="cast">
+<article class="cast-card"><h3>Buoso Donati</h3><p>剛去世的富豪。雖然全劇大多時間都躺著，但他的遺囑比任何活人都更有殺傷力。</p></article>
+<article class="cast-card"><h3>Gianni Schicchi</h3><p>外地來的聰明人，社交地位不高，腦袋卻比整個 Donati 家族加起來還靈光。</p></article>
+<article class="cast-card"><h3>Lauretta</h3><p>Schicchi 的女兒，甜美可愛；她的名曲聽起來像愛情，其實是高級版「爸爸拜託啦」。</p></article>
+<article class="cast-card"><h3>Rinuccio</h3><p>Donati 家族裡少數還算有腦的青年。他想娶 Lauretta，也想讓家族停止集體丟臉。</p></article>
+<article class="cast-card"><h3>公證人</h3><p>法律程序的守門員。最可怕的是，他完全不知道自己正在見證佛羅倫斯年度最大詐騙秀。</p></article>
+<article class="cast-card"><h3>Donati 親戚團</h3><p>一群嘴上喊「我們好難過」，手上卻忙著翻抽屜的人。特色：哭得假，算得快。</p></article>
 </div>
-
-
+</section>
+<section class="act">
+<div>
+<h3>第一幕：鱷魚的眼淚<br/><small>Crocodile Tears</small></h3>
+<p>故事發生在富豪 <strong>Buoso Donati</strong> 的臥室。Buoso 剛剛斷氣，親戚們立刻展開集體悲傷表演。有人捶胸，有人拭淚，有人哭得像靈魂被抽走；但各位觀眾請注意，他們真正擔心的不是 Buoso 去了哪裡，而是他的錢去了哪裡。</p>
+<div class="quote">表面台詞：「喔！可憐的 Buoso！」<br/>內心字幕：「喔！親愛的遺囑在哪裡？」</div>
+<p>忽然，流言傳來：Buoso 可能把所有財產都捐給修道院，讓修士們代他贖罪。這下好了，眼淚瞬間蒸發，大家開始翻箱倒櫃，比考古隊還專業。最後遺囑找到了，結果一讀，臉色全白：流言是真的。</p>
+<p class="punchline">原來大家不是哭死者，是哭自己一毛錢都分不到。</p>
+</div>
+<figure>
+<img alt="Gianni act 1 Diagram" src="images/GianniAct1.png"/>
+<figcaption>朗讀遺囑現場：眼淚收回，眼球彈出。</figcaption>
+</figure>
+</section>
+<section class="act">
+<div>
+<h3>第二幕：請鬼拿藥單<br/><small>Asking the Devil for Help</small></h3>
+<p>正當大家絕望到快把地板挖穿時，年輕的 <strong>Rinuccio</strong> 提議：「只有一個人能救我們——Gianni Schicchi！」</p>
+<p>問題是，Donati 家族平常很看不起 Schicchi：覺得他鄉下、暴發、太精明，總之就是不夠「高貴」。但是人生就是這樣，平常嫌人家土，出事時又希望人家是神。</p>
+<p>Schicchi 帶著女兒 <strong>Lauretta</strong> 出場。他看見這群勢利親戚，本來只想站在旁邊欣賞他們的崩潰。這時，歌劇史上最有名的「詐騙神曲」登場了：<strong>〈O mio babbino caro〉</strong>。</p>
+<div class="quote">音樂會版：女兒溫柔可愛。<br/>劇情現場版：女兒開啟情緒勒索最高級。</div>
+<p>Lauretta 唱著：「爸爸啊，我真的很愛他，不幫我我就去跳河！」Schicchi 被盧到沒辦法，只能翻白眼：好啦好啦，我想辦法。</p>
+</div>
+<figure>
+<img alt="Gianni act 2 Diagram" src="images/GianniAct2.png"/>
+<figcaption>世界名曲的另一面：爸爸被女兒柔性攻擊。</figcaption>
+</figure>
+</section>
+<section class="act">
+<div>
+<h3>第三幕：史上最大膽的冒充<br/><small>The Impersonation</small></h3>
+<p>Schicchi 的計畫很簡單，也很大膽，簡單到可怕，大膽到犯法：既然外面還不知道 Buoso 已經死了，那就由他假扮 Buoso，叫公證人來立一份「新遺囑」。</p>
+<p>當然，佛羅倫斯不是沒有法律。Schicchi 嚴肅警告眾人：偽造遺囑若被發現，會被砍斷一隻手，然後流放。換句話說，這不是普通詐騙，這是「少一隻手豪華套餐」。</p>
+<div class="quote">大家聽了很害怕。<br/>但是一想到遺產，恐懼立刻被貪婪按下靜音鍵。</div>
+<p>於是他們搬開屍體，Schicchi 穿上睡衣，躺進床裡，開始練習病懨懨的老頭聲音。公證人到了，這場佛羅倫斯年度偽裝大賽正式開始。</p>
+</div>
+<figure>
+<img alt="Gianni act 3 Diagram" src="images/GianniAct3.png"/>
+<figcaption>演技派登場：一秒變病人，兩秒變遺囑製造機。</figcaption>
+</figure>
+</section>
+<section class="act">
+<div>
+<h3>第四幕：分贓與背刺<br/><small>The Betrayal</small></h3>
+<p>公證人開始書寫。Schicchi 先用老人的聲音分配一些小錢、小物、小安慰，親戚們聽得眉開眼笑，點頭點得像機械鐘。</p>
+<p>接著，重頭戲來了：Buoso 最值錢的三大資產——<strong>騾子、房子、磨坊</strong>。一隻是交通工具，一棟是豪宅，一座是穩定現金流。親戚們屏住呼吸，準備迎接命運的甜美點名。</p>
+<div class="quote">Schicchi 用顫抖老人聲說：<br/>「至於騾子、房子、磨坊……我留給我親愛的朋友——Gianni Schicchi！」</div>
+<p>親戚們瞬間炸鍋：這不是分遺產，這是當眾把整鍋湯端走。但他們一個字都不敢說，因為誰敢揭穿，大家就一起享受砍手加流放。Schicchi 一邊改寫人生，一邊提醒他們法律條文，簡直是用合唱方式進行法律恐嚇。</p>
+<p>公證人走後，親戚們怒罵他是強盜、小偷。Schicchi 完全不慌，拿起棍子把他們趕出門。畢竟，現在這棟房子已經是他的了。</p>
+</div>
+<figure>
+<img alt="Gianni act 4 Diagram" src="images/GianniAct4.png"/>
+<figcaption>分贓失敗現場：以為來領錢，結果被房東趕出去。</figcaption>
+</figure>
+</section>
+<section class="act">
+<div>
+<h3>結局：掌聲鼓勵一下<br/><small>The Ending</small></h3>
+<p>Donati 親戚被趕走後，世界終於安靜。Rinuccio 和 Lauretta 這對小情侶可以結婚了，兩人在陽台上甜蜜唱歌，彷彿剛剛那場大型詐騙只是婚前小插曲。</p>
+<p>最後，Schicchi 直接面對觀眾，打破第四面牆。他問大家：Buoso 的財產難道還有更好的去處嗎？雖然但丁在《神曲》裡把他寫進地獄，但今晚要是各位看得開心，就請給這位狡猾老爸一點掌聲。</p>
+<p class="punchline">於是，全劇告訴我們：有時候，贏家不是最有錢的人，而是最有腦的人。</p>
+</div>
+<figure>
+<img alt="Gianni ending Diagram" src="images/GianniEnding.png"/>
+<figcaption>結案陳詞：但丁扣分，觀眾加分。</figcaption>
+</figure>
+</section>
+<section class="ending-box">
+<h2>說書人收尾</h2>
+<p>《Gianni Schicchi》表面上是鬧劇，骨子裡卻很尖銳：它把貪婪、階級偏見、家庭利益與法律形式全都丟進同一鍋佛羅倫斯燉菜裡。普契尼沒有說教，只是讓我們笑著看見人性的樣子——尤其是那些一邊哭喪、一邊找遺囑的人。</p>
+<p><strong>記得：在佛羅倫斯，眼淚可以演，詐騙不能演太爛。</strong></p>
+</section>
+</main>
+<footer>
+      《Gianni Schicchi》故事導覽｜說書人戲謔版<br>
+<span class="small">建議用途：課程網頁、歌劇欣賞導讀、演前說明、活動宣傳頁。</span>
+</br></footer>
+</div>
+</body>
+</html>
 
 
 </body>
