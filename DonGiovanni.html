@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>說書人帶你看 Mozart《Don Giovanni》</title>
+  <meta name="description" content="用幽默說書人口吻介紹莫札特歌劇《唐・喬凡尼》Don Giovanni。" />
+  <style>
+    :root {
+      --paper: #fff7e6;
+      --ink: #2f1d12;
+      --brown: #7a4b25;
+      --brown-dark: #4a2d18;
+      --gold: #d8a24a;
+      --red: #a8322d;
+      --wine: #5f1b1b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", serif;
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(216,162,74,.22), transparent 34rem),
+        radial-gradient(circle at 90% 10%, rgba(38,50,71,.28), transparent 32rem),
+        radial-gradient(circle at 50% 100%, rgba(168,50,45,.13), transparent 34rem),
+        linear-gradient(180deg, #f0dfbf, #dfc18b 45%, #b98956);
+    }
+    .page {
+      width: min(1100px, calc(100% - 28px));
+      margin: 24px auto 56px;
+      background: var(--paper);
+      border: 3px solid var(--brown-dark);
+      border-radius: 22px;
+      box-shadow: 0 20px 60px rgba(38, 24, 13, .28);
+      overflow: hidden;
+      position: relative;
+    }
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(74,45,24,.28);
+      border-radius: 15px;
+      pointer-events: none;
+    }
+    header {
+      padding: 44px 34px 32px;
+      text-align: center;
+      background:
+        linear-gradient(rgba(255,247,230,.91), rgba(255,247,230,.88)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 12px);
+      border-bottom: 3px double var(--brown);
+    }
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 2px solid var(--brown);
+      border-radius: 999px;
+      background: #fff2d0;
+      color: var(--wine);
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    h1 {
+      margin: 16px 0 8px;
+      font-size: clamp(2.1rem, 5vw, 4.6rem);
+      line-height: 1.1;
+      color: var(--brown-dark);
+      text-shadow: 2px 2px 0 rgba(216,162,74,.35);
+    }
+    .subtitle {
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      max-width: 850px;
+      margin: 0 auto;
+      font-weight: 650;
+    }
+    .ribbon {
+      margin: 22px auto 0;
+      width: fit-content;
+      max-width: 100%;
+      padding: 10px 18px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 var(--gold);
+      font-weight: 900;
+    }
+    main { padding: 28px; }
+    .intro {
+      padding: 22px 24px;
+      margin: 0 0 28px;
+      background: rgba(255,255,255,.48);
+      border: 2px solid rgba(122,75,37,.35);
+      border-radius: 18px;
+      font-size: 1.12rem;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 40px 0 18px;
+      color: var(--brown-dark);
+    }
+    .section-title::before, .section-title::after {
+      content: "";
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--brown), transparent);
+      flex: 1;
+    }
+    h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      white-space: nowrap;
+    }
+    .placeholder {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 3px dashed rgba(74,45,24,.42);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(216,162,74,.20), rgba(255,255,255,.58)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 14px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #68472f;
+      font-weight: 800;
+      padding: 20px;
+      margin: 18px 0 20px;
+      box-shadow: 0 10px 22px rgba(74,45,24,.12);
+    }
+    .placeholder small {
+      display: block;
+      font-weight: 600;
+      opacity: .82;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    .roles-img, figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 18px;
+      border: 3px solid var(--brown-dark);
+      box-shadow: 0 12px 24px rgba(74,45,24,.22);
+      background: #f3dfba;
+      margin: 18px 0 20px;
+    }
+    .cast {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .cast-card {
+      background: rgba(255,255,255,.58);
+      border: 2px solid rgba(122,75,37,.32);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 5px 0 rgba(122,75,37,.12);
+    }
+    .cast-card h3 {
+      margin: 0 0 6px;
+      color: var(--red);
+      font-size: 1.15rem;
+    }
+    .cast-card p { margin: 0; }
+    .scene {
+      display: block;
+      margin: 28px 0;
+      padding: 22px;
+      border: 2px solid rgba(74,45,24,.35);
+      border-radius: 22px;
+      background: rgba(255,255,255,.42);
+      box-shadow: 0 10px 0 rgba(122,75,37,.10);
+    }
+    .scene h3 {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 8px 14px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 12px;
+      font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+      line-height: 1.35;
+    }
+    .scene p { margin: 0 0 12px; }
+    figure { margin: 18px 0 0; }
+    figcaption {
+      font-size: .92rem;
+      color: #60412b;
+      margin-top: 8px;
+      text-align: center;
+    }
+    .quote {
+      margin: 14px 0;
+      padding: 14px 16px;
+      border-left: 6px solid var(--red);
+      background: rgba(216,162,74,.18);
+      border-radius: 12px;
+      font-weight: 760;
+    }
+    .commentary-box {
+      margin-top: 34px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(216,162,74,.30), rgba(255,255,255,.55));
+      border: 3px double var(--brown);
+      border-radius: 20px;
+    }
+    .commentary-box h3 {
+      margin-top: 0;
+      color: var(--brown-dark);
+      font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+    }
+    .punchline {
+      font-size: 1.08rem;
+      font-weight: 850;
+      color: var(--red);
+    }
+    footer {
+      text-align: center;
+      padding: 26px 24px 34px;
+      border-top: 3px double var(--brown);
+      background: rgba(74,45,24,.08);
+      font-weight: 700;
+    }
+    .small { font-size: .92rem; opacity: .86; }
+    @media (max-width: 820px) {
+      main { padding: 18px; }
+      .cast { grid-template-columns: 1fr; }
+      .section-title::before, .section-title::after { display: none; }
+      h2 { white-space: normal; }
+    }
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; margin: 0; width: 100%; }
+      .scene { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="eyebrow">歌劇世間情・說書人開講</div>
+      <h1>Mozart《Don Giovanni》</h1>
+      <p class="subtitle">《唐・喬凡尼》：時間管理大師的地獄直通車，從深夜闖禍一路開到石像客人來收帳。</p>
+      <div class="ribbon">塞維亞的一天：調情、逃跑、換裝、作死，最後地板裂開。</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p>各位鄉親啊，今天我們要講的這部戲，是莫札特的神作 <strong>《唐・喬凡尼》</strong>。如果說《弄臣》裡的公爵是渣男，那唐・喬凡尼就是渣男界的祖師爺，是站在食物鏈頂端的掠食者。</p>
+        <p>他的生命 KPI 只有一個：蒐集女人。這部歌劇的全名其實叫《唐・喬凡尼：浪蕩子的懲罰》，但說書人更喜歡叫它：<strong>《時間管理大師的地獄直通車》</strong>。</p>
+      </section>
+
+      <section>
+        <div class="section-title"><h2>角色介紹：塞維亞災難通訊錄</h2></div>
+        <img class="roles-img" src="images/DonGiovanniCast.png" alt="Don Giovanni cast character diagram">
+
+
+        <div class="cast">
+          <article class="cast-card"><h3>唐・喬凡尼 Don Giovanni</h3><p>貴族、浪蕩子、災難製造機。人生目標不是修身齊家，而是把全歐洲變成他的感情受害者地圖。</p></article>
+          <article class="cast-card"><h3>雷波雷洛 Leporello</h3><p>喬凡尼的僕人，兼祕書、掩護組、危機處理部與受害者名冊管理員。他最想辭職，但一直沒有成功。</p></article>
+          <article class="cast-card"><h3>唐娜・安娜 Donna Anna</h3><p>貴族千金，開場就遭遇喬凡尼入侵，父親又被殺。她的劇情線基本上是偵探劇加復仇劇。</p></article>
+          <article class="cast-card"><h3>唐・奧塔維歐 Don Ottavio</h3><p>安娜的未婚夫，溫柔、正派、很會唱，但行動力常讓觀眾懷疑他是不是還在讀使用說明書。</p></article>
+          <article class="cast-card"><h3>唐娜・艾爾維拉 Donna Elvira</h3><p>被喬凡尼拋棄的前女友。她一邊罵他是渣男，一邊又希望他回頭，堪稱全劇最辛苦的情感風紀股長。</p></article>
+          <article class="cast-card"><h3>澤琳娜 Zerlina</h3><p>鄉下新娘，差點在婚禮當天被喬凡尼拐走。她不是笨，只是喬凡尼的話術實在太會包裝。</p></article>
+          <article class="cast-card"><h3>馬塞托 Masetto</h3><p>澤琳娜的新郎，脾氣火爆但戰鬥力有限。他的婚禮從浪漫喜宴變成大型防渣男演習。</p></article>
+          <article class="cast-card"><h3>騎士長 Commendatore</h3><p>唐娜・安娜的父親。生前被喬凡尼刺死，死後化身石像客人，親自提供地獄級售後服務。</p></article>
+        </div>
+      </section>
+
+      <section class="scene">
+        <h3>開場：壞蛋的自我修養<br><small>The Professional Villain</small></h3>
+        <p>故事一開始，唐・喬凡尼就正在幹壞事。他戴著面具，深夜潛入貴族千金唐娜・安娜的房間。結果事情敗露，安娜大叫，她的父親騎士長衝出來保護女兒。</p>
+        <p>喬凡尼這人雖然道德值接近負數，但武力值很高。他兩三下就把可憐的老人家刺死。殺了人之後，他竟然還能像沒事一樣，帶著僕人雷波雷洛溜之大吉。</p>
+        <div class="quote">他的態度大概是：「殺人放火金腰帶，反正我跑得快，僕人還會幫我收尾。」</div>
+        <figure>
+          <img src="images/DonGiovanniScene1.png" alt="Don Giovanni opening villain scene diagram">
+          <figcaption>開場：一般歌劇慢慢鋪陳，他一上來就把犯罪紀錄刷滿。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>名場面：目錄之歌<br><small>The Catalog Aria</small></h3>
+        <p>被喬凡尼拋棄的前女友唐娜・艾爾維拉追殺過來，哭得梨花帶雨，大罵喬凡尼始亂終棄。</p>
+        <p>雷波雷洛看不下去，唱出歌劇史上最殘忍也最好笑的一首歌：<strong>〈Madamina, il catalogo è questo〉</strong>。他拿出厚厚帳本，告訴艾爾維拉：義大利 640 個，德國 231 個，法國 100 個，土耳其 91 個，西班牙 1,003 個。</p>
+        <div class="quote">這不是情史，這是大數據分析。艾爾維拉聽完才發現，自己只是資料庫裡的一筆紀錄。</div>
+        <figure>
+           <img src="images/DonGiovanniScene2.png" alt="Don Giovanni catalog aria scene diagram"> 
+        
+          <figcaption>目錄之歌：當感情受害者遇上 Excel 報表，傷害會變得非常具體。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>鄉村獵豔記<br><small>The Peasant Conquest</small></h3>
+        <p>喬凡尼轉頭就看上一位正在辦婚禮的鄉下新娘澤琳娜。各位注意，這個人不是去參加婚禮，他是去把婚禮拆掉。</p>
+        <p>他對澤琳娜唱出超級洗腦的情歌：<strong>〈Là ci darem la mano〉</strong>。大意是：「妹子，跟那個鄉巴佬結婚沒前途，跟我去城堡，我讓妳升級成貴婦。」</p>
+        <p>澤琳娜差點被帶走，還好艾爾維拉衝出來破壞他的好事。</p>
+        <div class="quote">整部歌劇都說他是大情聖，但在這 24 小時劇情裡，他其實一次都沒成功，只是忙著累積仇家。</div>
+        <figure>
+           <img src="images/DonGiovanniScene3.png" alt="Don Giovanni Zerlina seduction scene diagram"> 
+          <figcaption>鄉村獵豔記：一場婚禮差點變成貴族詐騙簡報會。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>墓園裡的作死邀請<br><small>The Graveyard Prank</small></h3>
+        <p>被一群仇家追殺一整天後，喬凡尼躲進墓園。好死不死，他剛好躲到自己殺掉的騎士長墳墓旁邊。墳墓上立著一尊騎士長石像。</p>
+        <p>石像突然開口：「天亮之前，你會笑不出來。」正常人聽到石像說話，應該已經準備立刻悔改或搬家。但喬凡尼不是正常人，他甚至叫雷波雷洛去邀請石像今晚來家裡吃飯。</p>
+        <div class="quote">這就是喬凡尼最驚人的地方：遇到超自然警告，他的反應不是害怕，而是發邀請函。</div>
+        <figure>
+          <img src="images/DonGiovanniScene4.png" alt="Don Giovanni graveyard statue invitation scene diagram"> 
+          <figcaption>墓園作死邀請：一般人怕鬼，他請鬼吃飯。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>結局：石頭客人的逆襲<br><small>The Stone Guest</small></h3>
+        <p>最後一場，喬凡尼正在家裡大吃大喝。突然，門外傳來恐怖敲門聲：咚！咚！咚！石像真的來赴約了。</p>
+        <p>音樂瞬間變得超級恐怖，低音長號像地獄號角一樣響起。石像要求喬凡尼悔改。喬凡尼雖然怕得要死，但硬漢人設不能崩，大喊：「不！我就不悔改！」</p>
+        <p>石像表示：「好，那你沒救了。」地板裂開，火焰噴出，惡魔衝出來把喬凡尼拖進地獄。</p>
+        <div class="quote">喬凡尼人生最後一項成就：把一場晚餐變成地獄直達服務。</div>
+        <figure>
+           <img src="images/DonGiovanniFinale.png" alt="Don Giovanni finale stone guest hell scene diagram"> 
+          <figcaption>石頭客人的逆襲：人可以不認錯，但地獄不接受取消訂位。</figcaption>
+        </figure>
+      </section>
+
+      <section class="commentary-box">
+        <h3>說書人總結</h3>
+        <p>莫札特這部戲最厲害的地方在於，喬凡尼明明是十惡不赦的壞蛋，但他面對地獄之火時那種「死不認錯」的骨氣，竟然讓人覺得有點帥。</p>
+        <p>比起那些只會說教的好人，這個「堅持有原則的壞蛋」反而更有戲劇魅力。這就是為什麼幾百年來，大家都愛死這個下地獄的倒楣鬼了。</p>
+        <p class="punchline">《Don Giovanni》提醒我們：時間管理再強，也排不掉地獄的最後一個行程。</p>
+      </section>
+    </main>
+
+    <footer>
+      《Don Giovanni》：白天逃避責任，晚上邀請石像，午夜準時下地獄。<br />
+      <span class="small">建議使用方式：將本 HTML 放在 GitHub Pages 根目錄；未來插圖放在 images/ 資料夾，取消對應的 img 註解即可。</span>
+    </footer>
+  </div>
+</body>
+</html>
