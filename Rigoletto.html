@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>說書人帶你看 Verdi《Rigoletto》</title>
+  <meta name="description" content="用幽默說書人口吻介紹威爾第歌劇《弄臣》Rigoletto。" />
+  <style>
+    :root {
+      --paper: #fff7e6;
+      --ink: #2f1d12;
+      --brown: #7a4b25;
+      --brown-dark: #4a2d18;
+      --gold: #d8a24a;
+      --red: #a8322d;
+      --wine: #5f1b1b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", serif;
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(216,162,74,.22), transparent 34rem),
+        radial-gradient(circle at 92% 8%, rgba(95,27,27,.22), transparent 28rem),
+        linear-gradient(180deg, #f0dfbf, #e4c896 45%, #c99b62);
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 28px));
+      margin: 24px auto 56px;
+      background: var(--paper);
+      border: 3px solid var(--brown-dark);
+      border-radius: 22px;
+      box-shadow: 0 20px 60px rgba(38, 24, 13, .28);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(74,45,24,.28);
+      border-radius: 15px;
+      pointer-events: none;
+    }
+
+    header {
+      padding: 44px 34px 32px;
+      text-align: center;
+      background:
+        linear-gradient(rgba(255,247,230,.91), rgba(255,247,230,.88)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 12px);
+      border-bottom: 3px double var(--brown);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 2px solid var(--brown);
+      border-radius: 999px;
+      background: #fff2d0;
+      color: var(--wine);
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 16px 0 8px;
+      font-size: clamp(2.1rem, 5vw, 4.6rem);
+      line-height: 1.1;
+      color: var(--brown-dark);
+      text-shadow: 2px 2px 0 rgba(216,162,74,.35);
+    }
+
+    .subtitle {
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      max-width: 850px;
+      margin: 0 auto;
+      font-weight: 650;
+    }
+
+    .ribbon {
+      margin: 22px auto 0;
+      width: fit-content;
+      max-width: 100%;
+      padding: 10px 18px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 var(--gold);
+      font-weight: 900;
+    }
+
+    main { padding: 28px; }
+
+    .intro {
+      padding: 22px 24px;
+      margin: 0 0 28px;
+      background: rgba(255,255,255,.48);
+      border: 2px solid rgba(122,75,37,.35);
+      border-radius: 18px;
+      font-size: 1.12rem;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 40px 0 18px;
+      color: var(--brown-dark);
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: "";
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--brown), transparent);
+      flex: 1;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      white-space: nowrap;
+    }
+
+    .roles-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      border: 2px solid var(--brown);
+      box-shadow: 0 10px 22px rgba(74,45,24,.18);
+      margin: 18px 0 20px;
+      background: #f3dfba;
+    }
+
+    .cast {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .cast-card {
+      background: rgba(255,255,255,.58);
+      border: 2px solid rgba(122,75,37,.32);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 5px 0 rgba(122,75,37,.12);
+    }
+
+    .cast-card h3 {
+      margin: 0 0 6px;
+      color: var(--red);
+      font-size: 1.15rem;
+    }
+
+    .cast-card p { margin: 0; }
+
+    .act {
+      display: block;
+      margin: 28px 0;
+      padding: 22px;
+      border: 2px solid rgba(74,45,24,.35);
+      border-radius: 22px;
+      background: rgba(255,255,255,.42);
+      box-shadow: 0 10px 0 rgba(122,75,37,.10);
+    }
+
+    .act h3 {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 8px 14px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 12px;
+      font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+      line-height: 1.35;
+    }
+
+    .act p { margin: 0 0 12px; }
+
+    figure { margin: 18px 0 0; }
+
+    figure img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 18px;
+      border: 3px solid var(--brown-dark);
+      box-shadow: 0 12px 24px rgba(74,45,24,.22);
+      background: #f3dfba;
+      display: block;
+    }
+
+    figcaption {
+      font-size: .92rem;
+      color: #60412b;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .quote {
+      margin: 14px 0;
+      padding: 14px 16px;
+      border-left: 6px solid var(--red);
+      background: rgba(216,162,74,.18);
+      border-radius: 12px;
+      font-weight: 760;
+    }
+
+    .punchline {
+      font-size: 1.08rem;
+      font-weight: 850;
+      color: var(--red);
+    }
+
+    .ending-box {
+      margin-top: 34px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(216,162,74,.30), rgba(255,255,255,.55));
+      border: 3px double var(--brown);
+      border-radius: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 26px 24px 34px;
+      border-top: 3px double var(--brown);
+      background: rgba(74,45,24,.08);
+      font-weight: 700;
+    }
+
+    .small { font-size: .92rem; opacity: .86; }
+
+    @media (max-width: 820px) {
+      main { padding: 18px; }
+      .cast { grid-template-columns: 1fr; }
+      .section-title::before,
+      .section-title::after { display: none; }
+      h2 { white-space: normal; }
+    }
+
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; margin: 0; width: 100%; }
+      .act { break-inside: avoid; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <div class="eyebrow">說書人開講</div>
+      <h1>Verdi《Rigoletto》</h1>
+      <p class="subtitle">職場霸凌、父權控制狂、宮廷渣男圖鑑，以及一個詛咒如何把所有人的人生一起拖下水。</p>
+      <div class="ribbon">曼切華宮廷：笑聲背後藏著刀，愛情旁邊站著殺手。</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p>鄉親啊，如果說《Gianni Schicchi》是搶遺產的黑色喜劇，那麼威爾第的《弄臣》就是一場關於「嘴巴太壞會出事、爸爸太控會反噬、帥哥太渣會害死人」的悲劇。</p>
+        <p>這齣戲的核心只有三個字：<strong>詛咒啊！</strong> 它像宮廷裡最不受歡迎的主管郵件，一開始大家覺得只是情緒發言，最後卻發現：完了，這封真的有法律效力。</p>
+      </section>
+
+      <section>
+        <div class="section-title"><h2>人物介紹：曼切華災難團隊</h2></div>
+        <img class="roles-img" src="images/RigolettoCast.png" alt="Rigoletto cast character diagram">
+
+        <div class="cast">
+          <article class="cast-card">
+            <h3>雷哥萊托 Rigoletto</h3>
+            <p>宮廷弄臣，公爵身邊的毒舌工具人。白天笑別人的悲劇，晚上把女兒藏得像國家機密。</p>
+          </article>
+          <article class="cast-card">
+            <h3>曼切華公爵 Duke of Mantua</h3>
+            <p>魅力滿點，道德歸零。若活在現代，大概每天都在法庭、媒體與社群平台三地奔波。</p>
+          </article>
+          <article class="cast-card">
+            <h3>吉爾達 Gilda</h3>
+            <p>雷哥萊托的女兒，純真、善良、戀愛腦滿點。她相信真愛，但真愛這次看起來很像詐騙集團。</p>
+          </article>
+          <article class="cast-card">
+            <h3>蒙特羅內 Monterone</h3>
+            <p>憤怒老伯爵，被公爵傷害後前來討公道。他的詛咒比任何咒語都準，堪稱全劇最強售後服務。</p>
+          </article>
+          <article class="cast-card">
+            <h3>史帕拉夫奇勒 Sparafucile</h3>
+            <p>職業殺手，話少、手穩、收錢辦事。服務項目明確，退費機制不明。</p>
+          </article>
+          <article class="cast-card">
+            <h3>瑪達蕾娜 Maddalena</h3>
+            <p>殺手妹妹，負責把客人騙進旅館。她的問題是：工作到一半竟然對目標動心。</p>
+          </article>
+          <article class="cast-card">
+            <h3>宮廷大臣們 Courtiers</h3>
+            <p>一群被雷哥萊托嘲笑很久的人。平常忍氣吞聲，找到機會就集體報復，十分符合職場生態。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="act">
+        <h3>第一幕：嘴秋的代價<br><small>The Cost of a Sharp Tongue</small></h3>
+        <p>故事開場在曼切華公爵的宮廷。這裡表面上是貴族社交場合，實際上比較像一間沒有 HR 的大型問題公司。公爵是老闆，雷哥萊托是他身邊的毒舌弄臣，工作內容就是替老闆製造笑聲，順便羞辱所有被老闆傷害過的人。</p>
+        <p>這時，憤怒的蒙特羅內伯爵衝進來，控訴公爵玩弄了他的女兒。按理說，這是一個悲傷的父親在討公道；但雷哥萊托偏偏在旁邊嘲笑他，嘴賤程度直逼職場災難。</p>
+        <p>蒙特羅內氣炸，指著雷哥萊托發出詛咒：「你這個嘲笑父親痛苦的人，我詛咒你！」</p>
+        <div class="quote">雷哥萊托平常什麼都敢講，但一聽到「詛咒」兩個字，整個人立刻從毒舌藝人變成驚恐小動物。</div>
+        <p>因為他有一個秘密：他把自己的女兒吉爾達藏在家裡，不讓她知道外面的世界，也不讓她知道爸爸到底在宮廷裡做了多少欠揍的事。</p>
+        <figure>
+          <img src="images/RigolettoAct1.png" alt="Rigoletto act 1 curse scene diagram">
+          <figcaption>第一幕：嘴巴太壞，終於被受害者家屬用詛咒正式警告。</figcaption>
+        </figure>
+      </section>
+
+      <section class="act">
+        <h3>第二幕：愛情是盲目的，而且通常是瞎的<br><small>Love is Blind and Usually Has Bad Judgment</small></h3>
+        <p>吉爾達被父親關在家裡，生活範圍小到像被設定了家長監護模式。她唯一能出門的地方是教堂，結果就在那裡遇見一位自稱「窮學生」的帥哥。</p>
+        <p>沒錯，這位窮學生就是曼切華公爵偽裝的。公爵在情場上最大的技能，就是把自己的真實身分、真實意圖與真實道德水準全部隱藏起來。</p>
+        <p>吉爾達一見鍾情，覺得這一定是真愛。可惜觀眾都知道：這不是愛情童話，而是災難片的前導預告。</p>
+        <p>同時，宮廷大臣們發現雷哥萊托每晚偷偷去見一位美女，以為那是他的情婦。為了報復，他們決定把她綁架來送給公爵。</p>
+        <div class="quote">最荒謬的是，他們還騙雷哥萊托一起幫忙。雷哥萊托以為自己在綁別人的女人，結果發現：小丑竟是我自己。</div>
+        <figure>
+          <img src="images/RigolettoAct2.png" alt="Rigoletto act 2 abduction scene diagram">
+          <figcaption>第二幕：大臣們報復成功，雷哥萊托親手協助了自己人生最慘的一次誤會。</figcaption>
+        </figure>
+      </section>
+
+      <section class="act">
+        <h3>第三幕：裝著屍體的麻布袋<br><small>The Sack</small></h3>
+        <p>雷哥萊托發現吉爾達被帶到公爵房間後，整個人崩潰。他決定不再靠嘴巴，而是靠外包：找職業殺手史帕拉夫奇勒處理公爵。</p>
+        <p>殺手安排妹妹瑪達蕾娜把公爵引到破爛旅館。公爵毫無危機感，還唱出全劇最有名的詠嘆調：<strong>〈La donna è mobile〉</strong>，也就是〈善變的女人〉。</p>
+        <p>這首歌的大意是：「女人像羽毛一樣善變。」問題是，這句話由全劇最善變的男人唱出來，雙標程度高到可以申請專利。</p>
+        <p>殺手本來準備動手，但瑪達蕾娜竟然被公爵迷住，求哥哥放他一馬。史帕拉夫奇勒很有職業精神地說：「我收了錢就要交貨。這樣吧，半夜前誰敲門進來，我就殺誰，裝進袋子交差。」</p>
+        <div class="quote">這時，門外偷聽的吉爾達知道公爵很渣，卻依然決定為愛犧牲。這不是戀愛腦，這已經是戀愛腦高速過熱。</div>
+        <p>她敲門進去，成了替死鬼。</p>
+        <figure>
+          <img src="images/RigolettoAct3.png" alt="Rigoletto act 3 tavern and sack scene diagram">
+          <figcaption>第三幕：公爵唱歌、殺手等客、吉爾達犧牲，麻布袋準備上線。</figcaption>
+        </figure>
+      </section>
+
+      <section class="act ending-box">
+        <h3>結局：開箱驚喜<br><small>The Tragic Unboxing</small></h3>
+        <p>雷哥萊托來驗收成果。他付了錢，拖著沉重的麻布袋走到河邊，心裡想著：「公爵終於完蛋了。」對一個長期被宮廷制度扭曲的人來說，這可能是他少數覺得命運站在自己這邊的瞬間。</p>
+        <p>然而，就在他準備享受復仇成果時，遠方傳來熟悉的歌聲：〈La donna è mobile〉。</p>
+        <p>雷哥萊托瞬間傻住：如果公爵在那邊唱歌，那袋子裡的是誰？</p>
+        <p>他顫抖著打開麻布袋，看見奄奄一息的吉爾達。她用最後一口氣向父親道別，說自己要去天堂找媽媽。雷哥萊托終於明白：蒙特羅內的詛咒應驗了。</p>
+        <p class="punchline">這齣戲告訴我們：不要嘲笑別人的悲劇，不要把女兒關成溫室花朵，更不要相信會唱〈善變的女人〉的渣男。</p>
+        <figure>
+          <img src="images/RigolettoFinale.png" alt="Rigoletto finale tragic unboxing diagram">
+          <figcaption>結局：雷哥萊托終於開箱，但收到的不是復仇，而是命運寄來的最殘酷包裹。</figcaption>
+        </figure>
+      </section>
+    </main>
+
+    <footer>
+      《Rigoletto》生動提醒我們：宮廷裡最危險的不一定是刀，而是笑聲、謊言與一首太好聽的詠嘆調。<br />
+      <span class="small">建議使用方式：將本 HTML 放在 GitHub Pages 根目錄，並把圖片放在 images/ 資料夾。</span>
+    </footer>
+  </div>
+</body>
+</html>
