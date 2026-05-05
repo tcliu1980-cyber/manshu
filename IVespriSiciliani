@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>說書人帶你看 Verdi《I vespri siciliani》</title>
+  <meta name="description" content="用幽默說書人口吻介紹威爾第歌劇《西西里晚禱》I vespri siciliani。" />
+  <style>
+    :root {
+      --paper: #fff7e6;
+      --ink: #2f1d12;
+      --brown: #7a4b25;
+      --brown-dark: #4a2d18;
+      --gold: #d8a24a;
+      --red: #a8322d;
+      --olive: #4f5b2d;
+      --blue: #263f5f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", serif;
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(216,162,74,.24), transparent 34rem),
+        radial-gradient(circle at 90% 8%, rgba(38,63,95,.20), transparent 30rem),
+        radial-gradient(circle at 50% 95%, rgba(168,50,45,.14), transparent 34rem),
+        linear-gradient(180deg, #f0dfbf, #e4c896 45%, #c99b62);
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 28px));
+      margin: 24px auto 56px;
+      background: var(--paper);
+      border: 3px solid var(--brown-dark);
+      border-radius: 22px;
+      box-shadow: 0 20px 60px rgba(38, 24, 13, .28);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(74,45,24,.28);
+      border-radius: 15px;
+      pointer-events: none;
+    }
+
+    header {
+      padding: 44px 34px 32px;
+      text-align: center;
+      background:
+        linear-gradient(rgba(255,247,230,.91), rgba(255,247,230,.88)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 12px);
+      border-bottom: 3px double var(--brown);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 2px solid var(--brown);
+      border-radius: 999px;
+      background: #fff2d0;
+      color: var(--red);
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 16px 0 8px;
+      font-size: clamp(2.1rem, 5vw, 4.6rem);
+      line-height: 1.1;
+      color: var(--brown-dark);
+      text-shadow: 2px 2px 0 rgba(216,162,74,.35);
+    }
+
+    .subtitle {
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      max-width: 850px;
+      margin: 0 auto;
+      font-weight: 650;
+    }
+
+    .ribbon {
+      margin: 22px auto 0;
+      width: fit-content;
+      max-width: 100%;
+      padding: 10px 18px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 var(--gold);
+      font-weight: 900;
+    }
+
+    main { padding: 28px; }
+
+    .intro {
+      padding: 22px 24px;
+      margin: 0 0 28px;
+      background: rgba(255,255,255,.48);
+      border: 2px solid rgba(122,75,37,.35);
+      border-radius: 18px;
+      font-size: 1.12rem;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 40px 0 18px;
+      color: var(--brown-dark);
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: "";
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--brown), transparent);
+      flex: 1;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      white-space: nowrap;
+    }
+
+    .placeholder {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 3px dashed rgba(74,45,24,.42);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(216,162,74,.20), rgba(255,255,255,.58)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 14px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #68472f;
+      font-weight: 800;
+      padding: 20px;
+      margin: 18px 0 20px;
+      box-shadow: 0 10px 22px rgba(74,45,24,.12);
+    }
+
+    .placeholder small {
+      display: block;
+      font-weight: 600;
+      opacity: .82;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .roles-img,
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 18px;
+      border: 3px solid var(--brown-dark);
+      box-shadow: 0 12px 24px rgba(74,45,24,.22);
+      background: #f3dfba;
+      margin: 18px 0 20px;
+    }
+
+    .cast {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .cast-card {
+      background: rgba(255,255,255,.58);
+      border: 2px solid rgba(122,75,37,.32);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 5px 0 rgba(122,75,37,.12);
+    }
+
+    .cast-card h3 {
+      margin: 0 0 6px;
+      color: var(--red);
+      font-size: 1.15rem;
+    }
+
+    .cast-card p { margin: 0; }
+
+    .scene {
+      display: block;
+      margin: 28px 0;
+      padding: 22px;
+      border: 2px solid rgba(74,45,24,.35);
+      border-radius: 22px;
+      background: rgba(255,255,255,.42);
+      box-shadow: 0 10px 0 rgba(122,75,37,.10);
+    }
+
+    .scene h3 {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 8px 14px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 12px;
+      font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+      line-height: 1.35;
+    }
+
+    .scene p { margin: 0 0 12px; }
+
+    figure { margin: 18px 0 0; }
+
+    figcaption {
+      font-size: .92rem;
+      color: #60412b;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .quote {
+      margin: 14px 0;
+      padding: 14px 16px;
+      border-left: 6px solid var(--red);
+      background: rgba(216,162,74,.18);
+      border-radius: 12px;
+      font-weight: 760;
+    }
+
+    .commentary-box {
+      margin-top: 34px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(216,162,74,.30), rgba(255,255,255,.55));
+      border: 3px double var(--brown);
+      border-radius: 20px;
+    }
+
+    .commentary-box h3 {
+      margin-top: 0;
+      color: var(--brown-dark);
+      font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+    }
+
+    .commentary-box ol {
+      margin: 0;
+      padding-left: 1.4rem;
+    }
+
+    .commentary-box li {
+      margin: 0 0 10px;
+    }
+
+    .punchline {
+      font-size: 1.08rem;
+      font-weight: 850;
+      color: var(--red);
+    }
+
+    footer {
+      text-align: center;
+      padding: 26px 24px 34px;
+      border-top: 3px double var(--brown);
+      background: rgba(74,45,24,.08);
+      font-weight: 700;
+    }
+
+    .small { font-size: .92rem; opacity: .86; }
+
+    @media (max-width: 820px) {
+      main { padding: 18px; }
+      .cast { grid-template-columns: 1fr; }
+      .section-title::before,
+      .section-title::after { display: none; }
+      h2 { white-space: normal; }
+    }
+
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; margin: 0; width: 100%; }
+      .scene { break-inside: avoid; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <div class="eyebrow">歌劇世間情・說書人開講</div>
+      <h1>Verdi《I vespri siciliani》</h1>
+      <p class="subtitle">《西西里晚禱》：聽起來像教堂祈禱，實際上是鐘聲一響，全場從婚禮變成大型歷史械鬥現場。</p>
+      <div class="ribbon">1282 年西西里：愛情、革命、認親、芭蕾，全部放進一鍋威爾第大雜燴。</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p>各位看官，歡迎回到我們的「歌劇世間情」講古時間。</p>
+        <p>如果不說這是威爾第的作品，光看劇情，你可能會以為這是台灣八點檔或是《星際大戰》的古裝版。今天要說的這部戲叫做 <strong>《西西里晚禱》</strong>。聽名字非常神聖，感覺像一群虔誠信徒在夕陽下祈禱。錯！大錯特錯！這其實是一場發生在教堂鐘聲響起時的「大型械鬥屠殺案」。</p>
+        <p>這部戲是威爾第為了進軍巴黎，特地寫的「大歌劇」。什麼是大歌劇？簡單說就是：時間長到考驗膀胱，場面大到燒光預算，而且不管劇情合不合理，中間一定要硬塞一段芭蕾舞。</p>
+      </section>
+
+      <section>
+        <div class="section-title"><h2>角色介紹：西西里革命風暴裡的問題人物們</h2></div>
+
+        <!-- 若已有角色介紹圖，請取消下一行註解，並把圖片放到 images/ 資料夾 -->
+        <!-- <img class="roles-img" src="images/VespriCast.png" alt="I vespri siciliani cast character diagram"> -->
+
+        <div class="placeholder">
+          角色介紹插圖預留區
+          <small>建議檔名：images/VespriCast.png<br>建議內容：Elena、Arrigo、Monforte、Procida、法國士兵、西西里民眾，誇張卡通化手繪色鉛筆諷刺漫畫風格。</small>
+        </div>
+
+        <div class="cast">
+          <article class="cast-card">
+            <h3>艾倫娜 Elena</h3>
+            <p>落魄公爵夫人，哥哥被法國人處死。她的人生主軸很單純：復仇、復仇，還是復仇。愛情只是讓劇情更難收拾的副作用。</p>
+          </article>
+          <article class="cast-card">
+            <h3>阿瑞戈 Arrigo</h3>
+            <p>熱血西西里青年，愛祖國、愛艾倫娜、恨法國總督。可惜命運送他一份親子鑑定級的大禮：仇人竟然是親爸。</p>
+          </article>
+          <article class="cast-card">
+            <h3>蒙福爾特 Monforte</h3>
+            <p>法國總督，政治上是壓迫者，家庭上是遲到二十年的爸爸。比起統治西西里，他更想聽兒子叫一聲「爸」。</p>
+          </article>
+          <article class="cast-card">
+            <h3>普羅奇達 Procida</h3>
+            <p>西西里愛國者兼煽動大師。別人談革命靠理念，他談革命靠點火、添柴、順便把油桶推過去。</p>
+          </article>
+          <article class="cast-card">
+            <h3>法國士兵們 French Soldiers</h3>
+            <p>占領軍標準範本：喝酒、鬧事、調戲、欺負人。簡單說，就是專門把民怨值刷到滿格的 NPC。</p>
+          </article>
+          <article class="cast-card">
+            <h3>西西里民眾 Sicilians</h3>
+            <p>長期被壓迫的島民。前面忍很久，後面鐘聲一響，直接進入歷史事件模式。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="scene">
+        <h3>第一景：我的仇人是個酒鬼<br><small>The Enemy is a Drunkard</small></h3>
+        <p>鏡頭轉到 1282 年的西西里島。此時西西里被法國軍隊佔領，法國士兵基本上在街上橫著走：調戲婦女、欺負路人、喝酒鬧事，行為舉止非常符合「殖民政府如何快速失去民心」教科書。</p>
+        <p>女主角艾倫娜登場。她是落魄公爵夫人，哥哥被法國人砍了頭，所以她的人生目標只有一個：復仇。這種角色通常不是來談心的，是來點燃全劇火藥桶的。</p>
+        <p>男主角阿瑞戈也登場。他是熱血西西里憤青，深愛艾倫娜，也深愛祖國，而且超級痛恨法國總督蒙福爾特。</p>
+        <p>這時總督蒙福爾特出現。阿瑞戈直接衝上去嗆聲：「你這法國狗官！」正常總督可能會把他拖出去處理，結果蒙福爾特不但沒生氣，還露出一種詭異的欣賞表情。</p>
+        <div class="quote">觀眾 OS：這總督是不是有被罵反而覺得親切的特殊體質？</div>
+
+        <figure>
+          <!-- <img src="images/VespriScene1.png" alt="I vespri siciliani scene 1 diagram"> -->
+          <div class="placeholder">
+            第一景插圖預留區
+            <small>建議檔名：images/VespriScene1.png<br>構圖建議：西西里廣場、喝醉的法國士兵、憤怒的 Elena、嗆聲的 Arrigo、露出詭異姨母笑的 Monforte。</small>
+          </div>
+          <figcaption>第一景：占領軍喝到像公司尾牙失控，阿瑞戈把總督當場罵成全劇最大伏筆。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第二景：傳銷大師普羅奇達<br><small>The Master Agitator</small></h3>
+        <p>這部戲的關鍵人物普羅奇達登場。他唱出著名詠嘆調〈O tu Palermo〉，表達對故鄉巴勒莫的深情。聽起來很感人，像遊子返鄉；但請注意，這個人表達愛鄉情懷的方式不是擁抱土地，而是準備製造暴動。</p>
+        <p>他的計畫非常粗暴：讓法國士兵去搶正在結婚的新娘，好激怒西西里男人。結果法國士兵真的去搶，西西里男人瞬間氣炸。</p>
+        <p>普羅奇達在旁邊看著民怨沸騰，內心大概正在鼓掌：「對！就是這樣！憤怒吧！再多一點！」</p>
+        <div class="quote">這個人如果做行銷，大概不是賣產品，而是直接把客戶推進暴動漏斗。</div>
+
+        <figure>
+          <!-- <img src="images/VespriScene2.png" alt="I vespri siciliani scene 2 diagram"> -->
+          <div class="placeholder">
+            第二景插圖預留區
+            <small>建議檔名：images/VespriScene2.png<br>構圖建議：Procida 像傳銷講師站在高處煽動群眾，旁邊法國士兵搶新娘，西西里男人集體爆氣。</small>
+          </div>
+          <figcaption>第二景：普羅奇達的愛國方式很簡單——不怕場面亂，只怕場面不夠亂。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第三景：星際大戰時刻<br><small>The Star Wars Moment</small></h3>
+        <p>第三景是全劇最狗血的認親大會。蒙福爾特在辦公室讀一封信，那是他年輕時留下的風流帳。信裡明白告訴他：阿瑞戈不是普通西西里憤青，而是他的親生兒子。</p>
+        <p>蒙福爾特震驚。這時阿瑞戈被帶進來。蒙福爾特深情地看著他，說出全劇最八點檔的一句話：「阿瑞戈，我是你爸爸。」</p>
+        <p>阿瑞戈的反應幾乎就是路克天行者：「不！這不可能！不！」昨天他還是抗法英雄，今天突然變成官二代，而且爸爸還是女朋友最恨的人。</p>
+        <div class="quote">愛國青年一秒變成統治階級家屬，這轉職速度比歌劇換景還快。</div>
+        <p>從這一刻起，阿瑞戈的人生就變成家庭倫理、革命義務與戀愛承諾三方互撞的大塞車。</p>
+
+        <figure>
+          <!-- <img src="images/VespriScene3.png" alt="I vespri siciliani scene 3 diagram"> -->
+          <div class="placeholder">
+            第三景插圖預留區
+            <small>建議檔名：images/VespriScene3.png<br>構圖建議：Monforte 拿著信深情伸手，Arrigo 崩潰後退，背景可有誇張文字泡「我是你爸爸！」。</small>
+          </div>
+          <figcaption>第三景：認親不是問題，問題是你爸剛好是你整個革命團隊最想處理的人。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第四景：女友與老爸的修羅場<br><small>The Ultimate Dilemma</small></h3>
+        <p>阿瑞戈為了救父親免於被暗殺，不得不背叛革命夥伴。於是艾倫娜和普羅奇達都被抓進監獄，準備處死。</p>
+        <p>阿瑞戈衝進監獄解釋：「聽我解釋！我不是叛徒，我只是……有點家庭問題。」這種台詞通常在現實中也很難成功，在歌劇裡當然更是難上加難。</p>
+        <p>艾倫娜一開始很生氣：「你這法國走狗！」阿瑞戈只好坦白：「那個狗官……其實是我爸。」</p>
+        <p>艾倫娜瞬間心軟。畢竟這已經不是普通叛變，而是命運把人際關係打成死結。</p>
+        <p>蒙福爾特最後開出條件：「阿瑞戈，只要你肯叫我一聲爸爸，我就放了你的朋友，還讓你跟艾倫娜結婚。」</p>
+        <div class="quote">總督爸爸要的不是政治勝利，而是一聲遲到二十年的「爸」。威爾第表示：大歌劇也可以很家庭劇。</div>
+        <p>阿瑞戈掙扎許久，最後為了愛情與朋友，含淚喊了一聲：「爸！」蒙福爾特開心得像拿到糖果的小孩，馬上宣布特赦，還要辦婚禮。</p>
+
+        <figure>
+          <!-- <img src="images/VespriScene4.png" alt="I vespri siciliani scene 4 diagram"> -->
+          <div class="placeholder">
+            第四景插圖預留區
+            <small>建議檔名：images/VespriScene4.png<br>構圖建議：監獄場景，Arrigo 夾在 Elena、Procida、Monforte 之間；一邊是革命，一邊是老爸。</small>
+          </div>
+          <figcaption>第四景：叫一聲爸爸可以救人，但也會讓整個革命團隊表情管理失敗。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第五景：紅色婚禮<br><small>The Red Wedding</small></h3>
+        <p>結局來了。婚禮準備舉行，表面上大家都以為終於要大團圓。蒙福爾特開心，阿瑞戈緊張，艾倫娜心情複雜，普羅奇達則完全沒有要放過這個場面的意思。</p>
+        <p>他偷偷告訴艾倫娜：婚禮鐘聲就是起義信號。鐘聲一響，西西里人就會衝出來屠殺法國人。</p>
+        <p>艾倫娜嚇壞了。她不想讓婚禮變成血案，所以拒絕說「我願意」，試圖取消婚禮阻止鐘聲。但不知情的蒙福爾特爸爸以為小倆口只是害羞，還非常熱心地幫忙推進流程。</p>
+        <p>他一聲令下：「敲鐘！婚禮開始！」</p>
+        <div class="quote">噹！噹！噹！鐘聲一響，浪漫婚禮瞬間切換成歷史事件模式。</div>
+        <p>埋伏好的西西里人拿出刀衝出來。新郎傻眼，總督爸爸傻眼，法國士兵還沒反應過來就被砍翻。最後，法國人被屠殺殆盡，這就是歷史上著名的「西西里晚禱」事件。</p>
+
+        <figure>
+          <!-- <img src="images/VespriScene5.png" alt="I vespri siciliani scene 5 red wedding diagram"> -->
+          <div class="placeholder">
+            第五景插圖預留區
+            <small>建議檔名：images/VespriScene5.png<br>構圖建議：婚禮鐘聲響起，Elena 驚恐，Monforte 開心敲鐘，Procida 暗笑，西西里人從背景衝出。</small>
+          </div>
+          <figcaption>第五景：在歌劇裡，婚禮不是 happy ending，而是死亡 flag 的正式開幕典禮。</figcaption>
+        </figure>
+      </section>
+
+      <section class="commentary-box">
+        <h3>說書人點評：這齣戲教我們三件事</h3>
+        <ol>
+          <li><strong>驗 DNA 很重要：</strong>如果早點確認親子關係，就不用搞到全島革命、監獄修羅場與婚禮血案。</li>
+          <li><strong>不要在婚禮上敲鐘：</strong>在歌劇裡，婚禮鐘聲通常不是祝福，而是命運按下大型災難的播放鍵。</li>
+          <li><strong>法國大歌劇真的很長：</strong>場面大、合唱多、芭蕾不能少。如果你坐不住，至少撐到第三景認親大會再去上廁所。</li>
+        </ol>
+        <p class="punchline">總之，《西西里晚禱》表面是民族起義，骨子裡是：爸爸太晚認兒子、革命家太會點火、婚禮主持人太愛敲鐘。</p>
+      </section>
+    </main>
+
+    <footer>
+      《I vespri siciliani》提醒我們：歷史可以很壯烈，歌劇可以很華麗，但家庭關係如果太複雜，連革命都會變成八點檔。<br />
+    </footer>
+  </div>
+</body>
+</html>
