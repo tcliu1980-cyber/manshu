@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>說書人帶你看 Verdi《La Traviata》</title>
+  <meta name="description" content="用幽默說書人口吻介紹威爾第歌劇《茶花女》La Traviata。" />
+  <style>
+    :root {
+      --paper: #fff7e6;
+      --ink: #2f1d12;
+      --brown: #7a4b25;
+      --brown-dark: #4a2d18;
+      --gold: #d8a24a;
+      --red: #a8322d;
+      --wine: #6b1f32;
+      --rose: #b85c74;
+      --paris-blue: #263f5f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", serif;
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(216,162,74,.24), transparent 34rem),
+        radial-gradient(circle at 88% 10%, rgba(184,92,116,.20), transparent 32rem),
+        radial-gradient(circle at 50% 100%, rgba(38,63,95,.16), transparent 34rem),
+        linear-gradient(180deg, #f0dfbf, #e7c99a 45%, #c79a68);
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 28px));
+      margin: 24px auto 56px;
+      background: var(--paper);
+      border: 3px solid var(--brown-dark);
+      border-radius: 22px;
+      box-shadow: 0 20px 60px rgba(38, 24, 13, .28);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(74,45,24,.28);
+      border-radius: 15px;
+      pointer-events: none;
+    }
+
+    header {
+      padding: 44px 34px 32px;
+      text-align: center;
+      background:
+        linear-gradient(rgba(255,247,230,.91), rgba(255,247,230,.88)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 12px);
+      border-bottom: 3px double var(--brown);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 2px solid var(--brown);
+      border-radius: 999px;
+      background: #fff2d0;
+      color: var(--wine);
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 16px 0 8px;
+      font-size: clamp(2.1rem, 5vw, 4.6rem);
+      line-height: 1.1;
+      color: var(--brown-dark);
+      text-shadow: 2px 2px 0 rgba(216,162,74,.35);
+    }
+
+    .subtitle {
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      max-width: 880px;
+      margin: 0 auto;
+      font-weight: 650;
+    }
+
+    .ribbon {
+      margin: 22px auto 0;
+      width: fit-content;
+      max-width: 100%;
+      padding: 10px 18px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 var(--gold);
+      font-weight: 900;
+    }
+
+    main { padding: 28px; }
+
+    .intro {
+      padding: 22px 24px;
+      margin: 0 0 28px;
+      background: rgba(255,255,255,.48);
+      border: 2px solid rgba(122,75,37,.35);
+      border-radius: 18px;
+      font-size: 1.12rem;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 40px 0 18px;
+      color: var(--brown-dark);
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: "";
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--brown), transparent);
+      flex: 1;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      white-space: nowrap;
+    }
+
+    .placeholder {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 3px dashed rgba(74,45,24,.42);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(216,162,74,.20), rgba(255,255,255,.58)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 14px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #68472f;
+      font-weight: 800;
+      padding: 20px;
+      margin: 18px 0 20px;
+      box-shadow: 0 10px 22px rgba(74,45,24,.12);
+    }
+
+    .placeholder small {
+      display: block;
+      font-weight: 600;
+      opacity: .82;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .roles-img,
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 18px;
+      border: 3px solid var(--brown-dark);
+      box-shadow: 0 12px 24px rgba(74,45,24,.22);
+      background: #f3dfba;
+      margin: 18px 0 20px;
+    }
+
+    .cast {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .cast-card {
+      background: rgba(255,255,255,.58);
+      border: 2px solid rgba(122,75,37,.32);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 5px 0 rgba(122,75,37,.12);
+    }
+
+    .cast-card h3 {
+      margin: 0 0 6px;
+      color: var(--red);
+      font-size: 1.15rem;
+    }
+
+    .cast-card p { margin: 0; }
+
+    .scene {
+      display: block;
+      margin: 28px 0;
+      padding: 22px;
+      border: 2px solid rgba(74,45,24,.35);
+      border-radius: 22px;
+      background: rgba(255,255,255,.42);
+      box-shadow: 0 10px 0 rgba(122,75,37,.10);
+    }
+
+    .scene h3 {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 8px 14px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 12px;
+      font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+      line-height: 1.35;
+    }
+
+    .scene p { margin: 0 0 12px; }
+
+    figure { margin: 18px 0 0; }
+
+    figcaption {
+      font-size: .92rem;
+      color: #60412b;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .quote {
+      margin: 14px 0;
+      padding: 14px 16px;
+      border-left: 6px solid var(--red);
+      background: rgba(216,162,74,.18);
+      border-radius: 12px;
+      font-weight: 760;
+    }
+
+    .commentary-box {
+      margin-top: 34px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(216,162,74,.30), rgba(255,255,255,.55));
+      border: 3px double var(--brown);
+      border-radius: 20px;
+    }
+
+    .commentary-box h3 {
+      margin-top: 0;
+      color: var(--brown-dark);
+      font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+    }
+
+    .commentary-box ol {
+      margin: 0;
+      padding-left: 1.4rem;
+    }
+
+    .commentary-box li { margin: 0 0 10px; }
+
+    .punchline {
+      font-size: 1.08rem;
+      font-weight: 850;
+      color: var(--red);
+    }
+
+    footer {
+      text-align: center;
+      padding: 26px 24px 34px;
+      border-top: 3px double var(--brown);
+      background: rgba(74,45,24,.08);
+      font-weight: 700;
+    }
+
+    .small { font-size: .92rem; opacity: .86; }
+
+    @media (max-width: 820px) {
+      main { padding: 18px; }
+      .cast { grid-template-columns: 1fr; }
+      .section-title::before,
+      .section-title::after { display: none; }
+      h2 { white-space: normal; }
+    }
+
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; margin: 0; width: 100%; }
+      .scene { break-inside: avoid; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <div class="eyebrow">歌劇世間情・說書人開講</div>
+      <h1>Verdi《La Traviata》</h1>
+      <p class="subtitle">《茶花女》：巴黎派對女王、暈船富二代、情緒勒索老爸，以及歌劇史上最優雅也最不健康的肺結核美顏濾鏡。</p>
+      <div class="ribbon">十九世紀巴黎：香檳很甜，帳單很痛，道德審判最致命。</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p>各位看官，茶水補了嗎？瓜子還有嗎？</p>
+        <p>今天我們要講的這部戲，是歌劇界的催淚彈，威爾第的超級經典 <strong>《茶花女》La Traviata</strong>。如果說《鄉間騎士》是西西里版《角頭》，那《茶花女》就是十九世紀巴黎版的《麻雀變鳳凰》——只是結局不是變鳳凰，而是變成蝴蝶，飛走了，然後就真的走了。</p>
+        <p>這部戲也教導我們一個重要的歌劇醫學知識：在歌劇裡，<strong>肺結核</strong>是最強美顏濾鏡。只要得了這個病，角色就會臉色蒼白、楚楚可憐、唱歌特別好聽，而且高音照樣飛，完全不受肺活量限制。</p>
+      </section>
+
+      <section>
+        <div class="section-title"><h2>角色介紹：巴黎夜生活的 MVP 們</h2></div>
+
+        <!-- 若已有角色介紹圖，請取消下一行註解，並把圖片放到 images/ 資料夾 -->
+         <img class="roles-img" src="images/TraviataCast.png" alt="La Traviata cast character diagram">
+
+
+        <div class="cast">
+          <article class="cast-card">
+            <h3>薇奧萊塔 Violetta</h3>
+            <p>巴黎最高級的交際花，派對女王、時尚指標，也是「我在笑，但我的肺在痛」的代表人物。她不是不想愛，只是人生帳單太貴。</p>
+          </article>
+          <article class="cast-card">
+            <h3>阿爾弗雷多 Alfredo</h3>
+            <p>年輕、熱血、富二代，暈船速度比香檳氣泡還快。一看到美女，智商就像劇院燈光一樣慢慢暗下去。</p>
+          </article>
+          <article class="cast-card">
+            <h3>傑爾蒙 Germont</h3>
+            <p>阿爾弗雷多的老爸，全劇最會說「我是為你好」的人。嘴上是家族榮譽，實際操作是高級情緒勒索。</p>
+          </article>
+          <article class="cast-card">
+            <h3>芙蘿拉 Flora</h3>
+            <p>巴黎社交圈好友，派對承辦能力一流。她的存在提醒我們：在巴黎，真正的災難通常都發生在豪華客廳裡。</p>
+          </article>
+          <article class="cast-card">
+            <h3>男爵 Baron Douphol</h3>
+            <p>薇奧萊塔身邊的有錢男爵。感情戲不一定最深，但帳戶餘額很有存在感。</p>
+          </article>
+          <article class="cast-card">
+            <h3>安妮娜 Annina 與醫生</h3>
+            <p>安妮娜是忠心女僕，醫生是全劇最誠實但最沒辦法的人。他們都知道病情很糟，只是主角們忙著唱歌沒空面對。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="scene">
+        <h3>第一景：派對動物的暈船現場<br><small>Drink, Drank, Drunk</small></h3>
+        <p>故事開始在薇奧萊塔的豪宅派對。這裡香檳流得像塞納河，賓客笑得像不用付帳，大家都在用社交禮儀掩蓋人生空虛。</p>
+        <p>阿爾弗雷多一進門就盯著薇奧萊塔看，眼神像在看限量版球鞋。為了引起女神注意，他唱出全世界最紅的勸酒歌：<strong>《飲酒歌》Libiamo ne' lieti calici</strong>。</p>
+        <p>歌詞大意很簡單：「喝啦！哪次不喝！人生苦短，不及時行樂是不是傻？」薇奧萊塔心想：「這小鮮肉挺可愛的，但姐姐我是混江湖的，談戀愛傷錢又傷身。」</p>
+        <p>可是阿爾弗雷多死纏爛打，告白告到像在做年度業績簡報。薇奧萊塔終於動搖，唱出超難的花腔詠嘆調 <strong>《永遠自由》Sempre libera</strong>。</p>
+        <div class="quote">她嘴上唱「我要自由」，心裡卻在想：「糟糕，好像有點心動。」這就是派對女王最危險的瞬間：香檳還沒退，戀愛腦已經上線。</div>
+
+        <figure>
+           <img src="images/TraviataScene1.png" alt="La Traviata scene 1 party and brindisi diagram"> 
+
+          <figcaption>第一景：香檳一開，阿爾弗雷多的理智也跟著噴出去了。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第二景：沒錢談什麼戀愛<br><small>No Money, No Honey</small></h3>
+        <p>鏡頭轉到鄉下。薇奧萊塔和阿爾弗雷多私奔到郊外同居三個月。生活表面上很甜蜜，像田園戀愛實境秀；但問題是，浪漫不會自動繳房租。</p>
+        <p>阿爾弗雷多很快發現一件事：他們快破產了。更尷尬的是，這三個月其實都是薇奧萊塔在賣首飾養他。阿爾弗雷多這才驚覺自己不是浪漫男主角，而是高配版軟飯男。</p>
+        <p>他羞愧地衝回巴黎籌錢。偏偏就在他不在的時候，大魔王傑爾蒙老爸登場。</p>
+        <p>傑爾蒙對薇奧萊塔說：「小姐，我知道妳是好人，但妳的身分太……那個了。我女兒要結婚，對方家長說如果有個交際花嫂子，這婚就不結了。為了我女兒的幸福，請妳離開我兒子。」</p>
+        <div class="quote">這就是標準的「給我女兒一條生路」式情緒勒索。說得很禮貌，傷害值卻比匕首還高。</div>
+        <p>薇奧萊塔哭著答應。她知道，如果直接說「我不愛你」，阿爾弗雷多會恨她，這樣他就能死心回家當乖寶寶。於是她留下分手信，回到巴黎，重新站回那個她原本想逃離的世界。</p>
+
+        <figure>
+           <img src="images/TraviataScene2.png" alt="La Traviata scene 2 Germont asks Violetta to leave Alfredo diagram"> 
+
+          <figcaption>第二景：愛情很美，但帳單和家族榮譽一起來敲門時，誰都笑不出來。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第三景：大型社死現場<br><small>The Public Humiliation</small></h3>
+        <p>巴黎又有派對。社交圈的基本原則就是：就算人生毀了，晚宴還是要辦，賓客還是要來，八卦還是要傳。</p>
+        <p>阿爾弗雷多在派對上找到薇奧萊塔。他以為自己被拋棄、被羞辱、被當成提款卡。於是他當著所有賓客的面，把賭贏的一大袋錢丟在薇奧萊塔面前，大吼：「這些錢還妳！老子不欠妳了！這女人只認錢！」</p>
+        <p>全場瞬間安靜。薇奧萊塔崩潰。剛進門的傑爾蒙也看不下去，罵兒子：「你這樣羞辱一個女人，真的很沒品！」</p>
+        <div class="quote">問題是，造成這一切的情緒勒索大師本人，現在突然站上道德高地。這畫面非常巴黎，也非常歌劇。</div>
+        <p>這場戲堪稱歌劇史上的分手名場面：情緒、金錢、階級羞辱與父權道德，一次全部丟在客廳中央。</p>
+
+        <figure>
+          <img src="images/TraviataScene3.png" alt="La Traviata scene 3 public humiliation party diagram">
+    
+          <figcaption>第三景：阿爾弗雷多以為自己在報仇，其實是在全巴黎面前公開社死。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第四景：遲來的道歉與完美的肺癆死<br><small>Too Little, Too Late</small></h3>
+        <p>幾個月後，薇奧萊塔病重，躺在床上快撐不住。她的錢沒了，朋友散了，派對女王的世界退場後，只剩下醫生、女僕安妮娜，以及一間安靜得過分的房間。</p>
+        <p>阿爾弗雷多終於知道真相，因為傑爾蒙老爸良心發現，把所有事情告訴他。於是阿爾弗雷多衝回來求原諒。</p>
+        <p>兩人幻想未來美好的生活，彷彿只要重逢，一切就能重來。可是各位看官，這裡是歌劇，不是健康保險廣告。觀眾都知道，這是迴光返照。</p>
+        <p>薇奧萊塔突然站起來喊：「我不痛了！我復活了！我看見光了！」然後——倒地身亡。</p>
+        <div class="quote">阿爾弗雷多哭得像個孩子，傑爾蒙站在旁邊滿臉尷尬。太晚的道歉，就像過期的藥，包裝再漂亮也救不回來。</div>
+
+        <figure>
+          <!-- <img src="images/TraviataFinale.png" alt="La Traviata finale Violetta deathbed diagram"> -->
+          <div class="placeholder">
+            結局插圖預留區
+            <small>建議檔名：images/TraviataFinale.png<br>構圖建議：病榻旁，Violetta 蒼白但華麗，Alfredo 跪地哭泣，Germont 愧疚站後方，Annina 與醫生在旁，茶花散落。</small>
+          </div>
+          <figcaption>第四景：巴黎最閃亮的派對女王，最後只剩一朵茶花和一屋子的來不及。</figcaption>
+        </figure>
+      </section>
+
+      <section class="commentary-box">
+        <h3>說書人總結：《茶花女》教我們三件事</h3>
+        <ol>
+          <li><strong>情緒勒索的老爸是戀愛殺手：</strong>他一句「為了家族」，可以把一段愛情打到重傷不治。</li>
+          <li><strong>不要把錢丟在女生臉上：</strong>除非你是在給小費；但就算是小費，也請放桌上，不要用投擲的。</li>
+          <li><strong>肺結核患者請戴口罩：</strong>不要對著愛人唱高音，飛沫傳染很可怕；歌劇浪漫歸浪漫，公共衛生還是要顧。</li>
+        </ol>
+        <p class="punchline">《La Traviata》提醒我們：巴黎可以很華麗，愛情可以很昂貴，但真正致命的，往往是那些打著道德旗號的溫柔刀。</p>
+      </section>
+    </main>
+
+    <footer>
+      《La Traviata》：香檳、茶花、分手信、錢袋與肺結核，一場十九世紀巴黎最華麗的心碎事故。<br />
+      <span class="small">建議使用方式：將本 HTML 放在 GitHub Pages 根目錄；未來插圖放在 images/ 資料夾，取消對應的 img 註解即可。</span>
+    </footer>
+  </div>
+</body>
+</html>
