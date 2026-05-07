@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>說書人帶你看 Mascagni《Cavalleria Rusticana》</title>
+  <meta name="description" content="用幽默說書人口吻介紹馬斯卡尼歌劇《鄉間騎士》Cavalleria Rusticana。" />
+  <style>
+    :root {
+      --paper: #fff7e6;
+      --ink: #2f1d12;
+      --brown: #7a4b25;
+      --brown-dark: #4a2d18;
+      --gold: #d8a24a;
+      --red: #a8322d;
+      --wine: #5f1b1b;
+      --olive: #4f5b2d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", serif;
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(216,162,74,.24), transparent 34rem),
+        radial-gradient(circle at 90% 10%, rgba(95,27,27,.22), transparent 32rem),
+        radial-gradient(circle at 50% 100%, rgba(79,91,45,.15), transparent 34rem),
+        linear-gradient(180deg, #f0dfbf, #e4c896 45%, #c99b62);
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 28px));
+      margin: 24px auto 56px;
+      background: var(--paper);
+      border: 3px solid var(--brown-dark);
+      border-radius: 22px;
+      box-shadow: 0 20px 60px rgba(38, 24, 13, .28);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(74,45,24,.28);
+      border-radius: 15px;
+      pointer-events: none;
+    }
+
+    header {
+      padding: 44px 34px 32px;
+      text-align: center;
+      background:
+        linear-gradient(rgba(255,247,230,.91), rgba(255,247,230,.88)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 12px);
+      border-bottom: 3px double var(--brown);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 2px solid var(--brown);
+      border-radius: 999px;
+      background: #fff2d0;
+      color: var(--wine);
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 16px 0 8px;
+      font-size: clamp(2.1rem, 5vw, 4.6rem);
+      line-height: 1.1;
+      color: var(--brown-dark);
+      text-shadow: 2px 2px 0 rgba(216,162,74,.35);
+    }
+
+    .subtitle {
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      max-width: 850px;
+      margin: 0 auto;
+      font-weight: 650;
+    }
+
+    .ribbon {
+      margin: 22px auto 0;
+      width: fit-content;
+      max-width: 100%;
+      padding: 10px 18px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 var(--gold);
+      font-weight: 900;
+    }
+
+    main { padding: 28px; }
+
+    .intro {
+      padding: 22px 24px;
+      margin: 0 0 28px;
+      background: rgba(255,255,255,.48);
+      border: 2px solid rgba(122,75,37,.35);
+      border-radius: 18px;
+      font-size: 1.12rem;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 40px 0 18px;
+      color: var(--brown-dark);
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: "";
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--brown), transparent);
+      flex: 1;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      white-space: nowrap;
+    }
+
+    .placeholder {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 3px dashed rgba(74,45,24,.42);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(216,162,74,.20), rgba(255,255,255,.58)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 14px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #68472f;
+      font-weight: 800;
+      padding: 20px;
+      margin: 18px 0 20px;
+      box-shadow: 0 10px 22px rgba(74,45,24,.12);
+    }
+
+    .placeholder small {
+      display: block;
+      font-weight: 600;
+      opacity: .82;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .roles-img,
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 18px;
+      border: 3px solid var(--brown-dark);
+      box-shadow: 0 12px 24px rgba(74,45,24,.22);
+      background: #f3dfba;
+      margin: 18px 0 20px;
+    }
+
+    .cast {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .cast-card {
+      background: rgba(255,255,255,.58);
+      border: 2px solid rgba(122,75,37,.32);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 5px 0 rgba(122,75,37,.12);
+    }
+
+    .cast-card h3 {
+      margin: 0 0 6px;
+      color: var(--red);
+      font-size: 1.15rem;
+    }
+
+    .cast-card p { margin: 0; }
+
+    .scene {
+      display: block;
+      margin: 28px 0;
+      padding: 22px;
+      border: 2px solid rgba(74,45,24,.35);
+      border-radius: 22px;
+      background: rgba(255,255,255,.42);
+      box-shadow: 0 10px 0 rgba(122,75,37,.10);
+    }
+
+    .scene h3 {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 8px 14px;
+      background: var(--brown-dark);
+      color: #fff7e6;
+      border-radius: 12px;
+      font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+      line-height: 1.35;
+    }
+
+    .scene p { margin: 0 0 12px; }
+
+    figure { margin: 18px 0 0; }
+
+    figcaption {
+      font-size: .92rem;
+      color: #60412b;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .quote {
+      margin: 14px 0;
+      padding: 14px 16px;
+      border-left: 6px solid var(--red);
+      background: rgba(216,162,74,.18);
+      border-radius: 12px;
+      font-weight: 760;
+    }
+
+    .commentary-box {
+      margin-top: 34px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(216,162,74,.30), rgba(255,255,255,.55));
+      border: 3px double var(--brown);
+      border-radius: 20px;
+    }
+
+    .commentary-box h3 {
+      margin-top: 0;
+      color: var(--brown-dark);
+      font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+    }
+
+    .punchline {
+      font-size: 1.08rem;
+      font-weight: 850;
+      color: var(--red);
+    }
+
+    footer {
+      text-align: center;
+      padding: 26px 24px 34px;
+      border-top: 3px double var(--brown);
+      background: rgba(74,45,24,.08);
+      font-weight: 700;
+    }
+
+    .small { font-size: .92rem; opacity: .86; }
+
+    @media (max-width: 820px) {
+      main { padding: 18px; }
+      .cast { grid-template-columns: 1fr; }
+      .section-title::before,
+      .section-title::after { display: none; }
+      h2 { white-space: normal; }
+    }
+
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; margin: 0; width: 100%; }
+      .scene { break-inside: avoid; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <div class="eyebrow">歌劇世間情・說書人開講</div>
+      <h1>Mascagni《Cavalleria Rusticana》</h1>
+      <p class="subtitle">《鄉間騎士》：沒有半個真正的騎士，只有媽寶渣男、憤怒前任、人妻小三與綠帽馬車夫。</p>
+      <div class="ribbon">西西里復活節：大家唱讚美詩，有人忙著戴綠帽。</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p>各位朋友，板凳坐好，瓜子準備好。</p>
+        <p>今天我們要講的這部戲，是馬斯卡尼的 <strong>《鄉間騎士》</strong>。這部歌劇很特別，它只有一幕，全長大概一小時多一點。為什麼這麼短？因為西西里人的復仇是不跟你囉嗦的，講求的就是一個「快、狠、準」。</p>
+        <p>它開創了所謂的 <strong>寫實主義 Verismo</strong>。意思就是：沒有神仙，沒有國王，沒有魔法石像，只有一群在鄉下互相傷害的男女。簡單說，這是 19 世紀義大利版的《角頭》加《世間情》。</p>
+      </section>
+
+      <section>
+        <div class="section-title"><h2>角色介紹：渣男與他的受害者們</h2></div>
+
+ <img class="roles-img" src="images/CavalleriaCast.png" alt="Cavalleria Rusticana cast character diagram"> 
+
+
+        <div class="cast">
+          <article class="cast-card">
+            <h3>圖里杜 Turiddu</h3>
+            <p>男主角，標準義大利媽寶。當兵回來發現前女友嫁人，為了報復找了現任，結果又回頭勾搭前女友。簡單說，就是渣。</p>
+          </article>
+          <article class="cast-card">
+            <h3>桑杜莎 Santuzza</h3>
+            <p>圖里杜的現任女友，也就是最倒楣的備胎。她愛得死去活來，被拋棄後進化成地獄來的復仇女神。</p>
+          </article>
+          <article class="cast-card">
+            <h3>羅拉 Lola</h3>
+            <p>圖里杜的前女友，現在的人妻。技能是穿得漂漂亮亮在路邊哼歌，專門用來把桑杜莎氣到血壓飆升。</p>
+          </article>
+          <article class="cast-card">
+            <h3>阿爾菲奧 Alfio</h3>
+            <p>羅拉的老公，職業是馬車夫。有錢、有力氣、脾氣暴躁，而且頭頂上的帽子綠到可以當復活節裝飾。</p>
+          </article>
+          <article class="cast-card">
+            <h3>露齊亞媽媽 Mamma Lucia</h3>
+            <p>圖里杜的媽媽，酒館老闆娘。她本來只想賣酒過日子，結果兒子的感情糾紛直接把整個村子炸掉。</p>
+          </article>
+          <article class="cast-card">
+            <h3>西西里村民</h3>
+            <p>負責唱聖歌、看熱鬧、傳八卦與見證悲劇。村子不大，但資訊流通速度比現代社群還快。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="scene">
+        <h3>第一景：復活節的綠光<br><small>Green Light on Easter</small></h3>
+        <p>故事發生在西西里島的一個復活節。這本該是神聖的日子，大家穿得整整齊齊，唱著讚美詩，準備去教堂感受上帝恩典。</p>
+        <p>但我們的男主角圖里杜非常忙。他不是忙著懺悔，而是忙著給別人的老公戴綠帽。這種行程安排，連上帝看了都可能想先關靜音。</p>
+        <p>桑杜莎早就覺得不對勁。她跑去找圖里杜的媽媽露齊亞哭訴。露齊亞媽媽一開始還想護航兒子：「哎呀，我兒子去買酒了啦。」</p>
+        <p>桑杜莎直接打臉：「媽，別騙了，有人看到他在羅拉家附近鬼鬼祟祟！」</p>
+        <div class="quote">這時候全村大概都知道了，只剩媽媽還在努力維護兒子的媽寶品牌形象。</div>
+        <p>偏偏此時，被綠的老公阿爾菲奧快樂登場，唱著馬車夫之歌，內容大概是：「我有馬鞭，我有老婆，我人生真美好！」全場觀眾只能在心裡默默同情他：「兄弟，你現在大概只剩馬鞭了。」</p>
+
+        <figure>
+          <img src="images/CavalleriaScene1.png" alt="Cavalleria Rusticana scene 1 Easter village diagram"> 
+
+          <figcaption>第一景：復活節的鐘聲響起，但圖里杜的道德感還在睡覺。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第二景：女人何苦為難女人<br><small>The Catfight</small></h3>
+        <p>桑杜莎終於堵到圖里杜。她問：「你為什麼躲我？你是不是又去找那個狐狸精？」</p>
+        <p>圖里杜立刻啟動標準渣男語錄：「妳煩不煩啊？妳這樣嫉妒很不可愛耶！」注意，這句話的功能不是解決問題，而是把問題全部丟回受害者身上。</p>
+        <p>就在這時，羅拉路過。她穿得美美的，哼著歌，對圖里杜拋媚眼，對桑杜莎冷笑，然後優雅地走進教堂。這不是單純路過，這是高級挑釁。</p>
+        <p>圖里杜被迷得神魂顛倒，像丟垃圾一樣把桑杜莎推倒在地，追著羅拉跑了。</p>
+        <div class="quote">這是圖里杜人生中最後一個、也是最錯誤的決定。因為趴在地上的桑杜莎，已經從卑微求愛者黑化成核彈發射按鈕。</div>
+
+        <figure>
+         <img src="images/CavalleriaScene2.png" alt="Cavalleria Rusticana scene 2 catfight diagram"> 
+
+          <figcaption>第二景：羅拉只是哼一首歌，就把全劇推向不可逆的災難。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第三景：毀滅你，順便毀滅我自己<br><small>Mutually Assured Destruction</small></h3>
+        <p>圖里杜進教堂後，老實人阿爾菲奧剛好路過。桑杜莎擦乾眼淚，冷冷地走過去說：「復活節快樂啊，阿爾菲奧。順便告訴你一件事，你老婆正在教堂裡跟我的男人偷情。」</p>
+        <p>阿爾菲奧聽完，臉色從紅色變成黑色。沒有懷疑，沒有調查，西西里男人的反應就是直接切換到殺戮模式。</p>
+        <p>他說：「如果是真的，我會讓這變成血腥復活節；如果是假的，我就挖出妳的心臟。」</p>
+        <div class="quote">桑杜莎這時才發現事情大條了。但就像潑出去的水，以及綠出去的帽，收不回來了。</div>
+
+        <figure>
+           <img src="images/CavalleriaScene3.png" alt="Cavalleria Rusticana scene 3 revenge revealed diagram"> 
+
+          <figcaption>第三景：桑杜莎本來想報復，結果按下的是全村最危險的紅色按鈕。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第四景：天使般的間奏曲<br><small>The Famous Intermezzo</small></h3>
+        <p>這時，樂團演奏那首舉世聞名、優美到會讓人融化的 <strong>《間奏曲 Intermezzo》</strong>。</p>
+        <p>這段音樂美得像天堂，安詳得像午後陽光，純淨得像大家都已經被原諒。問題是，這完全是用來詐欺觀眾的。</p>
+        <p>你以為歲月靜好，其實下一秒就要血流成河。馬斯卡尼在這裡非常壞：他先用音樂幫你洗心靈，然後馬上把你丟回西西里鄉下決鬥現場。</p>
+        <div class="quote">這段間奏曲就像悲劇前的廣告時間：畫面很美，但主線災難完全沒有停止運作。</div>
+
+        <figure>
+           <img src="images/CavalleriaScene4.png" alt="Cavalleria Rusticana intermezzo scene diagram"> 
+
+          <figcaption>第四景：音樂聖潔得像天堂，但劇情正往地獄滑行。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第五景：媽媽，這酒有點烈<br><small>Mamma, the Wine is Strong</small></h3>
+        <p>教堂禮拜結束，大家出來喝酒。圖里杜這時有點心虛，想請阿爾菲奧喝酒賠罪。</p>
+        <p>阿爾菲奧拒絕：「我不喝你的酒，你的酒有毒。」這句話一出，全村空氣瞬間降到冰點。圖里杜知道瞞不住了，於是做出西西里男人最「浪漫」的決鬥邀請動作：衝上去咬阿爾菲奧的耳朵。</p>
+        <div class="quote">沒錯，不是丟手套，是咬耳朵。這就是所謂的鄉間騎士精神，聽起來比較像狂犬病發作。</div>
+        <p>決鬥前，圖里杜跑回家跟媽媽道別。他唱得聲淚俱下：「媽媽，這酒太烈了……如果我回不來，請妳把桑杜莎當親生女兒照顧。」</p>
+        <p>這時候才想到要照顧桑杜莎？晚了啦！</p>
+        <p>圖里杜衝出去決鬥。沒多久，遠處傳來女人的尖叫：「圖里杜被殺啦！」露齊亞媽媽暈倒，桑杜莎崩潰，全劇終。</p>
+
+        <figure>
+           <img src="images/CavalleriaFinale.png" alt="Cavalleria Rusticana finale duel and tragedy diagram"> 
+          <figcaption>結局：圖里杜終於明白，復活節的酒不是太烈，是報應太快。</figcaption>
+        </figure>
+      </section>
+
+      <section class="commentary-box">
+        <h3>說書人點評</h3>
+        <p>這部歌劇名為《鄉間騎士》，其實根本沒有半個騎士。只有一個不負責任的媽寶、一個被嫉妒逼瘋的女人、一個高調挑釁的人妻，以及一個維護尊嚴的暴力老公。</p>
+        <p>它教導我們一個千古不變的真理：千萬不要惹毛一個知道你所有秘密的前女友。尤其在西西里，因為她可能不只會哭，她還會把整個劇情推進決鬥模式。</p>
+        <p class="punchline">《Cavalleria Rusticana》提醒我們：歌劇可以只有一幕，但報應可以非常完整。</p>
+      </section>
+    </main>
+
+    <footer>
+      《Cavalleria Rusticana》：復活節、聖歌、酒館、綠帽與耳朵決鬥，西西里鄉下的一小時災難套餐。<br />
+    </footer>
+  </div>
+</body>
+</html>
