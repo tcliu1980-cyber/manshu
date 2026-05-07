@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>說書人帶你看 Puccini《Tosca》</title>
+  <meta name="description" content="用幽默說書人口吻介紹普契尼歌劇《托斯卡》Tosca。" />
+  <style>
+    :root{--paper:#fff7e6;--ink:#2f1d12;--brown:#7a4b25;--brown-dark:#4a2d18;--gold:#d8a24a;--red:#a8322d;--wine:#5f1b1b}
+    *{box-sizing:border-box}
+    body{margin:0;color:var(--ink);font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;line-height:1.85;background:radial-gradient(circle at 12% 0%,rgba(216,162,74,.24),transparent 34rem),radial-gradient(circle at 90% 10%,rgba(95,27,27,.23),transparent 32rem),radial-gradient(circle at 50% 100%,rgba(38,63,95,.15),transparent 34rem),linear-gradient(180deg,#efe0c4,#e4c896 45%,#b98956)}
+    .page{width:min(1100px,calc(100% - 28px));margin:24px auto 56px;background:var(--paper);border:3px solid var(--brown-dark);border-radius:22px;box-shadow:0 20px 60px rgba(38,24,13,.28);overflow:hidden;position:relative}
+    .page::before{content:"";position:absolute;inset:10px;border:1px dashed rgba(74,45,24,.28);border-radius:15px;pointer-events:none}
+    header{padding:44px 34px 32px;text-align:center;background:linear-gradient(rgba(255,247,230,.91),rgba(255,247,230,.88)),repeating-linear-gradient(45deg,rgba(122,75,37,.08) 0 2px,transparent 2px 12px);border-bottom:3px double var(--brown)}
+    .eyebrow{display:inline-block;padding:6px 14px;border:2px solid var(--brown);border-radius:999px;background:#fff2d0;color:var(--wine);font-weight:800;letter-spacing:.08em}
+    h1{margin:16px 0 8px;font-size:clamp(2.1rem,5vw,4.6rem);line-height:1.1;color:var(--brown-dark);text-shadow:2px 2px 0 rgba(216,162,74,.35)}
+    .subtitle{font-size:clamp(1.05rem,2vw,1.35rem);max-width:900px;margin:0 auto;font-weight:650}
+    .ribbon{margin:22px auto 0;width:fit-content;max-width:100%;padding:10px 18px;background:var(--brown-dark);color:#fff7e6;border-radius:10px;box-shadow:0 4px 0 var(--gold);font-weight:900}
+    main{padding:28px}
+    .intro{padding:22px 24px;margin:0 0 28px;background:rgba(255,255,255,.48);border:2px solid rgba(122,75,37,.35);border-radius:18px;font-size:1.12rem}
+    .section-title{display:flex;align-items:center;gap:12px;margin:40px 0 18px;color:var(--brown-dark)}
+    .section-title::before,.section-title::after{content:"";height:2px;background:linear-gradient(90deg,transparent,var(--brown),transparent);flex:1}
+    h2{margin:0;font-size:clamp(1.6rem,3vw,2.25rem);white-space:nowrap}
+    .placeholder{width:100%;aspect-ratio:16/9;border:3px dashed rgba(74,45,24,.42);border-radius:18px;background:linear-gradient(135deg,rgba(216,162,74,.20),rgba(255,255,255,.58)),repeating-linear-gradient(45deg,rgba(122,75,37,.08) 0 2px,transparent 2px 14px);display:grid;place-items:center;text-align:center;color:#68472f;font-weight:800;padding:20px;margin:18px 0 20px;box-shadow:0 10px 22px rgba(74,45,24,.12)}
+    .placeholder small{display:block;font-weight:600;opacity:.82;margin-top:8px;line-height:1.5}
+    .roles-img,figure img{display:block;width:100%;height:auto;object-fit:contain;border-radius:18px;border:3px solid var(--brown-dark);box-shadow:0 12px 24px rgba(74,45,24,.22);background:#f3dfba;margin:18px 0 20px}
+    .cast{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .cast-card{background:rgba(255,255,255,.58);border:2px solid rgba(122,75,37,.32);border-radius:16px;padding:16px;box-shadow:0 5px 0 rgba(122,75,37,.12)}
+    .cast-card h3{margin:0 0 6px;color:var(--red);font-size:1.15rem}.cast-card p{margin:0}
+    .scene{display:block;margin:28px 0;padding:22px;border:2px solid rgba(74,45,24,.35);border-radius:22px;background:rgba(255,255,255,.42);box-shadow:0 10px 0 rgba(122,75,37,.10)}
+    .scene h3{display:inline-block;margin:0 0 12px;padding:8px 14px;background:var(--brown-dark);color:#fff7e6;border-radius:12px;font-size:clamp(1.25rem,2.4vw,1.75rem);line-height:1.35}
+    .scene p{margin:0 0 12px}figure{margin:18px 0 0}figcaption{font-size:.92rem;color:#60412b;margin-top:8px;text-align:center}
+    .quote{margin:14px 0;padding:14px 16px;border-left:6px solid var(--red);background:rgba(216,162,74,.18);border-radius:12px;font-weight:760}
+    .commentary-box{margin-top:34px;padding:24px;background:linear-gradient(135deg,rgba(216,162,74,.30),rgba(255,255,255,.55));border:3px double var(--brown);border-radius:20px}
+    .commentary-box h3{margin-top:0;color:var(--brown-dark);font-size:clamp(1.35rem,2.4vw,1.9rem)}
+    .commentary-box ol{margin:0;padding-left:1.4rem}.commentary-box li{margin:0 0 10px}
+    .punchline{font-size:1.08rem;font-weight:850;color:var(--red)}
+    footer{text-align:center;padding:26px 24px 34px;border-top:3px double var(--brown);background:rgba(74,45,24,.08);font-weight:700}
+    .small{font-size:.92rem;opacity:.86}
+    @media(max-width:820px){main{padding:18px}.cast{grid-template-columns:1fr}.section-title::before,.section-title::after{display:none}h2{white-space:normal}}
+    @media print{body{background:white}.page{box-shadow:none;margin:0;width:100%}.scene{break-inside:avoid}}
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <div class="eyebrow">歌劇世間情・說書人開講</div>
+      <h1>Puccini《Tosca》</h1>
+      <p class="subtitle">《托斯卡》：普契尼的羅馬旅遊死亡指南，三個景點、三具人生碎片，以及最後一跳。</p>
+      <div class="ribbon">羅馬一日遊：教堂嫉妒、宮殿殺人、城堡跳樓，行程緊湊，回程免了。</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p>各位客官，小弟是個假義大利人，每年都想去羅馬住一個月。既然如此，我們今天就來聊聊普契尼的羅馬旅遊死亡指南——<strong>《托斯卡》Tosca</strong>。</p>
+        <p>如果說之前的歌劇是八點檔，那《托斯卡》就是好萊塢等級的動作驚悚片。這裡有越獄、政治迫害、性騷擾、謀殺、詐騙，還有最後的高空彈跳。</p>
+        <p>這部戲基本上就是告訴你：在羅馬，別隨便跟藝術家談戀愛，很容易死於非命；更不要相信警察局長，尤其是那種吃晚餐時還能聽人被拷問的警察局長。</p>
+      </section>
+
+      <section>
+        <div class="section-title"><h2>角色介紹：羅馬三寶與災難配角</h2></div>
+         <img class="roles-img" src="images/ToscaCast.png" alt="Tosca cast character diagram"> 
+        <div class="cast">
+          <article class="cast-card"><h3>托斯卡 Tosca</h3><p>羅馬當紅歌劇女名伶，極度虔誠，也極度善妒。她的邏輯很清楚：我不只在舞台上戲多，我在現實生活中戲更多。</p></article>
+          <article class="cast-card"><h3>卡瓦拉多西 Cavaradossi</h3><p>男主角，畫家，革命同情者。帥氣、有理想、有才華，但政治敏感度約等於零，遇到危險還會忍不住喊口號。</p></article>
+          <article class="cast-card"><h3>斯卡皮亞 Scarpia</h3><p>羅馬警視總監，變態、好色、虐待狂。歌劇史上最讓人想衝上台揍他的反派之一。</p></article>
+          <article class="cast-card"><h3>安傑洛蒂 Angelotti</h3><p>政治犯，開場越獄成功後躲進教堂。他本人戲份不算多，但足以把所有人的人生一起拖進深淵。</p></article>
+          <article class="cast-card"><h3>教堂管事 Sacristan</h3><p>教堂裡的碎念擔當，負責把神聖空間變得很有人間煙火味。基本上是羅馬版廟公。</p></article>
+          <article class="cast-card"><h3>史波萊塔 Spoletta</h3><p>斯卡皮亞的手下，執行力很高，道德感很低。每次出現都表示事情正往壞方向發展。</p></article>
+        </div>
+      </section>
+
+      <section class="scene">
+        <h3>第一景：聖安德烈教堂<br><small>Sant'Andrea della Valle — 嫉妒是萬惡之源</small></h3>
+        <p>故事從一個逃犯躲進教堂開始。安傑洛蒂剛越獄，慌慌張張鑽進聖安德烈教堂。另一邊，我們的畫家男主角卡瓦拉多西正在畫聖母像，畫得很認真，政治危機完全沒有打擾他的藝術人生。</p>
+        <p>這時，托斯卡登場了。她一進來不是關心男友工作累不累，而是盯著那幅畫大叫：「這聖母的眼睛為什麼是藍色的？我是黑眼睛！你在畫誰？你是不是外面有女人？」</p>
+        <p>卡瓦拉多西只好邊哄邊改：「好好好，我把眼睛塗黑，妳最美，全羅馬妳最美。」托斯卡這才滿意離開。</p>
+        <p>接著，大反派斯卡皮亞帶著秘密警察登場。他發現逃犯妹妹留下的扇子，立刻啟動職場高階陰謀模式：拿扇子去刺激托斯卡的嫉妒心。</p>
+        <div class="quote">斯卡皮亞拿出扇子：「哎呀，這是畫家的東西嗎？怎麼有女人的香味？」托斯卡瞬間爆炸：「我就知道那個王八蛋在偷吃！」</div>
+        <p>托斯卡氣沖沖跑去追查。斯卡皮亞看著她崩潰的背影，心裡暗爽。背景響起宏大的 <strong>Te Deum 感恩讚美詩</strong>，但他在神聖的教堂裡想的不是上帝，而是：「我要殺了那個畫家，然後佔有這個女人。」</p>
+        <figure>
+           <img src="images/ToscaScene1.png" alt="Tosca scene 1 Sant'Andrea della Valle diagram"> 
+          <figcaption>第一景：托斯卡吃醋，斯卡皮亞加油，整座教堂瞬間變成情緒操控實驗室。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第二景：法爾內塞宮<br><small>Palazzo Farnese — 燭光晚餐與牛排刀</small></h3>
+        <p>第二景是整部歌劇的精華，堪稱「職場性騷擾與正當防衛示範教學」。地點來到法爾內塞宮，斯卡皮亞一邊吃晚餐，一邊在隔壁房間對卡瓦拉多西上酷刑。</p>
+        <p>托斯卡聽著男友的慘叫聲，崩潰了，只好供出逃犯藏身處。畫家被拖出來後，發現女友出賣了隊友，氣得大罵。</p>
+        <p>這時傳來拿破崙打贏的消息，卡瓦拉多西一時嘴快喊出：「Vittoria! 暴政必亡！」斯卡皮亞表示：「很好，拖下去槍斃。」各位看到沒有，政治敏感度為零就是這樣。</p>
+        <p>現在房間只剩斯卡皮亞和托斯卡。斯卡皮亞攤牌：「想救男友？可以。我也不是什麼惡魔，只要妳今晚陪我睡一覺，我就給妳通行證，並且安排一場假處決。」</p>
+        <p>托斯卡痛苦地唱出名曲 <strong>《為藝術，為愛情》Vissi d'arte</strong>：「上帝啊，我一輩子拜拜、做善事，為什麼你這樣對我？」上帝在此處呈現已讀不回狀態。</p>
+        <div class="quote">最後，托斯卡假裝答應。斯卡皮亞開心寫通行證，正準備撲上來時，托斯卡看到餐桌上的刀。羅馬旅遊安全提醒：不要在變態旁邊放尖銳餐具。</div>
+        <p>她拿起刀，直接往斯卡皮亞胸口捅下去：「這就是托斯卡之吻！」斯卡皮亞死透了。托斯卡看著屍體，冷冷地說：「全羅馬曾經都在這個人面前顫抖。」然後很有儀式感地在屍體兩旁點蠟燭、放十字架，才轉身離開。</p>
+        <figure>
+          <img src="images/ToscaScene2.png" alt="Tosca scene 2 Palazzo Farnese diagram"> 
+          <figcaption>第二景：斯卡皮亞以為自己在開條件，托斯卡已經在看餐具。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第三景：聖天使城堡<br><small>Castel Sant'Angelo — 真假處決與高空彈跳</small></h3>
+        <p>黎明時分，卡瓦拉多西在聖天使城堡等待行刑。他唱出名曲 <strong>《星光燦爛》E lucevan le stelle</strong>，回憶與托斯卡的甜蜜時光。這種時候回憶戀愛，通常代表劇情快要沒有未來了。</p>
+        <p>托斯卡衝進來：「親愛的！搞定了！我殺了斯卡皮亞。順便說一下，我真的很會殺。他給了假處決命令，待會士兵開槍，你就假裝倒下，演得像一點。等他們走了，我們就私奔去海邊。」</p>
+        <p>卡瓦拉多西：「哇，妳真棒。演技指導是吧？沒問題。」行刑隊來了。「預備——放！」砰！砰！砰！畫家應聲倒地。托斯卡在一旁讚嘆：「哇！這跌得太逼真了！奧斯卡影帝啊！」</p>
+        <div class="quote">士兵走了。托斯卡跑過去：「好了，Mario，起來吧，別演了。」Mario 不動。托斯卡：「Mario？」一摸，全是血。</div>
+        <p>原來斯卡皮亞這個老狐狸，死前開的根本是真處決令。他就算死了，也要拖人下水。這時警察發現斯卡皮亞被殺，衝上來抓人。托斯卡無路可逃，衝上城堡城牆，對天空大喊：「Scarpia，我們上帝面前見！」然後縱身一跳。</p>
+        <figure>
+          <!-- <img src="images/ToscaScene3.png" alt="Tosca scene 3 Castel Sant'Angelo finale diagram"> -->
+          <figcaption>第三景：托斯卡以為是舞台假死，結果斯卡皮亞連死後都還在導演真悲劇。</figcaption>
+        </figure>
+      </section>
+
+      <section class="commentary-box">
+        <h3>說書人總結：《托斯卡》教我們三件事</h3>
+        <ol>
+          <li><strong>羅馬警察不可信：</strong>尤其是那種名字叫 Scarpia，說話像毒蛇，吃飯時還能安排酷刑的人。</li>
+          <li><strong>不要在餐桌上放利器：</strong>尤其是跟義大利女歌手談判時。她可能剛唱完詠嘆調，情緒和音準都在高點。</li>
+          <li><strong>如果有人說這是假處決：</strong>在歌劇裡，那通常都是真的。假處決是悲劇界最爛的客服話術。</li>
+        </ol>
+        <p class="punchline">《Tosca》提醒我們：羅馬很美，但如果你的旅伴是畫家、反派是警察局長、行程含聖天使城堡黎明場，請立刻改訂佛羅倫斯。</p>
+      </section>
+    </main>
+
+    <footer>
+      《Tosca》：教堂、宮殿、城堡，三個羅馬名勝，一晚完成全員滅團。<br />
+      <span class="small">建議使用方式：將本 HTML 放在 GitHub Pages 根目錄；未來插圖放在 images/ 資料夾，取消對應的 img 註解即可。</span>
+    </footer>
+  </div>
+</body>
+</html>
