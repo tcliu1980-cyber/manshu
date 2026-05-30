@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>說書人帶你看 Verdi《Il Trovatore》</title>
+  <meta name="description" content="用幽默說書人口吻介紹威爾第歌劇《遊吟詩人》Il Trovatore。" />
+  <style>
+    :root {
+      --paper: #fff7e6; --ink: #2f1d12; --brown: #7a4b25; --brown-dark: #4a2d18;
+      --gold: #d8a24a; --red: #a8322d; --wine: #5f1b1b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; color: var(--ink);
+      font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", serif;
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(216,162,74,.24), transparent 34rem),
+        radial-gradient(circle at 90% 10%, rgba(95,27,27,.23), transparent 32rem),
+        linear-gradient(180deg, #f0dfbf, #e4c896 45%, #c99b62);
+    }
+    .page {
+      width: min(1100px, calc(100% - 28px)); margin: 24px auto 56px;
+      background: var(--paper); border: 3px solid var(--brown-dark); border-radius: 22px;
+      box-shadow: 0 20px 60px rgba(38,24,13,.28); overflow: hidden; position: relative;
+    }
+    .page::before {
+      content: ""; position: absolute; inset: 10px; border: 1px dashed rgba(74,45,24,.28);
+      border-radius: 15px; pointer-events: none;
+    }
+    header {
+      padding: 44px 34px 32px; text-align: center;
+      background: linear-gradient(rgba(255,247,230,.91), rgba(255,247,230,.88)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 12px);
+      border-bottom: 3px double var(--brown);
+    }
+    .eyebrow {
+      display: inline-block; padding: 6px 14px; border: 2px solid var(--brown);
+      border-radius: 999px; background: #fff2d0; color: var(--wine);
+      font-weight: 800; letter-spacing: .08em;
+    }
+    h1 {
+      margin: 16px 0 8px; font-size: clamp(2.1rem, 5vw, 4.6rem);
+      line-height: 1.1; color: var(--brown-dark);
+      text-shadow: 2px 2px 0 rgba(216,162,74,.35);
+    }
+    .subtitle { font-size: clamp(1.05rem, 2vw, 1.35rem); max-width: 850px; margin: 0 auto; font-weight: 650; }
+    .ribbon {
+      margin: 22px auto 0; width: fit-content; max-width: 100%; padding: 10px 18px;
+      background: var(--brown-dark); color: #fff7e6; border-radius: 10px; box-shadow: 0 4px 0 var(--gold);
+      font-weight: 900;
+    }
+    main { padding: 28px; }
+    .intro {
+      padding: 22px 24px; margin: 0 0 28px; background: rgba(255,255,255,.48);
+      border: 2px solid rgba(122,75,37,.35); border-radius: 18px; font-size: 1.12rem;
+    }
+    .section-title { display: flex; align-items: center; gap: 12px; margin: 40px 0 18px; color: var(--brown-dark); }
+    .section-title::before, .section-title::after {
+      content: ""; height: 2px; background: linear-gradient(90deg, transparent, var(--brown), transparent); flex: 1;
+    }
+    h2 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.25rem); white-space: nowrap; }
+    .placeholder {
+      width: 100%; aspect-ratio: 16 / 9; border: 3px dashed rgba(74,45,24,.42);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(216,162,74,.20), rgba(255,255,255,.58)),
+        repeating-linear-gradient(45deg, rgba(122,75,37,.08) 0 2px, transparent 2px 14px);
+      display: grid; place-items: center; text-align: center; color: #68472f;
+      font-weight: 800; padding: 20px; margin: 18px 0 20px; box-shadow: 0 10px 22px rgba(74,45,24,.12);
+    }
+    .placeholder small { display: block; font-weight: 600; opacity: .82; margin-top: 8px; line-height: 1.5; }
+    .roles-img, figure img {
+      display: block; width: 100%; height: auto; object-fit: contain; border-radius: 18px;
+      border: 3px solid var(--brown-dark); box-shadow: 0 12px 24px rgba(74,45,24,.22);
+      background: #f3dfba; margin: 18px 0 20px;
+    }
+    .cast { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .cast-card {
+      background: rgba(255,255,255,.58); border: 2px solid rgba(122,75,37,.32);
+      border-radius: 16px; padding: 16px; box-shadow: 0 5px 0 rgba(122,75,37,.12);
+    }
+    .cast-card h3 { margin: 0 0 6px; color: var(--red); font-size: 1.15rem; }
+    .cast-card p { margin: 0; }
+    .scene {
+      display: block; margin: 28px 0; padding: 22px; border: 2px solid rgba(74,45,24,.35);
+      border-radius: 22px; background: rgba(255,255,255,.42); box-shadow: 0 10px 0 rgba(122,75,37,.10);
+    }
+    .scene h3 {
+      display: inline-block; margin: 0 0 12px; padding: 8px 14px;
+      background: var(--brown-dark); color: #fff7e6; border-radius: 12px;
+      font-size: clamp(1.25rem, 2.4vw, 1.75rem); line-height: 1.35;
+    }
+    .scene p { margin: 0 0 12px; }
+    figure { margin: 18px 0 0; }
+    figcaption { font-size: .92rem; color: #60412b; margin-top: 8px; text-align: center; }
+    .quote {
+      margin: 14px 0; padding: 14px 16px; border-left: 6px solid var(--red);
+      background: rgba(216,162,74,.18); border-radius: 12px; font-weight: 760;
+    }
+    .commentary-box {
+      margin-top: 34px; padding: 24px;
+      background: linear-gradient(135deg, rgba(216,162,74,.30), rgba(255,255,255,.55));
+      border: 3px double var(--brown); border-radius: 20px;
+    }
+    .commentary-box h3 { margin-top: 0; color: var(--brown-dark); font-size: clamp(1.35rem, 2.4vw, 1.9rem); }
+    .punchline { font-size: 1.08rem; font-weight: 850; color: var(--red); }
+    footer {
+      text-align: center; padding: 26px 24px 34px; border-top: 3px double var(--brown);
+      background: rgba(74,45,24,.08); font-weight: 700;
+    }
+    .small { font-size: .92rem; opacity: .86; }
+    @media (max-width: 820px) {
+      main { padding: 18px; } .cast { grid-template-columns: 1fr; }
+      .section-title::before, .section-title::after { display: none; } h2 { white-space: normal; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <div class="eyebrow">歌劇世間情・說書人開講</div>
+      <h1>Verdi《Il Trovatore》</h1>
+      <p class="subtitle">《遊吟詩人》：音樂神到會起雞皮疙瘩，劇情亂到需要戶政系統、DNA 檢測與消防演練。</p>
+      <div class="ribbon">十五世紀西班牙：一場燒錯嬰兒引發的全家滅門連續劇。</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p>各位鄉親，今天說書人要來介紹一部在歌劇史上非常神奇的作品：威爾第的 <strong>《遊吟詩人》Il Trovatore</strong>。</p>
+        <p>它的音樂極度知名，知名到只要鐵砧一敲，很多人就會覺得自己突然很想去打鐵；它的劇情邏輯則相當災難，災難到觀眾看完都想幫角色們辦一場家庭溝通工作坊。</p>
+        <p>剝開英雄主義的音樂外衣，這其實是一個關於：一位創傷過重的母親燒錯嬰兒，導致一對完全不知情的親兄弟為了同一個女人互相殘殺，最後全家死光的社會案件。</p>
+      </section>
+
+      <section>
+        <div class="section-title"><h2>角色介紹：全員缺乏溝通能力的受害者</h2></div>
+        <!-- <img class="roles-img" src="images/il-trovatore/TrovatoreCast.webp" alt="Il Trovatore cast character diagram" loading="lazy"> -->
+        <div class="placeholder">
+          角色介紹插圖預留區
+          <small>建議檔名：images/il-trovatore/TrovatoreCast.webp<br>建議內容：Manrico、Count di Luna、Leonora、Azucena、Ferrando；人物介紹可只標原文姓名。</small>
+        </div>
+
+        <div class="cast">
+          <article class="cast-card"><h3>曼里科 Manrico</h3><p>男高音，本劇標題上的遊吟詩人。自以為是吉普賽熱血青年，其實是貴族失蹤人口。專長是彈琴把妹、拔劍衝鋒，以及在最危險的時候飆高音。</p></article>
+          <article class="cast-card"><h3>露娜伯爵 Count di Luna</h3><p>男中音，地方軍閥兼高級恐怖情人。人生兩大志願：娶到萊奧諾拉，以及把曼里科送上斷頭台。完全不知道自己最恨的人其實是親弟弟。</p></article>
+          <article class="cast-card"><h3>萊奧諾拉 Leonora</h3><p>女高音，宮廷女官，全劇最美也最容易在黑夜裡認錯人的人。曾把伯爵誤抱成曼里科，最後依照女高音標準作業流程：服毒自盡。</p></article>
+          <article class="cast-card"><h3>阿蘇切娜 Azucena</h3><p>次女高音，曼里科的養母，也是全劇真正的劇情核彈。年輕時想替母親報仇，結果太激動把自己的兒子扔進火裡，直接引爆兩代人的悲劇。</p></article>
+          <article class="cast-card"><h3>費蘭多 Ferrando</h3><p>露娜伯爵的老部下，負責在開場講鬼故事兼補設定。沒有他，觀眾大概第一幕就會迷路。</p></article>
+        </div>
+      </section>
+
+      <section class="scene">
+        <h3>第一景：黑夜裡的臉盲症與三角戀<br><small>Night Blindness and the Love Triangle</small></h3>
+        <p>故事發生在十五世紀的西班牙。露娜伯爵每天晚上都在萊奧諾拉窗下徘徊，唱出旋律優美但氣質非常跟蹤狂的詠嘆調：〈Il balen del suo sorriso〉。</p>
+        <p>問題是，萊奧諾拉根本不愛他。她愛的是每天晚上來彈吉他唱歌的神秘遊吟詩人曼里科。簡單說，一個在樓下守夜，一個在樓下開演唱會，女主角在樓上被迫經營夜間選秀節目。</p>
+        <p>某天深夜，萊奧諾拉在花園裡聽見腳步聲，以為曼里科來了，衝過去抱住對方。結果一抱才發現：糟糕，抱到的是露娜伯爵。</p>
+        <div class="quote">這種尷尬，如果發生在現代，大概需要三個群組道歉、兩篇限時動態澄清。</div>
+        <p>真正的曼里科此時出場，兩個男人對視三秒，歌劇標準程序啟動：拔劍決鬥。</p>
+        <figure>
+          <!-- <img src="images/il-trovatore/TrovatoreScene1.webp" alt="Il Trovatore scene 1 diagram" loading="lazy"> -->
+          <div class="placeholder">第一景插圖預留區<small>建議檔名：images/il-trovatore/TrovatoreScene1.webp<br>月夜花園，Leonora 抱錯 Count di Luna，Manrico 拿琴與劍衝出來，三人表情誇張。</small></div>
+          <figcaption>第一景：愛情本來就很難，黑暗中認錯人會讓它直接變成決鬥。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第二景：吉普賽營地與燒錯嬰兒的往事<br><small>The Anvil, the Fire, and the Wrong Baby</small></h3>
+        <p>場景來到吉普賽營地。天亮了，工人們開始打鐵，於是全劇最有名、各大廣告與影視作品最愛用的合唱曲登場：〈鐵砧合唱〉。</p>
+        <p>這首曲子節奏感極強，充滿勞動階級的活力。大家聽了都熱血沸騰，雖然實際劇情只是：各位，該上班了。</p>
+        <p>大家唱完去上班後，阿蘇切娜坐在火堆旁回憶往事。當年她母親被伯爵家的人當女巫燒死，她悲憤之下綁架伯爵家的嬰兒，打算把孩子扔進火裡報仇。</p>
+        <p>但是，可能因為現場煙太大、情緒太亂、劇情太急，她一個失手，扔進火裡的是自己的親生兒子。</p>
+        <div class="quote">各位，報仇之前真的要先確認手裡抱的是誰。這不是小疏失，這是整齣歌劇的災難原點。</div>
+        <p>曼里科聽完整個故事，滿頭問號：「所以我是誰？」阿蘇切娜立刻啟動長輩權威：「你不要問那麼多，我剛剛胡言亂語。」成功把全劇最大真相又拖了兩幕。</p>
+        <figure>
+          <!-- <img src="images/il-trovatore/TrovatoreScene2.webp" alt="Il Trovatore scene 2 diagram" loading="lazy"> -->
+          <div class="placeholder">第二景插圖預留區<small>建議檔名：images/il-trovatore/TrovatoreScene2.webp<br>吉普賽營地、鐵砧合唱、火堆旁驚恐的 Azucena，Manrico 聽到身世線索後滿臉問號。</small></div>
+          <figcaption>第二景：鐵砧敲得很整齊，家族身世卻亂成一團。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第三景：飆高音的極限與無疾而終的婚禮<br><small>The High C Emergency</small></h3>
+        <p>曼里科和萊奧諾拉終於準備結婚。觀眾以為要進入浪漫段落，結果手下衝進來報告：「不好了！你媽被抓走，準備要被燒死了！」</p>
+        <p>曼里科一聽，立刻把婚禮放到旁邊，拔劍開衝。接著唱出男高音終極試金石：〈Di quella pira〉。</p>
+        <p>這首曲子最可怕的不是劇情，而是結尾那顆胸聲高音 C。此時全場觀眾通常已經暫時忘記阿蘇切娜是誰，只在心裡默默倒數。</p>
+        <div class="quote">唱得上去，他就是英雄；唱不上去，觀眾會替他辦音樂史告別式。</div>
+        <p>唱完之後，曼里科拋下新娘，衝去救媽媽。這場婚禮就這樣變成「高音 C 發表會兼救母行動記者會」。</p>
+        <figure>
+          <!-- <img src="images/il-trovatore/TrovatoreScene3.webp" alt="Il Trovatore scene 3 diagram" loading="lazy"> -->
+          <div class="placeholder">第三景插圖預留區<small>建議檔名：images/il-trovatore/TrovatoreScene3.webp<br>教堂婚禮被打斷，Manrico 拔劍飆高音，Leonora 抓著婚紗傻眼，旁邊有人高舉「High C」警示牌。</small></div>
+          <figcaption>第三景：新娘還在等誓詞，男高音已經衝出去救媽媽了。</figcaption>
+        </figure>
+      </section>
+
+      <section class="scene">
+        <h3>第四景：毒藥、監獄與遲來的真相<br><small>Poison, Prison, and the Worst Timing Ever</small></h3>
+        <p>曼里科去救人的結果很符合他的作風：不但沒救成，自己也被抓進監獄。</p>
+        <p>萊奧諾拉為了救他，跑去找露娜伯爵談條件。她表示只要伯爵放了曼里科，她就願意委身於伯爵。伯爵高興到差點原地開香檳。</p>
+        <p>但萊奧諾拉當然不可能真的跟伯爵在一起。她偷偷喝下戒指裡的毒藥，跑進牢房叫曼里科快逃。</p>
+        <p>曼里科第一反應不是感謝，而是懷疑她背叛自己，開始大罵。直到萊奧諾拉毒發倒地，他才發現：完了，自己誤會了。</p>
+        <div class="quote">這告訴我們，臨終前請先聽人把話說完，不要急著情緒勒索。</div>
+        <p>伯爵發現自己被騙，氣得立刻下令把曼里科拖出去砍頭。就在曼里科人頭落地的瞬間，阿蘇切娜對伯爵大喊：「恭喜你，你剛剛殺掉自己的親弟弟！」</p>
+        <p>伯爵崩潰，阿蘇切娜宣告自己終於為母親報仇。全劇在一個非常不適合闔家觀賞的家庭真相中結束。</p>
+        <figure>
+          <!-- <img src="images/il-trovatore/TrovatoreFinale.webp" alt="Il Trovatore finale diagram" loading="lazy"> -->
+          <div class="placeholder">結局插圖預留區<small>建議檔名：images/il-trovatore/TrovatoreFinale.webp<br>監獄外，Leonora 毒發，Manrico 被拖去行刑，Azucena 指著 Count di Luna 大喊真相，伯爵崩潰。</small></div>
+          <figcaption>第四景：真相不是不會來，只是它偏偏等到砍完頭才來。</figcaption>
+        </figure>
+      </section>
+
+      <section class="commentary-box">
+        <h3>說書人總結</h3>
+        <p>《遊吟詩人》是一部音樂極度傑出、劇情極度荒謬的歌劇。它有熱血合唱、英雄高音、愛情二重唱、監獄祈禱、復仇宣言，還有一個足以讓戶政事務所崩潰的身世誤會。</p>
+        <p>它客觀提醒我們：報仇之前請先確認手裡抓的是誰的嬰兒；戀愛之前請先確認黑夜裡抱的是誰；砍頭之前請先確認對方是不是親弟弟。</p>
+        <p class="punchline">以及，家庭成員之間多溝通，真的可以避免很多歌劇。</p>
+      </section>
+    </main>
+
+    <footer>
+      《Il Trovatore》：鐵砧敲得響，高音飆得高，嬰兒燒錯後，整個家族一起報銷。<br />
+      <span class="small">建議使用方式：將本 HTML 放在 GitHub Pages 根目錄；未來插圖放在 images/il-trovatore/ 資料夾，取消對應的 img 註解即可。</span>
+    </footer>
+  </div>
+</body>
+</html>
