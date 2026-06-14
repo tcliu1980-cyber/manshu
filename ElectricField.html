@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Electric Field and Force Simulation</title>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px; 
+            background-color: #f9f9f9;
+        }
+        .canvas-container {
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        canvas { 
+            cursor: crosshair; 
+            display: block;
+        }
+        .explanation { 
+            max-width: 900px; 
+            width: 100%; 
+            line-height: 1.6; 
+            color: #333; 
+            border-top: 1px solid #ccc; 
+            padding-top: 20px; 
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .formula { 
+            text-align: center; 
+            font-size: 1.3em; 
+            margin: 15px 0; 
+            font-family: 'Times New Roman', Times, serif; 
+            font-style: italic; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas-container">
+        <canvas id="simCanvas" width="1000" height="500"></canvas>
+    </div>
+
+    <div class="explanation">
+        <h2>Electric Field and Electric Force</h2>
+        <p>An electric field (E) is a vector field created by source charges. When a test charge (q) is placed within this field, it experiences an electrostatic force (F). The field exists independently of the test charge, acting as the mediator of the electric interaction.</p>
+        
+        <p>The relationship between the electric force and the electric field is given by the equation:</p>
+
+        <div class="formula">
+            F = q &middot; E
+        </div>
+
+        <p>Where:</p>
+        <ul>
+            <li>F is the net electrostatic force vector experienced by the test charge.</li>
+            <li>q is the magnitude and sign of the test charge.</li>
+            <li>E is the net electric field vector at the location of the test charge, produced by all other source charges.</li>
+        </ul>
+        <p>Notice that for a positive test charge, the force vector points in the exact same direction as the electric field. For a negative test charge, the force vector points in the opposite direction of the electric field.</p>
+    </div>
+
+    <script>
+        // Initialize canvas and 2D context
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Layout constants for UI panels
+        const LEFT_PANEL_WIDTH = 120;
+        const RIGHT_PANEL_WIDTH = 120;
+        const GRID_SPACING = 30;
+        const MAX_CHARGES = 15; 
+
+        // State arrays and objects
+        let charges = [];
+        let testCharge = null;
+
+        // Left UI Element coordinates (Source Charges)
+        const uiPosSource = { x: 60, y: 150, sign: 1, radius: 10, color: '#e74c3c' };
+        const uiNegSource = { x: 60, y: 250, sign: -1, radius: 10, color: '#3498db' };
+        const uiClearBtn = { x: 20, y: 400, width: 80, height: 40 };
+
+        // Right UI Element coordinates (Test Charge)
+        const uiPosTest = { x: canvas.width - 60, y: 150, sign: 1, radius: 10, color: '#f39c12' };
+        const uiNegTest = { x: canvas.width - 60, y: 250, sign: -1, radius: 10, color: '#9b59b6' };
+
+        // Interaction state tracking
+        let isDragging = false;
+        let activeCharge = null;
+
+        // Function to compute total electric field vector at a given point (x, y) 
+        // generated ONLY by the source charges.
+        function getElectricField(x, y) {
+            let Ex = 0;
+            let Ey = 0;
+
+            for (let charge of charges) {
+                const dx = x - charge.x;
+                const dy = y - charge.y;
+                const distSq = dx * dx + dy * dy;
+                
+                // Prevent extreme values near charge center
+                if (distSq < 25) continue; 
+
+                const dist = Math.sqrt(distSq);
+                // Electric field magnitude E = k * q / r^2
+                const E = (charge.sign * 3000) / distSq; 
+                
+                // Vector component resolution
+                Ex += E * (dx / dist);
+                Ey += E * (dy / dist);
+            }
+            return { x: Ex, y: Ey };
+        }
+
+        // Render the background vector field grid
+        function drawVectorField() {
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+            ctx.lineWidth = 1.5;
+
+            // Iterate through valid simulation area between panels
+            for (let x = LEFT_PANEL_WIDTH + GRID_SPACING; x < canvas.width - RIGHT_PANEL_WIDTH; x += GRID_SPACING) {
+                for (let y = GRID_SPACING; y < canvas.height; y += GRID_SPACING) {
+                    
+                    if (charges.length === 0) {
+                        // Render passive grid dots when empty
+                        ctx.beginPath();
+                        ctx.arc(x, y, 1, 0, Math.PI * 2);
+                        ctx.fillStyle = '#ccc';
+                        ctx.fill();
+                        continue;
+                    }
+
+                    const E = getElectricField(x, y);
+                    const magnitude = Math.sqrt(E.x * E.x + E.y * E.y);
+                    
+                    // Reduced threshold by 4x to double the visual radius of influence for grid points
+                    if (magnitude < 0.025) continue;
+
+                    // Normalize vector for arrow rendering
+                    const nx = E.x / magnitude;
+                    const ny = E.y / magnitude;
+
+                    // Scale arrow length dynamically (increased by 2x from previous version, 15 -> 30)
+                    let arrowLength = magnitude * 30; 
+                    if (arrowLength > GRID_SPACING * 3) arrowLength = GRID_SPACING * 3;
+                    if (arrowLength < 4) arrowLength = 4;
+
+                    const endX = x + nx * arrowLength;
+                    const endY = y + ny * arrowLength;
+
+                    drawFieldArrow(x, y, endX, endY);
+                }
+            }
+        }
+
+        // Helper to draw standard field arrows
+        function drawFieldArrow(fromx, fromy, tox, toy) {
+            const headlen = Math.max(3, Math.min(8, Math.hypot(tox-fromx, toy-fromy) * 0.3));
+            const angle = Math.atan2(toy - fromy, tox - fromx);
+            
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.stroke();
+        }
+
+        // Draw a generic charge particle
+        function drawCharge(charge, isUI = false, isTest = false) {
+            ctx.beginPath();
+            ctx.arc(charge.x, charge.y, charge.radius, 0, Math.PI * 2);
+            ctx.fillStyle = charge.color;
+            ctx.fill();
+            
+            ctx.strokeStyle = isUI ? '#fff' : (isTest ? '#000' : '#333');
+            ctx.lineWidth = isTest ? 2 : 1.5;
+            ctx.stroke();
+
+            ctx.fillStyle = 'white';
+            ctx.font = '14px Arial'; 
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(charge.sign > 0 ? '+' : '-', charge.x, charge.y);
+            
+            // Add identifying label for test charge
+            if (isTest && !isUI) {
+                ctx.fillStyle = 'black';
+                ctx.fillText('q', charge.x, charge.y - 20);
+            }
+        }
+
+        // Calculate and render the force acting on the test charge
+        function drawTestChargeForce() {
+            if (!testCharge) return;
+
+            const E = getElectricField(testCharge.x, testCharge.y);
+            
+            // Force Equation: F = q * E
+            const Fx = testCharge.sign * E.x;
+            const Fy = testCharge.sign * E.y;
+            
+            const magnitude = Math.sqrt(Fx * Fx + Fy * Fy);
+            
+            if (magnitude > 0.1) {
+                const nx = Fx / magnitude;
+                const ny = Fy / magnitude;
+                
+                // Scale force vector length (increased by 4x from previous version, 30 -> 120)
+                let arrowLength = magnitude * 120; 
+                if (arrowLength > 480) arrowLength = 480;
+                if (arrowLength < 15) arrowLength = 15;
+
+                const endX = testCharge.x + nx * arrowLength;
+                const endY = testCharge.y + ny * arrowLength;
+
+                // Render thick red arrow for net force
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 3;
+                
+                const headlen = 16;
+                const angle = Math.atan2(endY - testCharge.y, endX - testCharge.x);
+                
+                ctx.beginPath();
+                ctx.moveTo(testCharge.x, testCharge.y);
+                ctx.lineTo(endX, endY);
+                ctx.lineTo(endX - headlen * Math.cos(angle - Math.PI / 6), endY - headlen * Math.sin(angle - Math.PI / 6));
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(endX - headlen * Math.cos(angle + Math.PI / 6), endY - headlen * Math.sin(angle + Math.PI / 6));
+                ctx.stroke();
+                
+                // Label the force vector
+                ctx.fillStyle = 'red';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText('F', endX + nx * 15, endY + ny * 15);
+            }
+        }
+
+        // Main rendering cycle
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Render Left UI Panel (Sources)
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, LEFT_PANEL_WIDTH, canvas.height);
+            ctx.strokeStyle = '#ddd';
+            ctx.beginPath();
+            ctx.moveTo(LEFT_PANEL_WIDTH, 0);
+            ctx.lineTo(LEFT_PANEL_WIDTH, canvas.height);
+            ctx.stroke();
+
+            // Render Right UI Panel (Test Charge)
+            ctx.fillStyle = '#f8f8f8';
+            ctx.fillRect(canvas.width - RIGHT_PANEL_WIDTH, 0, RIGHT_PANEL_WIDTH, canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width - RIGHT_PANEL_WIDTH, 0);
+            ctx.lineTo(canvas.width - RIGHT_PANEL_WIDTH, canvas.height);
+            ctx.stroke();
+
+            // Draw field before charges so arrows remain in background
+            drawVectorField();
+            
+            // Draw force vector on test charge
+            drawTestChargeForce();
+
+            // Render all active source charges
+            for (let c of charges) {
+                drawCharge(c);
+            }
+            
+            // Render active test charge if it exists
+            if (testCharge) {
+                drawCharge(testCharge, false, true);
+            }
+
+            // Left UI Text
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Source Charges', 60, 30);
+            ctx.fillText('Drag to add', 60, 50);
+            ctx.fillText(`${charges.length} / ${MAX_CHARGES}`, 60, 80);
+
+            drawCharge(uiPosSource, true);
+            drawCharge(uiNegSource, true);
+
+            // Left UI Clear Button
+            ctx.fillStyle = '#e0e0e0';
+            ctx.fillRect(uiClearBtn.x, uiClearBtn.y, uiClearBtn.width, uiClearBtn.height);
+            ctx.strokeStyle = '#999';
+            ctx.strokeRect(uiClearBtn.x, uiClearBtn.y, uiClearBtn.width, uiClearBtn.height);
+            ctx.fillStyle = '#333';
+            ctx.fillText('Clear All', 60, 425);
+
+            // Right UI Text
+            ctx.fillStyle = '#333';
+            ctx.fillText('Test Charge', canvas.width - 60, 30);
+            ctx.fillText('Drag one', canvas.width - 60, 50);
+            
+            drawCharge(uiPosTest, true, true);
+            drawCharge(uiNegTest, true, true);
+        }
+
+        // Pointer interactions for dragging and dropping
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+
+            // 1. Process Clear All button
+            if (mx >= uiClearBtn.x && mx <= uiClearBtn.x + uiClearBtn.width &&
+                my >= uiClearBtn.y && my <= uiClearBtn.y + uiClearBtn.height) {
+                charges = [];
+                testCharge = null;
+                draw();
+                return;
+            }
+
+            // 2. Process moving the active test charge
+            if (testCharge && Math.hypot(mx - testCharge.x, my - testCharge.y) <= Math.max(testCharge.radius, 15)) {
+                isDragging = true;
+                activeCharge = testCharge;
+                return;
+            }
+
+            // 3. Process moving active source charges
+            for (let i = charges.length - 1; i >= 0; i--) {
+                const c = charges[i];
+                if (Math.hypot(mx - c.x, my - c.y) <= Math.max(c.radius, 15)) {
+                    isDragging = true;
+                    activeCharge = c;
+                    return;
+                }
+            }
+
+            // 4. Process spawning a new test charge from right panel
+            if (Math.hypot(mx - uiPosTest.x, my - uiPosTest.y) <= Math.max(uiPosTest.radius, 15)) {
+                testCharge = { x: mx, y: my, sign: 1, radius: 10, color: '#f39c12' };
+                isDragging = true;
+                activeCharge = testCharge;
+                draw();
+                return;
+            } else if (Math.hypot(mx - uiNegTest.x, my - uiNegTest.y) <= Math.max(uiNegTest.radius, 15)) {
+                testCharge = { x: mx, y: my, sign: -1, radius: 10, color: '#9b59b6' };
+                isDragging = true;
+                activeCharge = testCharge;
+                draw();
+                return;
+            }
+
+            // 5. Process spawning new source charges from left panel
+            if (charges.length < MAX_CHARGES) {
+                let spawnSign = 0;
+                if (Math.hypot(mx - uiPosSource.x, my - uiPosSource.y) <= Math.max(uiPosSource.radius, 15)) {
+                    spawnSign = 1;
+                } else if (Math.hypot(mx - uiNegSource.x, my - uiNegSource.y) <= Math.max(uiNegSource.radius, 15)) {
+                    spawnSign = -1;
+                }
+
+                if (spawnSign !== 0) {
+                    const newCharge = {
+                        x: mx,
+                        y: my,
+                        sign: spawnSign,
+                        radius: 10, 
+                        color: spawnSign > 0 ? '#e74c3c' : '#3498db'
+                    };
+                    charges.push(newCharge);
+                    isDragging = true;
+                    activeCharge = newCharge;
+                    draw();
+                }
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging && activeCharge) {
+                const rect = canvas.getBoundingClientRect();
+                let newX = e.clientX - rect.left;
+                
+                // Keep source charges out of UI panels
+                if (activeCharge !== testCharge) {
+                    if (newX < LEFT_PANEL_WIDTH + activeCharge.radius) newX = LEFT_PANEL_WIDTH + activeCharge.radius;
+                    if (newX > canvas.width - RIGHT_PANEL_WIDTH - activeCharge.radius) newX = canvas.width - RIGHT_PANEL_WIDTH - activeCharge.radius;
+                } else {
+                    // Keep test charge from going too far off canvas
+                    if (newX < LEFT_PANEL_WIDTH + activeCharge.radius) newX = LEFT_PANEL_WIDTH + activeCharge.radius;
+                    if (newX > canvas.width - activeCharge.radius) newX = canvas.width - activeCharge.radius;
+                }
+                
+                activeCharge.x = newX;
+                activeCharge.y = e.clientY - rect.top;
+                
+                requestAnimationFrame(draw);
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            activeCharge = null;
+        });
+
+        canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+        draw();
+    </script>
+</body>
+</html>

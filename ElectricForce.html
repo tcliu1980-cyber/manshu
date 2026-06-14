@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coulomb's Law Simulation</title>
+    <style>
+        /* CSS styles for layout and typography */
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        canvas { border: 1px solid #ccc; cursor: crosshair; margin-bottom: 20px; }
+        .controls { display: flex; gap: 20px; margin-bottom: 30px; }
+        .charge-control { border: 1px solid #eee; padding: 10px; border-radius: 5px; }
+        .explanation { max-width: 800px; width: 100%; line-height: 1.6; color: #333; border-top: 1px solid #ccc; padding-top: 20px; }
+        .formula { text-align: center; font-size: 1.3em; margin: 15px 0; font-family: 'Times New Roman', Times, serif; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <canvas id="simCanvas" width="800" height="400"></canvas>
+
+    <div class="controls">
+        <div class="charge-control">
+            <label>Charge 1 (Q1):</label>
+            <label><input type="radio" name="q1Type" value="1" checked onchange="updateCharge()"> + </label>
+            <label><input type="radio" name="q1Type" value="-1" onchange="updateCharge()"> - </label>
+        </div>
+        <div class="charge-control">
+            <label>Charge 2 (Q2):</label>
+            <label><input type="radio" name="q2Type" value="1" onchange="updateCharge()"> + </label>
+            <label><input type="radio" name="q2Type" value="-1" checked onchange="updateCharge()"> - </label>
+        </div>
+    </div>
+
+    <div class="explanation">
+        <h2>Coulomb's Law</h2>
+        <p>Coulomb's Law describes the electrostatic force between two point charges. The magnitude of the force is directly proportional to the product of the magnitudes of the charges and inversely proportional to the square of the distance between them.</p>
+        
+        <div class="formula">
+            F = k &middot; (|q<sub>1</sub>| &middot; |q<sub>2</sub>|) / r<sup>2</sup>
+        </div>
+
+        <p>Where:</p>
+        <ul>
+            <li>F is the magnitude of the electrostatic force between the two charges.</li>
+            <li>k is Coulomb's constant (8.988 &times; 10<sup>9</sup> N&middot;m<sup>2</sup>/C<sup>2</sup>).</li>
+            <li>q<sub>1</sub> and q<sub>2</sub> are the signed magnitudes of the electric charges.</li>
+            <li>r is the distance between the centers of the two charges.</li>
+        </ul>
+    </div>
+
+    <script>
+        // Initialize canvas and 2D rendering context
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Define point charge objects with position, sign, radius, and color
+        let q1 = { x: 250, y: 200, sign: 1, radius: 20, color: 'red' };
+        let q2 = { x: 550, y: 200, sign: -1, radius: 20, color: 'blue' };
+
+        // Dragging state parameters
+        let isDragging = false;
+        let activeCharge = null;
+
+        // Update charge parameters when UI inputs change
+        function updateCharge() {
+            q1.sign = parseInt(document.querySelector('input[name="q1Type"]:checked').value);
+            q2.sign = parseInt(document.querySelector('input[name="q2Type"]:checked').value);
+            q1.color = q1.sign > 0 ? 'red' : 'blue';
+            q2.color = q2.sign > 0 ? 'red' : 'blue';
+            draw();
+        }
+
+        // Render a single charge on the canvas
+        function drawCharge(charge, label) {
+            ctx.beginPath();
+            ctx.arc(charge.x, charge.y, charge.radius, 0, Math.PI * 2);
+            ctx.fillStyle = charge.color;
+            ctx.fill();
+            ctx.stroke();
+
+            // Render the polarity symbol (+ or -)
+            ctx.fillStyle = 'white';
+            ctx.font = '20px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(charge.sign > 0 ? '+' : '-', charge.x, charge.y);
+            
+            // Render the text label above the charge
+            ctx.fillStyle = 'black';
+            ctx.font = '14px Arial';
+            ctx.fillText(label, charge.x, charge.y - 30);
+        }
+
+        // Calculate and display electrostatic force vectors based on distance
+        function drawVectors() {
+            const dx = q2.x - q1.x;
+            const dy = q2.y - q1.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Prevent division by zero if charges overlap perfectly
+            if (distance === 0) return;
+
+            // Compute normalized direction vector components
+            const nx = dx / distance;
+            const ny = dy / distance;
+
+            // Implement inverse-square law scaling for arrow length
+            // Base empirical scale factor is multiplied by 5 (500000 * 5 = 2500000)
+            let arrowLength = 2500000 / (distance * distance);
+            
+            // Constrain arrow length to reasonable boundaries for visualization
+            // Maximum length increased to accommodate the 5x multiplier
+            if (arrowLength > 500) arrowLength = 500;
+            if (arrowLength < 15) arrowLength = 15;
+
+            // Determine directional factor based on attractive or repulsive interaction
+            const forceDirection = (q1.sign === q2.sign) ? -1 : 1;
+
+            // Compute termination coordinates for both force vectors
+            const q1ArrowEndX = q1.x + nx * arrowLength * forceDirection;
+            const q1ArrowEndY = q1.y + ny * arrowLength * forceDirection;
+            
+            const q2ArrowEndX = q2.x - nx * arrowLength * forceDirection;
+            const q2ArrowEndY = q2.y - ny * arrowLength * forceDirection;
+
+            // Render vector arrows on canvas
+            drawArrow(q1.x, q1.y, q1ArrowEndX, q1ArrowEndY);
+            drawArrow(q2.x, q2.y, q2ArrowEndX, q2ArrowEndY);
+        }
+
+        // Utility function to draw directional arrows with heads
+        function drawArrow(fromx, fromy, tox, toy) {
+            const headlen = 10; 
+            const dx = tox - fromx;
+            const dy = toy - fromy;
+            const angle = Math.atan2(dy, dx);
+            
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        // Clear canvas and redraw all visual layers
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawVectors();
+            drawCharge(q1, 'Q1');
+            drawCharge(q2, 'Q2');
+        }
+
+        // Attach mouse event listeners to handle canvas drag-and-drop mechanics
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            // Detect if click occurrence resides within boundaries of charge Q1 or Q2
+            if (Math.hypot(mouseX - q1.x, mouseY - q1.y) < q1.radius) {
+                isDragging = true;
+                activeCharge = q1;
+            } else if (Math.hypot(mouseX - q2.x, mouseY - q2.y) < q2.radius) {
+                isDragging = true;
+                activeCharge = q2;
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging && activeCharge) {
+                const rect = canvas.getBoundingClientRect();
+                activeCharge.x = e.clientX - rect.left;
+                activeCharge.y = e.clientY - rect.top;
+                draw(); 
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            activeCharge = null;
+        });
+
+        // Execute initial render call
+        draw();
+    </script>
+</body>
+</html>

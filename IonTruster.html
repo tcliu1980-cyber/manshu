@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ion Thruster Electric Field Simulation</title>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px; 
+            background-color: #f4f4f9;
+        }
+        .canvas-container {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            width: 100%;
+            max-width: 850px;
+        }
+        .canvas-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        canvas { 
+            display: block; 
+            border: 1px solid #eee;
+            background-color: #fafafa;
+        }
+        .local-controls {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 45%;
+        }
+        label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-align: center;
+            color: #444;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .value-display {
+            margin-top: 5px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas-container">
+        <div class="canvas-title">Needle (Anode) to Ring (Cathode)</div>
+        <canvas id="canvas1" width="800" height="400"></canvas>
+        <div class="local-controls">
+            <div class="control-group">
+                <label for="distanceSlider">Distance 1 (cm)</label>
+                <input type="range" id="distanceSlider" min="2" max="6" step="0.1" value="4">
+                <div class="value-display" id="distanceVal">4.0 cm</div>
+            </div>
+            <div class="control-group">
+                <label for="cathodeRadiusSlider">Cathode Ring 1 Radius (cm)</label>
+                <input type="range" id="cathodeRadiusSlider" min="1" max="3" step="0.1" value="2">
+                <div class="value-display" id="cathodeRadiusVal">2.0 cm</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="canvas-container">
+        <div class="canvas-title">Ring (Anode) to Ring (Cathode)</div>
+        <canvas id="canvas2" width="800" height="400"></canvas>
+        <div class="local-controls">
+            <div class="control-group" style="width: 50%;">
+                <label for="anodeRadiusSlider">Anode Ring Radius (cm)</label>
+                <input type="range" id="anodeRadiusSlider" min="0.1" max="3" step="0.1" value="2">
+                <div class="value-display" id="anodeRadiusVal">2.0 cm</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="canvas-container">
+        <div class="canvas-title">Needle (Anode) to Double Ring (Cathodes)</div>
+        <canvas id="canvas3" width="800" height="400"></canvas>
+        <div class="local-controls">
+            <div class="control-group">
+                <label for="cathode2DistanceSlider">Distance to Cathode 2 (cm)</label>
+                <input type="range" id="cathode2DistanceSlider" min="1" max="6" step="0.1" value="1.5">
+                <div class="value-display" id="cathode2DistanceVal">1.5 cm</div>
+            </div>
+            <div class="control-group">
+                <label for="cathode2RadiusSlider">Cathode Ring 2 Radius (cm)</label>
+                <input type="range" id="cathode2RadiusSlider" min="1" max="3.5" step="0.1" value="2.5">
+                <div class="value-display" id="cathode2RadiusVal">2.5 cm</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize canvases and contexts
+        const ctx1 = document.getElementById('canvas1').getContext('2d');
+        const ctx2 = document.getElementById('canvas2').getContext('2d');
+        const ctx3 = document.getElementById('canvas3').getContext('2d');
+        const width = 800;
+        const height = 400;
+
+        // Retrieve UI elements for inputs
+        const distanceSlider = document.getElementById('distanceSlider');
+        const cathodeRadiusSlider = document.getElementById('cathodeRadiusSlider');
+        const anodeRadiusSlider = document.getElementById('anodeRadiusSlider');
+        const cathode2DistanceSlider = document.getElementById('cathode2DistanceSlider');
+        const cathode2RadiusSlider = document.getElementById('cathode2RadiusSlider');
+        
+        // Retrieve UI elements for value displays
+        const distanceVal = document.getElementById('distanceVal');
+        const cathodeRadiusVal = document.getElementById('cathodeRadiusVal');
+        const anodeRadiusVal = document.getElementById('anodeRadiusVal');
+        const cathode2DistanceVal = document.getElementById('cathode2DistanceVal');
+        const cathode2RadiusVal = document.getElementById('cathode2RadiusVal');
+
+        // Simulation parameters
+        const SCALE = 50; 
+        const GRID_SPACING = 20; 
+        const LEFT_X = 100; 
+        const CENTER_Y = 200; 
+        
+        // Global update function triggered by any slider movement
+        function updateSimulation() {
+            const dist = parseFloat(distanceSlider.value);
+            const rCathode = parseFloat(cathodeRadiusSlider.value);
+            const rAnode = parseFloat(anodeRadiusSlider.value);
+            const dist2 = parseFloat(cathode2DistanceSlider.value);
+            const rCathode2 = parseFloat(cathode2RadiusSlider.value);
+            
+            // Update text labels
+            distanceVal.textContent = dist.toFixed(1) + ' cm';
+            cathodeRadiusVal.textContent = rCathode.toFixed(1) + ' cm';
+            anodeRadiusVal.textContent = rAnode.toFixed(1) + ' cm';
+            cathode2DistanceVal.textContent = dist2.toFixed(1) + ' cm';
+            cathode2RadiusVal.textContent = rCathode2.toFixed(1) + ' cm';
+            
+            // Redraw all simulations with current parameters
+            drawSimulation1(dist, rCathode);
+            drawSimulation2(dist, rCathode, rAnode);
+            drawSimulation3(dist, rCathode, dist2, rCathode2);
+        }
+
+        // Attach event listeners
+        distanceSlider.addEventListener('input', updateSimulation);
+        cathodeRadiusSlider.addEventListener('input', updateSimulation);
+        anodeRadiusSlider.addEventListener('input', updateSimulation);
+        cathode2DistanceSlider.addEventListener('input', updateSimulation);
+        cathode2RadiusSlider.addEventListener('input', updateSimulation);
+
+        // Calculate electric field contribution from a single point charge
+        function addPointChargeField(x, y, chargeX, chargeY, chargeMagnitude, fieldObj) {
+            const dx = x - chargeX;
+            const dy = y - chargeY;
+            const distSq = dx * dx + dy * dy;
+            if (distSq > 10) {
+                const d = Math.sqrt(distSq);
+                const E = chargeMagnitude / distSq;
+                fieldObj.Ex += E * (dx / d);
+                fieldObj.Ey += E * (dy / d);
+            }
+        }
+
+        // Calculate electric field contribution from a ring cross-section (two points)
+        function addRingField(x, y, ringX, ringRadiusPx, chargeMagnitude, fieldObj) {
+            addPointChargeField(x, y, ringX, CENTER_Y - ringRadiusPx, chargeMagnitude, fieldObj);
+            addPointChargeField(x, y, ringX, CENTER_Y + ringRadiusPx, chargeMagnitude, fieldObj);
+        }
+
+        // Calculate electric field contribution from a needle structure (line of charges)
+        function addNeedleField(x, y, needleTipX, chargeMagnitudePerPoint, fieldObj) {
+            const needleBaseX = 10;
+            const needlePoints = 20;
+            for (let i = 0; i <= needlePoints; i++) {
+                const cx = needleBaseX + (needleTipX - needleBaseX) * (i / needlePoints);
+                addPointChargeField(x, y, cx, CENTER_Y, chargeMagnitudePerPoint, fieldObj);
+            }
+        }
+
+        // Field calculation for layout 1
+        function getField1(x, y, distCm, rCathodeCm) {
+            let field = { Ex: 0, Ey: 0 };
+            addNeedleField(x, y, LEFT_X, 1000, field);
+            addRingField(x, y, LEFT_X + (distCm * SCALE), rCathodeCm * SCALE, -8000, field);
+            return { x: field.Ex, y: field.Ey };
+        }
+
+        // Field calculation for layout 2
+        function getField2(x, y, distCm, rCathodeCm, rAnodeCm) {
+            let field = { Ex: 0, Ey: 0 };
+            addRingField(x, y, LEFT_X, rAnodeCm * SCALE, 8000, field);
+            addRingField(x, y, LEFT_X + (distCm * SCALE), rCathodeCm * SCALE, -8000, field);
+            return { x: field.Ex, y: field.Ey };
+        }
+
+        // Field calculation for layout 3
+        function getField3(x, y, distCm, rCathodeCm, dist2Cm, rCathode2Cm) {
+            let field = { Ex: 0, Ey: 0 };
+            addNeedleField(x, y, LEFT_X, 1000, field);
+            
+            const ring1X = LEFT_X + (distCm * SCALE);
+            addRingField(x, y, ring1X, rCathodeCm * SCALE, -8000, field);
+            
+            const ring2X = ring1X + (dist2Cm * SCALE);
+            addRingField(x, y, ring2X, rCathode2Cm * SCALE, -8000, field);
+            
+            return { x: field.Ex, y: field.Ey };
+        }
+
+        // Core rendering function for the vector field
+        function renderField(ctx, fieldFunc, args) {
+            ctx.lineWidth = 1.5;
+            const MAX_MAGNITUDE = 1.2; 
+
+            for (let x = GRID_SPACING; x < width; x += GRID_SPACING) {
+                for (let y = GRID_SPACING; y < height; y += GRID_SPACING) {
+                    const E = fieldFunc(x, y, ...args);
+                    const magnitude = Math.sqrt(E.x * E.x + E.y * E.y);
+                    
+                    if (magnitude < 0.1) continue;
+
+                    // Map magnitude to color (HSL: 240 is Blue, 0 is Red)
+                    let normalizedMag = Math.min(magnitude / MAX_MAGNITUDE, 1);
+                    let hue = 240 * (1 - normalizedMag);
+                    ctx.strokeStyle = `hsl(${hue}, 100%, 45%)`;
+
+                    const nx = E.x / magnitude;
+                    const ny = E.y / magnitude;
+
+                    let arrowLength = magnitude * 45;
+                    if (arrowLength > GRID_SPACING * 2.7) arrowLength = GRID_SPACING * 2.7;
+                    if (arrowLength < 4) arrowLength = 4;
+
+                    const endX = x + nx * arrowLength;
+                    const endY = y + ny * arrowLength;
+
+                    drawArrow(ctx, x, y, endX, endY);
+                }
+            }
+        }
+
+        // Render an individual arrow
+        function drawArrow(ctx, fromx, fromy, tox, toy) {
+            const headlen = 4; 
+            const angle = Math.atan2(toy - fromy, tox - fromx);
+            
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.stroke();
+        }
+
+        // Draw the physical needle electrode
+        function drawNeedle(ctx, tipX) {
+            ctx.fillStyle = '#7f8c8d';
+            ctx.beginPath();
+            ctx.moveTo(0, CENTER_Y - 5);
+            ctx.lineTo(tipX, CENTER_Y); 
+            ctx.lineTo(0, CENTER_Y + 5);
+            ctx.fill();
+            
+            ctx.fillStyle = 'black';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('+', tipX - 20, CENTER_Y);
+            ctx.fillText('正極 (Anode)', tipX - 50, CENTER_Y - 25);
+        }
+
+        // Draw the physical ring electrode cross-section
+        function drawRing(ctx, ringX, ringRadiusPx, isAnode, label) {
+            const color = isAnode ? '#c0392b' : '#2980b9'; 
+            const sign = isAnode ? '+' : '-';
+            
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(ringX, CENTER_Y - ringRadiusPx, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(sign, ringX, CENTER_Y - ringRadiusPx);
+
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(ringX, CENTER_Y + ringRadiusPx, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.fillText(sign, ringX, CENTER_Y + ringRadiusPx);
+            
+            ctx.fillStyle = 'black';
+            ctx.fillText(label, ringX, CENTER_Y - ringRadiusPx - 20);
+
+            // Connect top and bottom sections with a dashed line
+            const rgbaColor = isAnode ? 'rgba(192, 57, 43, 0.4)' : 'rgba(41, 128, 185, 0.4)';
+            ctx.strokeStyle = rgbaColor;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(ringX, CENTER_Y - ringRadiusPx + 8);
+            ctx.lineTo(ringX, CENTER_Y + ringRadiusPx - 8);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawSimulation1(distCm, rCathodeCm) {
+            ctx1.clearRect(0, 0, width, height);
+            renderField(ctx1, getField1, [distCm, rCathodeCm]);
+            drawNeedle(ctx1, LEFT_X);
+            drawRing(ctx1, LEFT_X + (distCm * SCALE), rCathodeCm * SCALE, false, '陰極 (Cathode)');
+        }
+
+        function drawSimulation2(distCm, rCathodeCm, rAnodeCm) {
+            ctx2.clearRect(0, 0, width, height);
+            renderField(ctx2, getField2, [distCm, rCathodeCm, rAnodeCm]);
+            drawRing(ctx2, LEFT_X, rAnodeCm * SCALE, true, '正極 (Anode)');
+            drawRing(ctx2, LEFT_X + (distCm * SCALE), rCathodeCm * SCALE, false, '陰極 (Cathode)');
+        }
+
+        function drawSimulation3(distCm, rCathodeCm, dist2Cm, rCathode2Cm) {
+            ctx3.clearRect(0, 0, width, height);
+            renderField(ctx3, getField3, [distCm, rCathodeCm, dist2Cm, rCathode2Cm]);
+            drawNeedle(ctx3, LEFT_X);
+            
+            const ring1X = LEFT_X + (distCm * SCALE);
+            drawRing(ctx3, ring1X, rCathodeCm * SCALE, false, '陰極 1 (Cathode 1)');
+            
+            const ring2X = ring1X + (dist2Cm * SCALE);
+            drawRing(ctx3, ring2X, rCathode2Cm * SCALE, false, '陰極 2 (Cathode 2)');
+        }
+
+        // Initialize display
+        updateSimulation();
+    </script>
+</body>
+</html>
