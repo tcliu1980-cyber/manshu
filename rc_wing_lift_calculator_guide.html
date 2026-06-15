@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RC 飛機機翼升力公式與互動計算器</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #5f6b7a;
+      --line: #d9e1ec;
+      --accent: #1f5f99;
+      --accent-soft: #e8f2fb;
+      --warn: #b45309;
+      --danger: #b91c1c;
+      --ok: #047857;
+      --code: #101827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.7;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, #153b5c, #256a9b);
+      color: white;
+      padding: 42px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 5vw, 46px);
+      letter-spacing: 0.03em;
+    }
+
+    header p {
+      margin: 0 auto;
+      max-width: 900px;
+      opacity: 0.94;
+      font-size: 18px;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px 16px 52px;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+      margin: 18px 0;
+      box-shadow: 0 8px 22px rgba(19, 33, 56, 0.06);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #153b5c;
+      font-size: 26px;
+      border-left: 8px solid var(--accent);
+      padding-left: 12px;
+    }
+
+    h3 {
+      color: #234c73;
+      margin-bottom: 8px;
+    }
+
+    .formula {
+      background: #f2f7fd;
+      border: 1px solid #cfe3f5;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      font-size: clamp(23px, 4vw, 34px);
+      font-family: "Times New Roman", "Noto Serif TC", serif;
+      margin: 18px 0;
+    }
+
+    .formula small {
+      display: block;
+      font-size: 16px;
+      color: var(--muted);
+      margin-top: 6px;
+      font-family: inherit;
+    }
+
+    .note {
+      background: #fff7ed;
+      border-left: 6px solid #f59e0b;
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+    }
+
+    .danger {
+      background: #fef2f2;
+      border-left: 6px solid #dc2626;
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+    }
+
+    .good {
+      background: #ecfdf5;
+      border-left: 6px solid #059669;
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      overflow: hidden;
+      border-radius: 12px;
+      font-size: 15px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #eef5fc;
+      color: #153b5c;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) td {
+      background: #fafcff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .calculator {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .control {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #24364a;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 17px;
+      border-radius: 10px;
+      border: 1px solid #c8d3e0;
+      background: white;
+    }
+
+    input[type="range"] {
+      padding: 0;
+    }
+
+    .inline {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .resultBox {
+      background: #0f172a;
+      color: #e5efff;
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .resultBox h3 {
+      color: white;
+      margin-top: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.18);
+      padding-bottom: 8px;
+    }
+
+    .resultItem {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .resultItem strong {
+      font-size: 20px;
+      color: #ffffff;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #e8f2fb;
+      color: #154d75;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .stallMsg {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+    }
+
+    canvas {
+      width: 100%;
+      max-width: 100%;
+      height: 320px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .code {
+      background: var(--code);
+      color: #e5e7eb;
+      border-radius: 14px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre;
+    }
+
+    .steps {
+      counter-reset: step;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      margin: 12px 0;
+      padding: 12px 14px 12px 54px;
+      background: #f8fbff;
+      border: 1px solid #dbe8f5;
+      border-radius: 12px;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 14px;
+      top: 13px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 28px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 820px) {
+      .grid, .calculator {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 18px;
+      }
+
+      table {
+        font-size: 14px;
+      }
+
+      th, td {
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>RC 飛機機翼升力公式與互動計算器</h1>
+  <p>以 90 cm 翼展、18.6 cm 翼弦的 KT 板高翼機為例，說明升力公式、攻角、升力係數、失速，以及如何估算不同速度下能支撐多少重量。</p>
+</header>
+
+<main>
+
+<section>
+  <h2>1. 機翼升力的基本公式</h2>
+
+  <p>機翼升力最常用的估算式為：</p>
+
+  <div class="formula">
+    L = 1/2 × ρ × V² × S × C<sub>L</sub>
+    <small>Lift = dynamic pressure × wing area × lift coefficient</small>
+  </div>
+
+  <table>
+    <tr>
+      <th>符號</th>
+      <th>意義</th>
+      <th>常用單位</th>
+      <th>說明</th>
+    </tr>
+    <tr>
+      <td>L</td>
+      <td>升力</td>
+      <td>N</td>
+      <td>機翼向上產生的力</td>
+    </tr>
+    <tr>
+      <td>ρ</td>
+      <td>空氣密度</td>
+      <td>kg/m³</td>
+      <td>海平面常用 1.225 kg/m³</td>
+    </tr>
+    <tr>
+      <td>V</td>
+      <td>飛行速度</td>
+      <td>m/s</td>
+      <td>相對空氣的速度，不一定等於地速</td>
+    </tr>
+    <tr>
+      <td>S</td>
+      <td>機翼面積</td>
+      <td>m²</td>
+      <td>約等於翼展 × 平均翼弦</td>
+    </tr>
+    <tr>
+      <td>C<sub>L</sub></td>
+      <td>升力係數</td>
+      <td>無單位</td>
+      <td>與攻角、翼型、雷諾數、失速狀態有關</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <b>重點：</b>升力不只由「機翼角度」決定，也與速度平方成正比。因此速度變成 2 倍，升力約變成 4 倍。
+  </div>
+</section>
+
+<section>
+  <h2>2. 以 90 cm 翼展、18.6 cm 翼弦估算機翼面積</h2>
+
+  <p>本講義以課堂中的 90 cm 級 KT 板高翼機作為例子：</p>
+
+  <table>
+    <tr>
+      <th>參數</th>
+      <th>數值</th>
+      <th>換算</th>
+    </tr>
+    <tr>
+      <td>翼展 b</td>
+      <td>90 cm</td>
+      <td>0.90 m</td>
+    </tr>
+    <tr>
+      <td>翼弦 c</td>
+      <td>18.6 cm</td>
+      <td>0.186 m</td>
+    </tr>
+    <tr>
+      <td>機翼面積 S</td>
+      <td>90 × 18.6 cm²</td>
+      <td>0.90 × 0.186 = 0.1674 m²</td>
+    </tr>
+  </table>
+
+  <div class="formula">
+    S = b × c = 0.90 × 0.186 = 0.1674 m²
+  </div>
+
+  <p>這代表這架飛機的機翼面積約為 <b>0.167 m²</b>。</p>
+</section>
+
+<section>
+  <h2>3. 攻角、上蒙皮角度與失速</h2>
+
+  <p><b>攻角</b>是機翼弦線與迎面氣流之間的角度。攻角增加時，升力通常會增加；但是攻角太大時，氣流會從上翼面分離，這就是失速。</p>
+
+  <div class="danger">
+    <b>注意：</b>「上蒙皮角度」不一定等於「攻角」。上蒙皮角度是翼型幾何；攻角是整片機翼相對氣流的角度。若要精準計算，必須進行風洞測試或 CFD 模擬。
+  </div>
+
+  <p>對 90 cm 級 KT 板 RC 高翼機，可用以下保守判斷：</p>
+
+  <table>
+    <tr>
+      <th>角度</th>
+      <th>狀態</th>
+      <th>建議估算 C<sub>L</sub></th>
+      <th>說明</th>
+    </tr>
+    <tr>
+      <td>10°</td>
+      <td>通常仍可正常飛行</td>
+      <td>約 0.7 ~ 0.9</td>
+      <td>升力明顯增加，但阻力也增加</td>
+    </tr>
+    <tr>
+      <td>20°</td>
+      <td>接近失速</td>
+      <td>約 1.0 ~ 1.2</td>
+      <td>升力可能高，但阻力很大</td>
+    </tr>
+    <tr>
+      <td>30°</td>
+      <td>多半已失速</td>
+      <td>約 0.5 ~ 0.9</td>
+      <td>升力不一定增加，可能反而下降</td>
+    </tr>
+  </table>
+</section>
+
+<section>
+  <h2>4. 8 m/s 飛行速度下的範例計算</h2>
+
+  <p>假設空氣密度 ρ = 1.225 kg/m³、速度 V = 8 m/s、機翼面積 S = 0.1674 m²。</p>
+
+  <div class="formula">
+    L ≈ 6.56 × C<sub>L</sub>
+  </div>
+
+  <p>若採用保守實用估算：</p>
+
+  <table>
+    <tr>
+      <th>角度</th>
+      <th>使用的 C<sub>L</sub></th>
+      <th>升力 N</th>
+      <th>約可支撐重量</th>
+      <th>飛行判斷</th>
+    </tr>
+    <tr>
+      <td>10°</td>
+      <td>0.78</td>
+      <td>5.1 N</td>
+      <td>約 520 g</td>
+      <td>較合理</td>
+    </tr>
+    <tr>
+      <td>20°</td>
+      <td>1.10</td>
+      <td>7.2 N</td>
+      <td>約 736 g</td>
+      <td>升力較大，但接近失速</td>
+    </tr>
+    <tr>
+      <td>30°</td>
+      <td>0.70</td>
+      <td>4.6 N</td>
+      <td>約 468 g</td>
+      <td>可能已失速，不建議</td>
+    </tr>
+  </table>
+
+  <div class="good">
+    <b>設計建議：</b>若飛機總重控制在 500 g ~ 700 g，這片機翼在 8 m/s 左右有機會支撐飛行。若總重接近 1 kg，通常需要更高速度或更大的機翼面積。
+  </div>
+</section>
+
+<section>
+  <h2>5. 不同速度下的升力比較</h2>
+
+  <p>以下表格使用相同機翼面積 S = 0.1674 m²，並採用保守估算：10° → C<sub>L</sub> = 0.78，20° → C<sub>L</sub> = 1.10，30° → C<sub>L</sub> = 0.70。</p>
+
+  <table>
+    <tr>
+      <th>飛行速度</th>
+      <th>10° 升力</th>
+      <th>20° 升力</th>
+      <th>30° 升力</th>
+    </tr>
+    <tr>
+      <td>5 m/s</td>
+      <td>約 204 g</td>
+      <td>約 287 g</td>
+      <td>約 183 g</td>
+    </tr>
+    <tr>
+      <td>6 m/s</td>
+      <td>約 293 g</td>
+      <td>約 414 g</td>
+      <td>約 263 g</td>
+    </tr>
+    <tr>
+      <td>8 m/s</td>
+      <td>約 522 g</td>
+      <td>約 736 g</td>
+      <td>約 468 g</td>
+    </tr>
+    <tr>
+      <td>10 m/s</td>
+      <td>約 815 g</td>
+      <td>約 1150 g</td>
+      <td>約 732 g</td>
+    </tr>
+    <tr>
+      <td>12 m/s</td>
+      <td>約 1174 g</td>
+      <td>約 1656 g</td>
+      <td>約 1054 g</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <b>教學提醒：</b>20° 與 30° 不應被解讀為「角度越大越好」。30° 通常代表高阻力與失速風險，升力反而可能下降。
+  </div>
+</section>
+
+<section>
+  <h2>6. 互動式升力計算器</h2>
+
+  <p>調整下面參數後，計算器會自動估算機翼面積、展弦比、升力係數、升力與約可支撐重量。</p>
+
+  <div class="calculator">
+    <div>
+      <div class="control">
+        <label for="span">翼展 b：<span id="spanValue">90</span> cm</label>
+        <div class="inline">
+          <input id="span" type="range" min="30" max="200" step="1" value="90">
+          <input id="spanNum" type="number" min="30" max="200" step="1" value="90">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="chord">平均翼弦 c：<span id="chordValue">18.6</span> cm</label>
+        <div class="inline">
+          <input id="chord" type="range" min="5" max="50" step="0.1" value="18.6">
+          <input id="chordNum" type="number" min="5" max="50" step="0.1" value="18.6">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="speed">飛行速度 V：<span id="speedValue">8</span> m/s</label>
+        <div class="inline">
+          <input id="speed" type="range" min="1" max="25" step="0.1" value="8">
+          <input id="speedNum" type="number" min="1" max="25" step="0.1" value="8">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="angle">攻角 α：<span id="angleValue">10</span>°</label>
+        <div class="inline">
+          <input id="angle" type="range" min="0" max="35" step="1" value="10">
+          <input id="angleNum" type="number" min="0" max="35" step="1" value="10">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="model">C<sub>L</sub> 模型</label>
+        <select id="model">
+          <option value="practical">實用保守模型：考慮 20° 後失速</option>
+          <option value="ideal">理想線性模型：不考慮失速，容易高估</option>
+          <option value="custom">自訂 C_L</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="customCL">自訂 C<sub>L</sub>：<span id="customCLValue">0.78</span></label>
+        <div class="inline">
+          <input id="customCL" type="range" min="0" max="2.5" step="0.01" value="0.78">
+          <input id="customCLNum" type="number" min="0" max="2.5" step="0.01" value="0.78">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="rho">空氣密度 ρ：<span id="rhoValue">1.225</span> kg/m³</label>
+        <div class="inline">
+          <input id="rho" type="range" min="0.8" max="1.3" step="0.005" value="1.225">
+          <input id="rhoNum" type="number" min="0.8" max="1.3" step="0.005" value="1.225">
+        </div>
+      </div>
+    </div>
+
+    <div class="resultBox">
+      <h3>計算結果</h3>
+
+      <div class="resultItem">
+        <span>機翼面積 S</span>
+        <strong id="areaOut">0.1674 m²</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>展弦比 AR</span>
+        <strong id="arOut">4.84</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>使用的 C<sub>L</sub></span>
+        <strong id="clOut">0.78</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>動壓 q = 1/2ρV²</span>
+        <strong id="qOut">39.2 Pa</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>升力 L</span>
+        <strong id="liftNOut">5.10 N</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>約可支撐重量</span>
+        <strong id="liftGOut">520 g</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>對應速度</span>
+        <strong id="speedKmOut">28.8 km/h</strong>
+      </div>
+
+      <div id="stallMsg" class="stallMsg">狀態判斷</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>7. 升力與速度關係圖</h2>
+  <p>圖中顯示目前機翼尺寸下，不同速度對升力的影響。可看到速度增加時，升力以平方比例上升。</p>
+
+  <canvas id="liftChart" width="900" height="360"></canvas>
+</section>
+
+<section>
+  <h2>8. 建議學生記住的設計原則</h2>
+
+  <ol class="steps">
+    <li>升力與速度平方成正比，因此太慢會飛不起來。</li>
+    <li>機翼面積越大，在相同速度下可產生越大的升力。</li>
+    <li>攻角增加會增加升力，但太大會失速，不是越大越好。</li>
+    <li>上蒙皮角度是翼型幾何，不完全等於攻角。</li>
+    <li>90 cm 級 KT 板高翼機若總重 500 g ~ 700 g，通常較容易成功。</li>
+    <li>20° 以上攻角阻力很大，30° 多半不是有效飛行狀態。</li>
+  </ol>
+
+  <div class="good">
+    <b>推薦翼型做法：</b>上表面做成平滑弧形，而不是做成很陡的斜面。最大厚度可放在前 25% ~ 35% 翼弦處，18.6 cm 翼弦約是在前緣後方 5 ~ 6 cm 附近。
+  </div>
+</section>
+
+<section>
+  <h2>9. 互動計算器的核心 JavaScript 公式</h2>
+
+  <p>若只想把計算功能嵌入其他網頁，核心公式如下：</p>
+
+  <div class="code">const rho = 1.225;        // 空氣密度 kg/m^3
+const b = 0.90;           // 翼展 m
+const c = 0.186;          // 翼弦 m
+const V = 8.0;            // 飛行速度 m/s
+const CL = 0.78;          // 升力係數
+
+const S = b * c;          // 機翼面積 m^2
+const L = 0.5 * rho * V * V * S * CL;   // 升力 N
+const massKg = L / 9.81;  // 約可支撐質量 kg
+const massGram = massKg * 1000;</div>
+</section>
+
+<div class="footer">
+  RC 固定翼教學講義｜升力公式為估算工具，實際飛行仍受翼型、表面粗糙度、重心、機翼扭轉、風速、舵面設定與推力影響。
+</div>
+
+</main>
+
+<script>
+function $(id) {
+  return document.getElementById(id);
+}
+
+function bindPair(rangeId, numberId, displayId) {
+  const range = $(rangeId);
+  const number = $(numberId);
+  const display = $(displayId);
+
+  function syncFromRange() {
+    number.value = range.value;
+    display.textContent = range.value;
+    calculate();
+  }
+
+  function syncFromNumber() {
+    let v = parseFloat(number.value);
+    const min = parseFloat(number.min);
+    const max = parseFloat(number.max);
+
+    if (isNaN(v)) v = parseFloat(range.value);
+    v = Math.max(min, Math.min(max, v));
+
+    number.value = v;
+    range.value = v;
+    display.textContent = v;
+    calculate();
+  }
+
+  range.addEventListener("input", syncFromRange);
+  number.addEventListener("input", syncFromNumber);
+}
+
+function practicalCL(angleDeg) {
+  // 給 90 cm 級 KT 板高翼機使用的保守教學模型。
+  // 用線性內插：0°~20° 升力逐漸增加，20° 後進入失速區，CL 下降。
+  const points = [
+    [0, 0.20],
+    [5, 0.45],
+    [10, 0.78],
+    [15, 1.05],
+    [20, 1.10],
+    [25, 0.95],
+    [30, 0.70],
+    [35, 0.45]
+  ];
+
+  if (angleDeg <= points[0][0]) return points[0][1];
+  if (angleDeg >= points[points.length - 1][0]) return points[points.length - 1][1];
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const a0 = points[i][0];
+    const cl0 = points[i][1];
+    const a1 = points[i + 1][0];
+    const cl1 = points[i + 1][1];
+
+    if (angleDeg >= a0 && angleDeg <= a1) {
+      const t = (angleDeg - a0) / (a1 - a0);
+      return cl0 + t * (cl1 - cl0);
+    }
+  }
+
+  return 0.7;
+}
+
+function idealCL(angleDeg, AR) {
+  // 有限翼近似：CL ≈ [2πAR/(AR+2)] α
+  const alphaRad = angleDeg * Math.PI / 180;
+  const slope = (2 * Math.PI * AR) / (AR + 2);
+  return slope * alphaRad;
+}
+
+function statusText(model, angle, cl) {
+  if (model === "ideal") {
+    if (angle >= 20) {
+      return "使用理想線性模型：此模型未考慮失速，20° 以上通常會明顯高估升力。";
+    }
+    return "使用理想線性模型：適合看趨勢，但實際 RC 飛機可能因翼型與表面狀況而不同。";
+  }
+
+  if (model === "custom") {
+    return "使用自訂 C_L：請確認這個 C_L 來自合理的翼型資料、實驗或保守估算。";
+  }
+
+  if (angle < 12) {
+    return "實用模型判斷：目前角度通常仍在可飛行範圍，但阻力會隨攻角增加。";
+  }
+
+  if (angle < 20) {
+    return "實用模型判斷：攻角偏大，升力增加但阻力也大，需小心速度下降。";
+  }
+
+  if (angle < 28) {
+    return "實用模型判斷：已接近或進入失速區，升力不一定繼續增加。";
+  }
+
+  return "實用模型判斷：30° 左右多半已失速，不建議作為正常飛行設計。";
+}
+
+function calculate() {
+  const spanCm = parseFloat($("span").value);
+  const chordCm = parseFloat($("chord").value);
+  const speed = parseFloat($("speed").value);
+  const angle = parseFloat($("angle").value);
+  const rho = parseFloat($("rho").value);
+  const model = $("model").value;
+  const customCL = parseFloat($("customCL").value);
+
+  const b = spanCm / 100;
+  const c = chordCm / 100;
+  const S = b * c;
+  const AR = b * b / S;
+
+  let CL;
+  if (model === "ideal") {
+    CL = idealCL(angle, AR);
+  } else if (model === "custom") {
+    CL = customCL;
+  } else {
+    CL = practicalCL(angle);
+  }
+
+  CL = Math.max(0, CL);
+
+  const q = 0.5 * rho * speed * speed;
+  const L = q * S * CL;
+  const massKg = L / 9.81;
+  const massG = massKg * 1000;
+  const speedKm = speed * 3.6;
+
+  $("areaOut").textContent = S.toFixed(4) + " m²";
+  $("arOut").textContent = AR.toFixed(2);
+  $("clOut").textContent = CL.toFixed(2);
+  $("qOut").textContent = q.toFixed(1) + " Pa";
+  $("liftNOut").textContent = L.toFixed(2) + " N";
+  $("liftGOut").textContent = Math.round(massG) + " g";
+  $("speedKmOut").textContent = speedKm.toFixed(1) + " km/h";
+  $("stallMsg").textContent = statusText(model, angle, CL);
+
+  drawChart(S, rho);
+}
+
+function drawChart(S, rho) {
+  const canvas = $("liftChart");
+  const ctx = canvas.getContext("2d");
+
+  const W = canvas.width;
+  const H = canvas.height;
+  const padL = 70;
+  const padR = 24;
+  const padT = 24;
+  const padB = 52;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, W, H);
+
+  const speeds = [];
+  for (let v = 0; v <= 20; v += 1) speeds.push(v);
+
+  const curves = [
+    {label: "10°，CL=0.78", cl: 0.78},
+    {label: "20°，CL=1.10", cl: 1.10},
+    {label: "30°，CL=0.70", cl: 0.70}
+  ];
+
+  let maxG = 0;
+  curves.forEach(curve => {
+    speeds.forEach(v => {
+      const L = 0.5 * rho * v * v * S * curve.cl;
+      const g = L / 9.81 * 1000;
+      if (g > maxG) maxG = g;
+    });
+  });
+  maxG = Math.ceil(maxG / 500) * 500;
+
+  function xScale(v) {
+    return padL + (v / 20) * (W - padL - padR);
+  }
+
+  function yScale(g) {
+    return H - padB - (g / maxG) * (H - padT - padB);
+  }
+
+  ctx.strokeStyle = "#cfd8e3";
+  ctx.lineWidth = 1;
+  ctx.font = "15px system-ui, sans-serif";
+  ctx.fillStyle = "#475569";
+
+  // grid and y labels
+  for (let i = 0; i <= 5; i++) {
+    const g = maxG * i / 5;
+    const y = yScale(g);
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(W - padR, y);
+    ctx.stroke();
+    ctx.fillText(Math.round(g) + " g", 12, y + 5);
+  }
+
+  // x labels
+  for (let v = 0; v <= 20; v += 5) {
+    const x = xScale(v);
+    ctx.beginPath();
+    ctx.moveTo(x, padT);
+    ctx.lineTo(x, H - padB);
+    ctx.stroke();
+    ctx.fillText(v + " m/s", x - 20, H - 18);
+  }
+
+  // axes
+  ctx.strokeStyle = "#334155";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(padL, padT);
+  ctx.lineTo(padL, H - padB);
+  ctx.lineTo(W - padR, H - padB);
+  ctx.stroke();
+
+  const colors = ["#1f5f99", "#047857", "#b45309"];
+
+  curves.forEach((curve, index) => {
+    ctx.strokeStyle = colors[index];
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+
+    speeds.forEach((v, i) => {
+      const L = 0.5 * rho * v * v * S * curve.cl;
+      const g = L / 9.81 * 1000;
+      const x = xScale(v);
+      const y = yScale(g);
+
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+
+    ctx.stroke();
+
+    ctx.fillStyle = colors[index];
+    ctx.fillText(curve.label, padL + 20, padT + 22 + index * 24);
+  });
+
+  ctx.fillStyle = "#0f172a";
+  ctx.font = "17px system-ui, sans-serif";
+  ctx.fillText("升力約可支撐重量 vs 飛行速度", padL, 20);
+}
+
+bindPair("span", "spanNum", "spanValue");
+bindPair("chord", "chordNum", "chordValue");
+bindPair("speed", "speedNum", "speedValue");
+bindPair("angle", "angleNum", "angleValue");
+bindPair("customCL", "customCLNum", "customCLValue");
+bindPair("rho", "rhoNum", "rhoValue");
+
+$("model").addEventListener("change", calculate);
+
+calculate();
+</script>
+
+</body>
+</html>
