@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>手機直連 ESP32-CAM 控制兩顆 Servo 與 ESC 油門</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #222;
+      --muted: #666;
+      --line: #d9dde7;
+      --accent: #0b5fff;
+      --accent2: #103b7a;
+      --warn: #c62828;
+      --safe: #19764a;
+      --code-bg: #111827;
+      --code-text: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    header {
+      background: linear-gradient(135deg, #10294f, #0b5fff);
+      color: #fff;
+      padding: 48px 20px 42px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 auto 14px;
+      max-width: 980px;
+      font-size: clamp(28px, 5vw, 46px);
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      margin: 0 auto;
+      max-width: 900px;
+      font-size: clamp(16px, 2.4vw, 21px);
+      opacity: 0.95;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+
+    nav .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 10px 18px;
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    nav a {
+      color: var(--accent2);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    nav a:hover {
+      background: #eaf1ff;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 26px 18px 60px;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: clamp(18px, 3vw, 32px);
+      margin: 20px 0;
+      box-shadow: 0 8px 24px rgba(17,24,39,0.06);
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(24px, 3vw, 32px);
+      color: var(--accent2);
+      line-height: 1.25;
+    }
+
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 21px;
+      color: #163a69;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    .lead {
+      font-size: 19px;
+      color: #333;
+    }
+
+    .warning-box,
+    .safe-box,
+    .note-box {
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin: 16px 0;
+    }
+
+    .warning-box {
+      background: #fff3f3;
+      border: 1px solid #ffc4c4;
+      color: var(--warn);
+      font-weight: 800;
+    }
+
+    .safe-box {
+      background: #effaf4;
+      border: 1px solid #bce7ce;
+      color: var(--safe);
+      font-weight: 700;
+    }
+
+    .note-box {
+      background: #f1f6ff;
+      border: 1px solid #c9dafc;
+      color: #173b75;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 8px;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef4ff;
+      color: #10294f;
+      font-weight: 800;
+    }
+
+    tr:nth-child(even) td {
+      background: #fafbff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: #fcfdff;
+    }
+
+    .mini-card strong {
+      color: var(--accent2);
+      font-size: 18px;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 22px 0;
+    }
+
+    .flow-item {
+      background: #fff;
+      border: 2px solid #bdd1ff;
+      border-radius: 14px;
+      min-width: 160px;
+      padding: 14px 12px;
+      text-align: center;
+      font-weight: 800;
+      color: #123b77;
+    }
+
+    .arrow {
+      color: var(--accent);
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 14px;
+      padding: 18px;
+      overflow-x: auto;
+      white-space: pre;
+      font-size: 14px;
+      line-height: 1.55;
+      border: 1px solid #273244;
+    }
+
+    code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+    }
+
+    .inline-code {
+      background: #eef1f7;
+      color: #1e293b;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .button {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .button.secondary {
+      background: #eaf1ff;
+      color: var(--accent2);
+      border: 1px solid #bdd1ff;
+    }
+
+    .caption {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .print-note {
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 18px 42px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 640px) {
+      nav .nav-inner {
+        padding: 8px 10px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        font-size: 15px;
+      }
+
+      .arrow {
+        transform: rotate(90deg);
+      }
+    }
+
+    @media print {
+      nav,
+      .btn-row {
+        display: none;
+      }
+      body {
+        background: #fff;
+      }
+      section {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+      pre {
+        white-space: pre-wrap;
+        color: #000;
+        background: #f5f5f5;
+        border: 1px solid #aaa;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>手機直連 ESP32-CAM 控制兩顆 Servo 與 ESC 油門</h1>
+    <p>讓 ESP32-CAM 自己開 Wi-Fi 熱點，手機連上後用瀏覽器控制方向舵、升降舵與無刷馬達 ESC 油門。</p>
+  </header>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="#overview">系統概念</a>
+      <a href="#wiring">硬體接線</a>
+      <a href="#phone">手機操作</a>
+      <a href="#software">Arduino 設定</a>
+      <a href="#code">完整程式</a>
+      <a href="#esc">ESC 校正</a>
+      <a href="#test">測試流程</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="overview">
+      <h2>一、系統概念</h2>
+      <p class="lead">這個設計讓手機不需要經過路由器，直接連上 ESP32-CAM 的 Wi-Fi 熱點，然後在手機網頁上用三個滑桿控制 RC 飛機的基本動作。</p>
+
+      <div class="flow" aria-label="手機控制 ESP32-CAM 流程圖">
+        <div class="flow-item">手機瀏覽器<br>滑桿控制</div>
+        <div class="arrow">→</div>
+        <div class="flow-item">ESP32-CAM<br>Wi-Fi AP</div>
+        <div class="arrow">→</div>
+        <div class="flow-item">GPIO PWM<br>控制訊號</div>
+        <div class="arrow">→</div>
+        <div class="flow-item">Servo × 2<br>ESC × 1</div>
+      </div>
+
+      <div class="grid">
+        <div class="mini-card">
+          <strong>方向舵 Servo</strong>
+          <p>控制 rudder，讓飛機左右偏航。</p>
+        </div>
+        <div class="mini-card">
+          <strong>升降舵 Servo</strong>
+          <p>控制 elevator，讓飛機抬頭或低頭。</p>
+        </div>
+        <div class="mini-card">
+          <strong>ESC 油門</strong>
+          <p>用 1000–2000 μs PWM 脈衝控制無刷馬達轉速。</p>
+        </div>
+      </div>
+
+      <div class="warning-box">安全提醒：第一次測試 ESC 與無刷馬達時，務必先拆掉螺旋槳。</div>
+    </section>
+
+    <section id="wiring">
+      <h2>二、硬體接線建議</h2>
+      <p>以下以常見的 <span class="inline-code">AI Thinker ESP32-CAM</span> 為例。測試階段建議先不要使用 SD 卡，避免 GPIO 腳位衝突。</p>
+
+      <h3>ESP32-CAM 腳位分配</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>功能</th>
+            <th>ESP32-CAM 腳位</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>方向舵 Servo</td>
+            <td>GPIO13</td>
+            <td>輸出 50 Hz PWM 訊號</td>
+          </tr>
+          <tr>
+            <td>升降舵 Servo</td>
+            <td>GPIO14</td>
+            <td>輸出 50 Hz PWM 訊號</td>
+          </tr>
+          <tr>
+            <td>ESC 油門訊號</td>
+            <td>GPIO15</td>
+            <td>輸出 1000–2000 μs 油門 PWM</td>
+          </tr>
+          <tr>
+            <td>共地</td>
+            <td>GND</td>
+            <td>ESP32-CAM、Servo、ESC 必須共地</td>
+          </tr>
+          <tr>
+            <td>5V 供電</td>
+            <td>5V</td>
+            <td>建議由 UBEC 或 ESC BEC 供電</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Servo 三條線接法</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Servo 線色</th>
+            <th>接法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>咖啡 / 黑</td>
+            <td>GND</td>
+          </tr>
+          <tr>
+            <td>紅</td>
+            <td>5V</td>
+          </tr>
+          <tr>
+            <td>橘 / 黃 / 白</td>
+            <td>GPIO13 或 GPIO14</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>ESC 訊號線接法</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ESC 訊號線</th>
+            <th>接法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>黑 / 咖啡</td>
+            <td>GND</td>
+          </tr>
+          <tr>
+            <td>紅</td>
+            <td>5V BEC，可視情況使用</td>
+          </tr>
+          <tr>
+            <td>白 / 黃 / 橘</td>
+            <td>GPIO15</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="safe-box">建議供電架構：2S LiPo → ESC → 無刷馬達；2S LiPo → UBEC 5V 2A–3A → ESP32-CAM + 兩顆 Servo。</div>
+
+      <div class="note-box">如果 ESC 本身有 BEC，而且輸出能力足夠，也可以使用 ESC 的 5V 供電。但若已經使用外接 UBEC，就不要同時把 ESC 的紅色 5V 線接上，以避免兩個 5V 電源互相衝突。</div>
+    </section>
+
+    <section id="phone">
+      <h2>三、手機操作方式</h2>
+      <p>ESP32-CAM 開機後會建立 Wi-Fi 熱點。手機連上這個熱點後，用瀏覽器進入控制頁面。</p>
+
+      <table>
+        <tbody>
+          <tr>
+            <th>Wi-Fi SSID</th>
+            <td><span class="inline-code">ESP32CAM_RC</span></td>
+          </tr>
+          <tr>
+            <th>Wi-Fi 密碼</th>
+            <td><span class="inline-code">12345678</span></td>
+          </tr>
+          <tr>
+            <th>控制網頁</th>
+            <td><span class="inline-code">http://192.168.4.1</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>控制頁面會有三個滑桿：</p>
+      <div class="grid">
+        <div class="mini-card"><strong>Rudder</strong><p>方向舵角度，範圍 0–180°，中立值 90°。</p></div>
+        <div class="mini-card"><strong>Elevator</strong><p>升降舵角度，範圍 0–180°，中立值 90°。</p></div>
+        <div class="mini-card"><strong>Throttle</strong><p>ESC 油門脈衝，範圍 1000–2000 μs，最低值 1000 μs。</p></div>
+      </div>
+    </section>
+
+    <section id="software">
+      <h2>四、Arduino IDE 設定</h2>
+      <p>請先安裝 ESP32 開發板套件，並安裝伺服馬達函式庫。</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>設定</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>開發板</td>
+            <td><span class="inline-code">AI Thinker ESP32-CAM</span></td>
+          </tr>
+          <tr>
+            <td>函式庫</td>
+            <td><span class="inline-code">ESP32Servo</span></td>
+          </tr>
+          <tr>
+            <td>上傳模式</td>
+            <td>GPIO0 接 GND 後上電進入燒錄模式；上傳完成後移除 GPIO0–GND，重新開機。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="code">
+      <h2>五、完整 ESP32-CAM 控制程式</h2>
+      <p>這版先控制兩顆 Servo 與 ESC，不開啟攝影串流。建議先用這版確認舵面與油門穩定，再整合 ESP32-CAM 影像。</p>
+
+      <pre><code>#include &lt;WiFi.h&gt;
+#include &lt;WebServer.h&gt;
+#include &lt;ESP32Servo.h&gt;
+
+WebServer server(80);
+
+// ===== Wi-Fi AP 設定 =====
+const char* ssid = "ESP32CAM_RC";
+const char* password = "12345678";
+
+// ===== 腳位設定 =====
+const int RUDDER_PIN   = 13;  // 方向舵
+const int ELEVATOR_PIN = 14;  // 升降舵
+const int ESC_PIN      = 15;  // ESC 油門
+
+Servo rudderServo;
+Servo elevatorServo;
+Servo esc;
+
+// ===== 初始值 =====
+int rudderAngle = 90;
+int elevatorAngle = 90;
+int throttleUs = 1000;   // ESC 最低油門
+
+unsigned long lastCommandTime = 0;
+const unsigned long FAILSAFE_TIME = 2000; // 2 秒沒收到手機指令就關油門
+
+// ===== 網頁內容 =====
+String htmlPage() {
+  String page = R"rawliteral(
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;title&gt;ESP32-CAM RC Control&lt;/title&gt;
+&lt;style&gt;
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    font-size: 28px;
+  }
+  .box {
+    background: white;
+    padding: 20px;
+    margin: 18px auto;
+    max-width: 420px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
+  }
+  input[type=range] {
+    width: 90%;
+  }
+  .value {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  .warning {
+    color: red;
+    font-weight: bold;
+  }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h1&gt;ESP32-CAM RC Control&lt;/h1&gt;
+
+&lt;p class="warning"&gt;測試時請先拆掉螺旋槳&lt;/p&gt;
+
+&lt;div class="box"&gt;
+  &lt;h2&gt;方向舵 Rudder&lt;/h2&gt;
+  &lt;input id="rudder" type="range" min="0" max="180" value="90"&gt;
+  &lt;p&gt;角度：&lt;span id="rudderVal" class="value"&gt;90&lt;/span&gt;°&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="box"&gt;
+  &lt;h2&gt;升降舵 Elevator&lt;/h2&gt;
+  &lt;input id="elevator" type="range" min="0" max="180" value="90"&gt;
+  &lt;p&gt;角度：&lt;span id="elevatorVal" class="value"&gt;90&lt;/span&gt;°&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="box"&gt;
+  &lt;h2&gt;ESC 油門&lt;/h2&gt;
+  &lt;input id="throttle" type="range" min="1000" max="2000" value="1000"&gt;
+  &lt;p&gt;脈衝寬度：&lt;span id="throttleVal" class="value"&gt;1000&lt;/span&gt; μs&lt;/p&gt;
+  &lt;button onclick="stopMotor()" style="font-size:22px;padding:10px 30px;"&gt;立即關油門&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+const rudder = document.getElementById("rudder");
+const elevator = document.getElementById("elevator");
+const throttle = document.getElementById("throttle");
+
+const rudderVal = document.getElementById("rudderVal");
+const elevatorVal = document.getElementById("elevatorVal");
+const throttleVal = document.getElementById("throttleVal");
+
+function updateDisplay() {
+  rudderVal.innerHTML = rudder.value;
+  elevatorVal.innerHTML = elevator.value;
+  throttleVal.innerHTML = throttle.value;
+}
+
+function sendAll() {
+  updateDisplay();
+
+  fetch("/set?r=" + rudder.value +
+        "&e=" + elevator.value +
+        "&t=" + throttle.value)
+    .catch(err =&gt; console.log(err));
+}
+
+function stopMotor() {
+  throttle.value = 1000;
+  sendAll();
+}
+
+rudder.oninput = sendAll;
+elevator.oninput = sendAll;
+throttle.oninput = sendAll;
+
+// 每 300 ms 自動送一次，作為連線心跳
+setInterval(sendAll, 300);
+
+updateDisplay();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+)rawliteral";
+
+  return page;
+}
+
+// ===== 首頁 =====
+void handleRoot() {
+  server.send(200, "text/html", htmlPage());
+}
+
+// ===== 接收手機控制指令 =====
+void handleSet() {
+  if (server.hasArg("r")) {
+    rudderAngle = constrain(server.arg("r").toInt(), 0, 180);
+  }
+
+  if (server.hasArg("e")) {
+    elevatorAngle = constrain(server.arg("e").toInt(), 0, 180);
+  }
+
+  if (server.hasArg("t")) {
+    throttleUs = constrain(server.arg("t").toInt(), 1000, 2000);
+  }
+
+  rudderServo.write(rudderAngle);
+  elevatorServo.write(elevatorAngle);
+  esc.writeMicroseconds(throttleUs);
+
+  lastCommandTime = millis();
+
+  server.send(200, "text/plain", "OK");
+}
+
+void setup() {
+  Serial.begin(115200);
+
+  // ===== Servo / ESC 初始化 =====
+  rudderServo.setPeriodHertz(50);
+  elevatorServo.setPeriodHertz(50);
+  esc.setPeriodHertz(50);
+
+  rudderServo.attach(RUDDER_PIN, 500, 2400);
+  elevatorServo.attach(ELEVATOR_PIN, 500, 2400);
+
+  // ESC 通常使用 1000–2000 μs
+  esc.attach(ESC_PIN, 1000, 2000);
+
+  // 初始安全狀態
+  rudderServo.write(90);
+  elevatorServo.write(90);
+  esc.writeMicroseconds(1000);
+
+  delay(3000); // 給 ESC 啟動 / 解鎖時間
+
+  // ===== 啟動 Wi-Fi AP =====
+  WiFi.softAP(ssid, password);
+
+  Serial.println();
+  Serial.println("ESP32-CAM RC Controller Started");
+  Serial.print("AP IP address: ");
+  Serial.println(WiFi.softAPIP());
+
+  // ===== 網頁伺服器 =====
+  server.on("/", handleRoot);
+  server.on("/set", handleSet);
+
+  server.begin();
+
+  lastCommandTime = millis();
+}
+
+void loop() {
+  server.handleClient();
+
+  // ===== 失控保護 =====
+  // 如果手機超過 2 秒沒有送指令，油門降到最低，舵面回中
+  if (millis() - lastCommandTime &gt; FAILSAFE_TIME) {
+    throttleUs = 1000;
+    rudderAngle = 90;
+    elevatorAngle = 90;
+
+    esc.writeMicroseconds(throttleUs);
+    rudderServo.write(rudderAngle);
+    elevatorServo.write(elevatorAngle);
+
+    lastCommandTime = millis();
+  }
+}</code></pre>
+    </section>
+
+    <section id="esc">
+      <h2>六、ESC 校正與解鎖注意</h2>
+      <p>大部分飛機用 ESC 的油門 PWM 範圍如下：</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>PWM 脈衝寬度</th>
+            <th>意義</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1000 μs</td>
+            <td>最低油門 / 停止</td>
+          </tr>
+          <tr>
+            <td>1500 μs</td>
+            <td>中間值</td>
+          </tr>
+          <tr>
+            <td>2000 μs</td>
+            <td>最高油門</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="warning-box">ESC 校正與測試時一定要拆掉螺旋槳。無刷馬達瞬間啟動時非常危險。</div>
+
+      <h3>一般測試流程</h3>
+      <ol>
+        <li>拆掉螺旋槳。</li>
+        <li>開啟 ESP32-CAM。</li>
+        <li>確認手機網頁油門滑桿在 <span class="inline-code">1000 μs</span>。</li>
+        <li>接上 2S LiPo 給 ESC。</li>
+        <li>聽到 ESC 啟動嗶聲後，慢慢推油門。</li>
+      </ol>
+
+      <h3>常見 ESC 油門校正流程</h3>
+      <p>不同 ESC 的流程可能不同，但常見流程如下：</p>
+      <ol>
+        <li>先送出 <span class="inline-code">2000 μs</span> 最高油門訊號。</li>
+        <li>接上 ESC 電源。</li>
+        <li>等待 ESC 嗶聲提示。</li>
+        <li>改送 <span class="inline-code">1000 μs</span> 最低油門。</li>
+        <li>等待確認嗶聲，完成校正。</li>
+      </ol>
+    </section>
+
+    <section id="test">
+      <h2>七、建議測試流程</h2>
+      <div class="grid">
+        <div class="mini-card">
+          <strong>第一階段</strong>
+          <p>只測兩顆 Servo，不接 ESC。確認方向舵與升降舵會隨滑桿動作。</p>
+        </div>
+        <div class="mini-card">
+          <strong>第二階段</strong>
+          <p>接上 ESC，但拆掉螺旋槳。確認油門從 1000 μs 往上推時馬達會逐漸啟動。</p>
+        </div>
+        <div class="mini-card">
+          <strong>第三階段</strong>
+          <p>裝上螺旋槳前，把飛機固定好，再進行低油門推力測試。</p>
+        </div>
+        <div class="mini-card">
+          <strong>第四階段</strong>
+          <p>確認控制穩定後，再考慮整合 ESP32-CAM 影像串流。</p>
+        </div>
+      </div>
+
+      <h3>伺服方向相反時</h3>
+      <p>如果方向舵或升降舵動作方向相反，可以在程式中把角度改成 <span class="inline-code">180 - angle</span>。</p>
+
+      <pre><code>// 方向舵反向範例
+rudderServo.write(180 - rudderAngle);
+
+// 升降舵反向範例
+elevatorServo.write(180 - elevatorAngle);</code></pre>
+
+      <div class="note-box">若後續要加入即時影像串流，建議先確認控制訊號不會抖動。最穩定的架構通常是 ESP32-CAM 負責影像，另一片 ESP32 / ESP32-S3 負責 Servo 與 ESC 控制。</div>
+    </section>
+
+    <p class="print-note">本頁為單一 HTML 檔案，可直接上傳至網站或放在教學頁面中使用。</p>
+  </main>
+
+  <footer>
+    ESP32-CAM RC Control Teaching Page
+  </footer>
+</body>
+</html>

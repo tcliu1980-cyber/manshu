@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESP32-CAM 課堂多人連線：設定不同 SSID 教學</title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --paper: #ffffff;
+      --ink: #1f2933;
+      --muted: #5f6b7a;
+      --line: #d9dee6;
+      --accent: #1f6feb;
+      --accent-soft: #e8f1ff;
+      --warn: #b45309;
+      --warn-bg: #fff7ed;
+      --danger: #b91c1c;
+      --danger-bg: #fff1f2;
+      --ok: #047857;
+      --ok-bg: #ecfdf5;
+      --code-bg: #111827;
+      --code-ink: #f9fafb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      line-height: 1.75;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f172a, #1f6feb);
+      color: white;
+      padding: 48px 20px 42px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 4vw, 46px);
+      letter-spacing: 0.04em;
+      line-height: 1.25;
+    }
+
+    header p {
+      margin: 0 auto;
+      max-width: 900px;
+      font-size: clamp(16px, 2vw, 20px);
+      opacity: 0.92;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 28px 18px 80px;
+    }
+
+    section {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 26px;
+      margin: 24px 0;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 28px;
+      line-height: 1.3;
+      border-left: 7px solid var(--accent);
+      padding-left: 12px;
+    }
+
+    h3 {
+      margin-top: 28px;
+      margin-bottom: 10px;
+      font-size: 22px;
+      color: #0f172a;
+    }
+
+    p { margin: 10px 0; }
+
+    .lead {
+      font-size: 19px;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: #fbfcfe;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .note, .warning, .danger, .success {
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin: 16px 0;
+      border: 1px solid;
+    }
+
+    .note {
+      background: var(--accent-soft);
+      border-color: #bfdbfe;
+    }
+
+    .warning {
+      background: var(--warn-bg);
+      border-color: #fed7aa;
+      color: #7c2d12;
+    }
+
+    .danger {
+      background: var(--danger-bg);
+      border-color: #fecdd3;
+      color: #7f1d1d;
+    }
+
+    .success {
+      background: var(--ok-bg);
+      border-color: #bbf7d0;
+      color: #064e3b;
+    }
+
+    ol, ul {
+      padding-left: 1.4em;
+    }
+
+    li { margin: 7px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      overflow: hidden;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef4ff;
+      text-align: left;
+    }
+
+    .code-wrap {
+      position: relative;
+      margin: 16px 0 24px;
+    }
+
+    pre {
+      margin: 0;
+      padding: 18px;
+      background: var(--code-bg);
+      color: var(--code-ink);
+      border-radius: 14px;
+      overflow-x: auto;
+      font-size: 15px;
+      line-height: 1.55;
+      tab-size: 2;
+    }
+
+    code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+    }
+
+    p code, li code, td code {
+      background: #eef2f7;
+      color: #111827;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .copy-btn:hover { background: rgba(255,255,255,0.22); }
+
+    .ssid-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    .ssid-item {
+      padding: 14px;
+      border: 1px dashed #93c5fd;
+      border-radius: 12px;
+      background: #eff6ff;
+      text-align: center;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .flow {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+      margin: 18px 0;
+    }
+
+    .flow li {
+      counter-increment: step;
+      position: relative;
+      padding: 16px 16px 16px 58px;
+      margin: 12px 0;
+      background: #fbfcfe;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .flow li::before {
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      text-align: center;
+      line-height: 30px;
+      font-weight: 700;
+    }
+
+    .print-hint {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 28px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px;
+      font-size: 14px;
+    }
+
+    @media print {
+      body { background: white; }
+      header { background: white; color: black; border-bottom: 2px solid #000; }
+      section { box-shadow: none; border-color: #999; page-break-inside: avoid; }
+      .copy-btn { display: none; }
+      pre { white-space: pre-wrap; background: #f3f4f6; color: black; border: 1px solid #999; }
+      .print-hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ESP32-CAM 課堂多人連線：設定不同 SSID</h1>
+    <p>讓每位學生用自己的手機連到自己的 ESP32-CAM，避免全班 Wi-Fi 名稱相同造成連錯板子。</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>一、為什麼要設定不同 SSID？</h2>
+      <p class="lead">在課堂上，如果每一片 ESP32-CAM 都使用相同的 Wi-Fi 名稱，例如 <code>ESP32CAM_RC</code>，學生手機會看到很多個同名熱點，容易連到別人的板子。</p>
+
+      <div class="danger">
+        <strong>常見問題：</strong>全班都使用相同 SSID 時，學生不容易判斷哪一個熱點是自己的 ESP32-CAM，可能會發生「我推油門，卻控制到別人的馬達」的危險情況。
+      </div>
+
+      <p>解法是讓每片 ESP32-CAM 開機後，自動依照自己的晶片編號產生獨一無二的 Wi-Fi 名稱。</p>
+
+      <div class="ssid-list">
+        <div class="ssid-item">ESP32CAM_RC_A83F</div>
+        <div class="ssid-item">ESP32CAM_RC_21B7</div>
+        <div class="ssid-item">ESP32CAM_RC_C902</div>
+        <div class="ssid-item">ESP32CAM_RC_7D10</div>
+      </div>
+
+      <div class="success">
+        <strong>重點：</strong>每一組的 SSID 不同，但連線後的控制網址都一樣是 <code>http://192.168.4.1</code>。
+      </div>
+    </section>
+
+    <section>
+      <h2>二、學生手機端操作流程</h2>
+      <ol class="flow">
+        <li>打開手機 Wi-Fi 設定。</li>
+        <li>找到名稱為 <code>ESP32CAM_RC_XXXX</code> 的 Wi-Fi 熱點。</li>
+        <li><code>XXXX</code> 是每一片 ESP32-CAM 自己產生的編號，例如 <code>A83F</code>、<code>21B7</code>。</li>
+        <li>輸入密碼：<code>12345678</code>。</li>
+        <li>連線後，手機可能會顯示「無網際網路連線」，這是正常現象，因為手機是直接連到 ESP32-CAM，不是連到家用網路。</li>
+        <li>開啟手機瀏覽器，輸入 <code>http://192.168.4.1</code>。</li>
+        <li>進入控制頁面後，即可控制兩個 Servo 與 ESC 油門。</li>
+      </ol>
+
+      <div class="warning">
+        <strong>飛機與馬達安全提醒：</strong>第一次測試請務必拆掉螺旋槳。確認滑桿、Servo 舵面方向、ESC 油門都正常後，再進入下一階段測試。
+      </div>
+    </section>
+
+    <section>
+      <h2>三、老師要修改的程式位置</h2>
+      <p>原本的程式通常會把 SSID 寫死成固定名稱：</p>
+
+      <h3>原本寫法</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">複製</button>
+        <pre><code>const char* ssid = "ESP32CAM_RC";
+const char* password = "12345678";</code></pre>
+      </div>
+
+      <p>請改成下面這樣，讓 <code>ssid</code> 變成可以在程式中自動產生的字串：</p>
+
+      <h3>修改後寫法</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">複製</button>
+        <pre><code>String ssid;
+const char* password = "12345678";</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>四、在 setup() 裡自動產生唯一 SSID</h2>
+      <p>找到原本啟動 Wi-Fi AP 的程式：</p>
+
+      <h3>原本寫法</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">複製</button>
+        <pre><code>WiFi.softAP(ssid, password);</code></pre>
+      </div>
+
+      <p>請改成下面這一整段：</p>
+
+      <h3>建議寫法：自動 SSID + 分散 Wi-Fi 頻道 + 限制一台手機連線</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">複製</button>
+        <pre><code>WiFi.mode(WIFI_AP);
+
+// 取得 ESP32 的晶片編號
+uint64_t chipid = ESP.getEfuseMac();
+
+// 使用晶片編號最後 4 碼產生 SSID
+char ssidName[32];
+sprintf(ssidName, "ESP32CAM_RC_%04X", (uint16_t)(chipid &amp; 0xFFFF));
+
+ssid = String(ssidName);
+
+// 讓不同 ESP32-CAM 分散到 Wi-Fi channel 1、6、11
+int channels[3] = {1, 6, 11};
+int channel = channels[chipid % 3];
+
+// 建立 Wi-Fi AP
+// 參數：SSID, 密碼, 頻道, 是否隱藏SSID, 最大連線數
+// 最後的 1 表示只允許一台手機連線
+WiFi.softAP(ssid.c_str(), password, channel, 0, 1);
+
+Serial.println();
+Serial.println("ESP32-CAM RC Controller Started");
+Serial.print("Wi-Fi SSID: ");
+Serial.println(ssid);
+Serial.print("Password: ");
+Serial.println(password);
+Serial.print("Wi-Fi Channel: ");
+Serial.println(channel);
+Serial.print("AP IP address: ");
+Serial.println(WiFi.softAPIP());</code></pre>
+      </div>
+
+      <div class="note">
+        <strong>說明：</strong><code>ESP.getEfuseMac()</code> 會讀取每片 ESP32 不同的晶片編號，因此產生出來的 <code>ESP32CAM_RC_XXXX</code> 會不同。
+      </div>
+    </section>
+
+    <section>
+      <h2>五、完整替換範例</h2>
+      <p>下面是可以直接放進原本 ESP32-CAM 控制程式中的 Wi-Fi AP 設定段落。若你的程式前面已經有 <code>#include &lt;WiFi.h&gt;</code>，就不需要重複加入。</p>
+
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">複製</button>
+        <pre><code>#include &lt;WiFi.h&gt;
+
+String ssid;
+const char* password = "12345678";
+
+void setupWiFiAP() {
+  WiFi.mode(WIFI_AP);
+
+  uint64_t chipid = ESP.getEfuseMac();
+
+  char ssidName[32];
+  sprintf(ssidName, "ESP32CAM_RC_%04X", (uint16_t)(chipid &amp; 0xFFFF));
+
+  ssid = String(ssidName);
+
+  int channels[3] = {1, 6, 11};
+  int channel = channels[chipid % 3];
+
+  WiFi.softAP(ssid.c_str(), password, channel, 0, 1);
+
+  Serial.println();
+  Serial.println("ESP32-CAM RC Controller Started");
+  Serial.print("Wi-Fi SSID: ");
+  Serial.println(ssid);
+  Serial.print("Password: ");
+  Serial.println(password);
+  Serial.print("Wi-Fi Channel: ");
+  Serial.println(channel);
+  Serial.print("AP IP address: ");
+  Serial.println(WiFi.softAPIP());
+}</code></pre>
+      </div>
+
+      <p>然後在原本的 <code>setup()</code> 裡面呼叫：</p>
+
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">複製</button>
+        <pre><code>void setup() {
+  Serial.begin(115200);
+
+  // 其他 Servo / ESC 初始化程式...
+
+  setupWiFiAP();
+
+  // 原本的 WebServer 設定...
+  server.on("/", handleRoot);
+  server.on("/set", handleSet);
+  server.begin();
+}</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>六、不同做法比較</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>做法</th>
+            <th>範例</th>
+            <th>優點</th>
+            <th>缺點</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>固定 SSID</td>
+            <td><code>ESP32CAM_RC</code></td>
+            <td>程式最簡單</td>
+            <td>全班同名，容易連錯</td>
+          </tr>
+          <tr>
+            <td>手動編號 SSID</td>
+            <td><code>ESP32CAM_RC_01</code></td>
+            <td>學生容易辨識組別</td>
+            <td>每片板子都要手動改程式</td>
+          </tr>
+          <tr>
+            <td>自動晶片編號 SSID</td>
+            <td><code>ESP32CAM_RC_A83F</code></td>
+            <td>每片自動不同，最適合大量上課</td>
+            <td>學生要記下自己板子的後四碼</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="success">
+        <strong>課堂建議：</strong>大量學生同時操作時，建議使用「自動晶片編號 SSID」；如果每組板子已經貼上組別貼紙，也可以使用「手動編號 SSID」。
+      </div>
+    </section>
+
+    <section>
+      <h2>七、可選做法：手動指定每組 SSID</h2>
+      <p>如果老師希望每一組有固定名稱，例如第 1 組、第 2 組、第 3 組，可以手動指定：</p>
+
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">複製</button>
+        <pre><code>const char* ssid = "ESP32CAM_RC_GROUP01";
+const char* password = "12345678";</code></pre>
+      </div>
+
+      <p>不同組別請改成：</p>
+
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">複製</button>
+        <pre><code>ESP32CAM_RC_GROUP01
+ESP32CAM_RC_GROUP02
+ESP32CAM_RC_GROUP03
+ESP32CAM_RC_GROUP04</code></pre>
+      </div>
+
+      <div class="warning">
+        <strong>注意：</strong>手動指定 SSID 時，老師或學生燒錄每一片 ESP32-CAM 前都要確認組別號碼，否則仍可能出現重複 SSID。
+      </div>
+    </section>
+
+    <section>
+      <h2>八、上課檢查清單</h2>
+      <ul>
+        <li>每片 ESP32-CAM 開機後，手機 Wi-Fi 清單中應出現不同的 <code>ESP32CAM_RC_XXXX</code>。</li>
+        <li>每組學生先記下自己板子的 SSID 後四碼。</li>
+        <li>手機連線後，瀏覽器輸入 <code>http://192.168.4.1</code>。</li>
+        <li>如果手機顯示「無網際網路連線」，不要切回 4G/5G，仍然要保持連在 ESP32-CAM Wi-Fi。</li>
+        <li>Servo 測試完成前，不要接螺旋槳。</li>
+        <li>ESC 測試時，油門滑桿一開始必須在最低值 <code>1000 µs</code>。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>九、講義摘要</h2>
+      <p>在多人上課環境中，ESP32-CAM 必須避免使用相同的 Wi-Fi 熱點名稱。建議使用 <code>ESP.getEfuseMac()</code> 讀取每片 ESP32 的晶片編號，再自動產生 <code>ESP32CAM_RC_XXXX</code> 形式的 SSID。學生只要連到自己板子的 SSID，並開啟 <code>http://192.168.4.1</code>，就能進入控制網頁。</p>
+    </section>
+
+    <p class="print-hint">本頁可直接上傳到網站，也可以用瀏覽器列印成 PDF 作為課堂講義。</p>
+  </main>
+
+  <footer>
+    ESP32-CAM RC Control Lecture Note | Unique SSID Setup Guide
+  </footer>
+
+  <script>
+    function copyCode(button) {
+      const code = button.parentElement.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const oldText = button.innerText;
+        button.innerText = '已複製';
+        setTimeout(() => button.innerText = oldText, 1200);
+      }).catch(() => {
+        alert('複製失敗，請手動選取程式碼。');
+      });
+    }
+  </script>
+</body>
+</html>
