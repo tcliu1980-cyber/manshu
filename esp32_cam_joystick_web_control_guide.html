@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESP32-CAM 手機網頁控制改成 XY 類比搖桿教學</title>
+  <style>
+    :root{
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --line:#d1d5db;
+      --soft:#f3f4f6;
+      --accent:#0f766e;
+      --accent2:#155e75;
+      --danger:#b91c1c;
+      --warn:#92400e;
+      --code:#111827;
+      --paper:#ffffff;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      color:var(--ink);
+      background:#eef2f7;
+      line-height:1.72;
+    }
+    header{
+      background:linear-gradient(135deg,#0f766e,#155e75);
+      color:#fff;
+      padding:42px 20px 34px;
+      text-align:center;
+    }
+    header h1{
+      margin:0 auto 10px;
+      font-size:clamp(28px,4vw,46px);
+      letter-spacing:.03em;
+      max-width:1100px;
+    }
+    header p{
+      margin:0 auto;
+      max-width:900px;
+      font-size:clamp(16px,2vw,21px);
+      opacity:.95;
+    }
+    main{
+      width:min(1080px,94vw);
+      margin:26px auto 60px;
+    }
+    section{
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:26px;
+      margin:22px 0;
+      box-shadow:0 10px 26px rgba(15,23,42,.06);
+    }
+    h2{
+      margin:0 0 14px;
+      padding-bottom:10px;
+      border-bottom:3px solid #ccfbf1;
+      font-size:28px;
+      color:#0f3f44;
+    }
+    h3{
+      margin:24px 0 10px;
+      font-size:22px;
+      color:#134e4a;
+    }
+    p{margin:10px 0;}
+    .lead{font-size:19px;}
+    .note,.warning,.teacher,.student{
+      border-radius:14px;
+      padding:14px 16px;
+      margin:16px 0;
+    }
+    .note{background:#ecfeff;border-left:6px solid var(--accent2);}
+    .warning{background:#fef2f2;border-left:6px solid var(--danger);}
+    .teacher{background:#f0fdf4;border-left:6px solid #16a34a;}
+    .student{background:#eff6ff;border-left:6px solid #2563eb;}
+    .danger{color:var(--danger);font-weight:800;}
+    .kbd{
+      display:inline-block;
+      padding:0 7px;
+      border:1px solid #9ca3af;
+      border-bottom-width:2px;
+      border-radius:6px;
+      background:#fff;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:.92em;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:16px 0;
+      overflow:hidden;
+      border-radius:12px;
+      font-size:16px;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:11px 12px;
+      vertical-align:top;
+    }
+    th{background:#f0fdfa;color:#134e4a;text-align:left;}
+    tr:nth-child(even) td{background:#fafafa;}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:14px;
+      margin:16px 0;
+    }
+    .card{
+      border:1px solid var(--line);
+      background:#fafafa;
+      border-radius:14px;
+      padding:16px;
+    }
+    .card b{color:#134e4a;}
+    .step{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      margin:14px 0;
+    }
+    .num{
+      flex:0 0 36px;
+      height:36px;
+      border-radius:50%;
+      background:var(--accent);
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+    }
+    code,pre{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    }
+    pre{
+      margin:16px 0;
+      padding:18px;
+      border-radius:14px;
+      background:var(--code);
+      color:#e5e7eb;
+      overflow:auto;
+      font-size:14px;
+      line-height:1.48;
+      border:1px solid #374151;
+    }
+    code.inline{
+      color:#0f766e;
+      background:#ecfdf5;
+      border:1px solid #a7f3d0;
+      border-radius:6px;
+      padding:2px 6px;
+      white-space:nowrap;
+    }
+    .code-title{
+      background:#374151;
+      color:white;
+      padding:8px 12px;
+      border-radius:12px 12px 0 0;
+      font-weight:700;
+      margin:18px 0 -16px;
+      font-size:14px;
+    }
+    .code-title + pre{border-radius:0 0 14px 14px;}
+    .joystick-demo{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:260px;
+      margin:10px auto;
+    }
+    .joy-base{
+      width:240px;height:240px;border-radius:50%;
+      background:radial-gradient(circle,#f8fafc 0 38%,#d1d5db 39% 100%);
+      border:5px solid #4b5563;position:relative;
+      box-shadow:inset 0 0 0 2px rgba(0,0,0,.05);
+    }
+    .joy-base:before,.joy-base:after{
+      content:"";position:absolute;background:rgba(31,41,55,.25);
+    }
+    .joy-base:before{width:100%;height:2px;top:50%;left:0;}
+    .joy-base:after{width:2px;height:100%;left:50%;top:0;}
+    .joy-knob{
+      width:74px;height:74px;border-radius:50%;background:#111827;
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      box-shadow:0 6px 15px rgba(0,0,0,.32);
+    }
+    .axis-label{
+      position:absolute;font-weight:800;color:#134e4a;background:rgba(255,255,255,.85);padding:2px 8px;border-radius:999px;
+    }
+    .axis-top{top:10px;left:50%;transform:translateX(-50%);}
+    .axis-bottom{bottom:10px;left:50%;transform:translateX(-50%);}
+    .axis-left{left:8px;top:50%;transform:translateY(-50%);}
+    .axis-right{right:8px;top:50%;transform:translateY(-50%);}
+    footer{
+      text-align:center;
+      color:var(--muted);
+      padding:30px 16px 50px;
+      font-size:14px;
+    }
+    @media print{
+      body{background:white;}
+      section{box-shadow:none;break-inside:avoid;}
+      pre{white-space:pre-wrap;word-break:break-word;}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>ESP32-CAM 手機網頁控制：改成 XY 類比搖桿</h1>
+  <p>將原本三個滑桿的控制頁，改成「XY 搖桿控制方向舵與升降舵」＋「ESC 油門滑桿」。適合 RC 高翼機、KT 板定翼機與課堂實作。</p>
+</header>
+
+<main>
+  <section>
+    <h2>1. 修改目標</h2>
+    <p class="lead">原本手機網頁有三個滑桿：</p>
+    <table>
+      <thead><tr><th>原本控制</th><th>改成</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>方向舵滑桿</td><td>XY 搖桿的 X 軸</td><td>左右控制方向舵 Rudder</td></tr>
+        <tr><td>升降舵滑桿</td><td>XY 搖桿的 Y 軸</td><td>上下控制升降舵 Elevator</td></tr>
+        <tr><td>ESC 油門滑桿</td><td>保留油門滑桿</td><td>1000–2000 µs 控制無刷馬達油門</td></tr>
+      </tbody>
+    </table>
+    <div class="warning">
+      <b>安全提醒：</b>測試 ESC 與無刷馬達時，請先拆掉螺旋槳。課堂第一次測試建議只接 Servo，不接馬達或不裝槳。
+    </div>
+    <div class="joystick-demo" aria-label="XY Joystick diagram">
+      <div class="joy-base">
+        <div class="axis-label axis-top">升降舵 ↑</div>
+        <div class="axis-label axis-bottom">升降舵 ↓</div>
+        <div class="axis-label axis-left">← 方向舵</div>
+        <div class="axis-label axis-right">方向舵 →</div>
+        <div class="joy-knob"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. 需要修改哪裡？</h2>
+    <p>如果你的 ESP32-CAM 程式已經可以用手機網頁控制三個滑桿，通常只需要改 <code class="inline">htmlPage()</code> 這一段。</p>
+    <div class="teacher">
+      <b>老師版重點：</b>保留原本的 <code class="inline">/set?r=...&e=...&t=...</code> 後端控制格式，只把手機看到的網頁介面改成類比搖桿。
+    </div>
+    <div class="grid">
+      <div class="card"><b>保留</b><br>Servo 腳位設定、Wi-Fi AP 設定、<code class="inline">handleSet()</code>、<code class="inline">loop()</code> 失控保護。</div>
+      <div class="card"><b>取代</b><br>將原本的 <code class="inline">String htmlPage()</code> 整段換成下面的搖桿版本。</div>
+      <div class="card"><b>可調整</b><br>修改 <code class="inline">servoRange</code>、<code class="inline">reverseRudder</code>、<code class="inline">reverseElevator</code>。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. 修改步驟</h2>
+    <div class="step"><div class="num">1</div><div>打開原本的 Arduino 程式，找到 <code class="inline">String htmlPage()</code>。</div></div>
+    <div class="step"><div class="num">2</div><div>把原本三個滑桿的 HTML 網頁內容整段刪除。</div></div>
+    <div class="step"><div class="num">3</div><div>貼上第 4 節提供的新版 <code class="inline">htmlPage()</code>。</div></div>
+    <div class="step"><div class="num">4</div><div>確認 <code class="inline">handleSet()</code> 還是接收 <code class="inline">r</code>、<code class="inline">e</code>、<code class="inline">t</code> 三個參數。</div></div>
+    <div class="step"><div class="num">5</div><div>上傳到 ESP32-CAM，手機連上 ESP32-CAM Wi-Fi 後開啟 <code class="inline">http://192.168.4.1</code>。</div></div>
+  </section>
+
+  <section>
+    <h2>4. 新版手機控制網頁：直接取代 htmlPage()</h2>
+    <p>請將你的 Arduino 程式裡原本的 <code class="inline">String htmlPage()</code> 整段換成以下版本。</p>
+    <div class="code-title">新版 htmlPage()：XY 搖桿 + ESC 油門</div>
+<pre><code>String htmlPage() {
+  String page = R"rawliteral(
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"&gt;
+&lt;title&gt;ESP32-CAM RC Joystick Control&lt;/title&gt;
+
+&lt;style&gt;
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 16px;
+    touch-action: none;
+    user-select: none;
+  }
+
+  h1 {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+
+  .warning {
+    color: red;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .panel {
+    background: white;
+    padding: 18px;
+    margin: 14px auto;
+    max-width: 460px;
+    border-radius: 14px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.18);
+  }
+
+  #joystickArea {
+    width: 280px;
+    height: 280px;
+    background: #e0e0e0;
+    border: 4px solid #555;
+    border-radius: 50%;
+    margin: 20px auto;
+    position: relative;
+    touch-action: none;
+  }
+
+  #joystickKnob {
+    width: 86px;
+    height: 86px;
+    background: #333;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(0,0,0,0.35);
+  }
+
+  .crossLineH {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: rgba(0,0,0,0.25);
+    top: 50%;
+    left: 0;
+  }
+
+  .crossLineV {
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background: rgba(0,0,0,0.25);
+    left: 50%;
+    top: 0;
+  }
+
+  .value {
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  input[type=range] {
+    width: 90%;
+    height: 36px;
+  }
+
+  button {
+    font-size: 20px;
+    padding: 10px 24px;
+    margin-top: 12px;
+    border-radius: 8px;
+  }
+&lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;h1&gt;ESP32-CAM RC Joystick Control&lt;/h1&gt;
+
+&lt;p class="warning"&gt;測試時請先拆掉螺旋槳&lt;/p&gt;
+
+&lt;div class="panel"&gt;
+  &lt;h2&gt;方向舵 / 升降舵&lt;/h2&gt;
+
+  &lt;div id="joystickArea"&gt;
+    &lt;div class="crossLineH"&gt;&lt;/div&gt;
+    &lt;div class="crossLineV"&gt;&lt;/div&gt;
+    &lt;div id="joystickKnob"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;p&gt;方向舵 Rudder：&lt;span id="rudderVal" class="value"&gt;90&lt;/span&gt;°&lt;/p&gt;
+  &lt;p&gt;升降舵 Elevator：&lt;span id="elevatorVal" class="value"&gt;90&lt;/span&gt;°&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="panel"&gt;
+  &lt;h2&gt;ESC 油門&lt;/h2&gt;
+
+  &lt;input id="throttle" type="range" min="1000" max="2000" value="1000"&gt;
+
+  &lt;p&gt;油門 PWM：&lt;span id="throttleVal" class="value"&gt;1000&lt;/span&gt; µs&lt;/p&gt;
+
+  &lt;button onclick="stopMotor()"&gt;立即關油門&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+const joystickArea = document.getElementById("joystickArea");
+const joystickKnob = document.getElementById("joystickKnob");
+
+const rudderVal = document.getElementById("rudderVal");
+const elevatorVal = document.getElementById("elevatorVal");
+
+const throttle = document.getElementById("throttle");
+const throttleVal = document.getElementById("throttleVal");
+
+// ===== Servo 控制參數 =====
+
+// Servo 中立點。一般 RC 舵面中立為 90 度。
+let rudderCenter = 90;
+let elevatorCenter = 90;
+
+// Servo 最大偏轉量。
+// 建議上課初期使用 45，代表搖桿打到底時是 45 到 135 度。
+let servoRange = 45;
+
+// 如果舵面方向相反，把 false 改成 true。
+let reverseRudder = false;
+let reverseElevator = false;
+
+// ===== 目前控制值 =====
+let rudder = 90;
+let elevator = 90;
+let throttleUs = 1000;
+
+let joystickActive = false;
+
+// ===== 傳送控制資料給 ESP32-CAM =====
+function sendControl() {
+  fetch("/set?r=" + rudder +
+        "&e=" + elevator +
+        "&t=" + throttleUs)
+    .catch(err =&gt; console.log(err));
+}
+
+// ===== 更新畫面數值 =====
+function updateDisplay() {
+  rudderVal.innerHTML = rudder;
+  elevatorVal.innerHTML = elevator;
+  throttleVal.innerHTML = throttleUs;
+}
+
+// ===== 限制數值範圍 =====
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+// ===== 依照手指位置更新搖桿 =====
+function updateJoystick(clientX, clientY) {
+  const rect = joystickArea.getBoundingClientRect();
+
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  let dx = clientX - centerX;
+  let dy = clientY - centerY;
+
+  const knobRadius = joystickKnob.offsetWidth / 2;
+  const maxRadius = rect.width / 2 - knobRadius;
+
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance &gt; maxRadius) {
+    dx = dx / distance * maxRadius;
+    dy = dy / distance * maxRadius;
+  }
+
+  joystickKnob.style.left = (rect.width / 2 + dx) + "px";
+  joystickKnob.style.top  = (rect.height / 2 + dy) + "px";
+
+  // xNorm: 左右方向，範圍 -1 到 +1
+  // yNorm: 上下方向，範圍 -1 到 +1
+  let xNorm = dx / maxRadius;
+  let yNorm = -dy / maxRadius;
+
+  if (reverseRudder) {
+    xNorm = -xNorm;
+  }
+
+  if (reverseElevator) {
+    yNorm = -yNorm;
+  }
+
+  rudder = Math.round(rudderCenter + xNorm * servoRange);
+  elevator = Math.round(elevatorCenter + yNorm * servoRange);
+
+  rudder = clamp(rudder, 0, 180);
+  elevator = clamp(elevator, 0, 180);
+
+  updateDisplay();
+  sendControl();
+}
+
+// ===== 搖桿放手後自動回中 =====
+function centerJoystick() {
+  joystickKnob.style.left = "50%";
+  joystickKnob.style.top = "50%";
+
+  rudder = rudderCenter;
+  elevator = elevatorCenter;
+
+  updateDisplay();
+  sendControl();
+}
+
+// ===== 手機觸控 / 滑鼠事件 =====
+joystickArea.addEventListener("pointerdown", function(e) {
+  joystickActive = true;
+  joystickArea.setPointerCapture(e.pointerId);
+  updateJoystick(e.clientX, e.clientY);
+});
+
+joystickArea.addEventListener("pointermove", function(e) {
+  if (joystickActive) {
+    updateJoystick(e.clientX, e.clientY);
+  }
+});
+
+joystickArea.addEventListener("pointerup", function(e) {
+  joystickActive = false;
+  centerJoystick();
+});
+
+joystickArea.addEventListener("pointercancel", function(e) {
+  joystickActive = false;
+  centerJoystick();
+});
+
+// ===== ESC 油門控制 =====
+throttle.addEventListener("input", function() {
+  throttleUs = parseInt(throttle.value);
+  updateDisplay();
+  sendControl();
+});
+
+// ===== 立即關油門 =====
+function stopMotor() {
+  throttleUs = 1000;
+  throttle.value = 1000;
+  updateDisplay();
+  sendControl();
+}
+
+// ===== 心跳訊號 =====
+// 即使手指沒有移動，也會定期送出目前控制值。
+setInterval(sendControl, 250);
+
+updateDisplay();
+centerJoystick();
+
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+)rawliteral";
+
+  return page;
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>5. 後端 handleSet() 保持原本格式</h2>
+    <p>新版搖桿網頁仍然送出同樣的網址格式：</p>
+    <pre><code>/set?r=90&amp;e=90&amp;t=1000</code></pre>
+    <p>因此你原本的 ESP32-CAM 後端可以保持如下：</p>
+    <div class="code-title">ESP32-CAM 接收手機控制指令</div>
+<pre><code>void handleSet() {
+  if (server.hasArg("r")) {
+    rudderAngle = constrain(server.arg("r").toInt(), 0, 180);
+  }
+
+  if (server.hasArg("e")) {
+    elevatorAngle = constrain(server.arg("e").toInt(), 0, 180);
+  }
+
+  if (server.hasArg("t")) {
+    throttleUs = constrain(server.arg("t").toInt(), 1000, 2000);
+  }
+
+  rudderServo.write(rudderAngle);
+  elevatorServo.write(elevatorAngle);
+  esc.writeMicroseconds(throttleUs);
+
+  lastCommandTime = millis();
+
+  server.send(200, "text/plain", "OK");
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>6. 常用調整項目</h2>
+    <h3>6.1 調整舵面最大角度</h3>
+    <p>在新版網頁程式裡找到：</p>
+    <pre><code>let servoRange = 45;</code></pre>
+    <p>這代表搖桿打到底時，Servo 範圍是：</p>
+    <pre><code>90 - 45 = 45°
+90 + 45 = 135°</code></pre>
+    <table>
+      <thead><tr><th>設定值</th><th>Servo 範圍</th><th>建議用途</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">servoRange = 30</code></td><td>60°–120°</td><td>初次測試，最安全</td></tr>
+        <tr><td><code class="inline">servoRange = 45</code></td><td>45°–135°</td><td>課堂實作建議值</td></tr>
+        <tr><td><code class="inline">servoRange = 60</code></td><td>30°–150°</td><td>確認連桿不會卡住後再使用</td></tr>
+        <tr><td><code class="inline">servoRange = 90</code></td><td>0°–180°</td><td>不建議初學者直接使用</td></tr>
+      </tbody>
+    </table>
+
+    <h3>6.2 如果方向舵左右相反</h3>
+    <p>把：</p>
+    <pre><code>let reverseRudder = false;</code></pre>
+    <p>改成：</p>
+    <pre><code>let reverseRudder = true;</code></pre>
+
+    <h3>6.3 如果升降舵上下相反</h3>
+    <p>把：</p>
+    <pre><code>let reverseElevator = false;</code></pre>
+    <p>改成：</p>
+    <pre><code>let reverseElevator = true;</code></pre>
+  </section>
+
+  <section>
+    <h2>7. 上課測試流程</h2>
+    <div class="student">
+      <b>學生操作：</b>手機連到自己的 <code class="inline">ESP32CAM_RC_XXXX</code>，瀏覽器輸入 <code class="inline">http://192.168.4.1</code>，打開控制頁。
+    </div>
+    <div class="step"><div class="num">1</div><div>先只接兩顆 Servo，不接 ESC，測試方向舵與升降舵是否會跟著搖桿動。</div></div>
+    <div class="step"><div class="num">2</div><div>確認搖桿放手後，方向舵與升降舵都會回到 90° 中立點。</div></div>
+    <div class="step"><div class="num">3</div><div>確認舵面沒有卡住、連桿沒有過度彎曲，再接 ESC 訊號線。</div></div>
+    <div class="step"><div class="num">4</div><div><span class="danger">拆掉螺旋槳</span>，再接上電池測試 ESC 油門滑桿。</div></div>
+    <div class="step"><div class="num">5</div><div>按下「立即關油門」確認馬達會停止。</div></div>
+  </section>
+
+  <section>
+    <h2>8. 課堂檢查表</h2>
+    <table>
+      <thead><tr><th>檢查項目</th><th>正常狀態</th></tr></thead>
+      <tbody>
+        <tr><td>手機是否連到自己的 ESP32-CAM</td><td>Wi-Fi 名稱應為自己的 <code class="inline">ESP32CAM_RC_XXXX</code></td></tr>
+        <tr><td>網頁是否能開啟</td><td>瀏覽器可打開 <code class="inline">192.168.4.1</code></td></tr>
+        <tr><td>搖桿中心</td><td>Rudder = 90°，Elevator = 90°</td></tr>
+        <tr><td>搖桿放手</td><td>黑色搖桿回中心，兩個 Servo 回中</td></tr>
+        <tr><td>油門最低</td><td>ESC = 1000 µs</td></tr>
+        <tr><td>失控保護</td><td>手機斷線或沒有指令時，油門應回到 1000 µs</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>9. 建議的最終手機配置</h2>
+    <p>第一版建議使用直式手機版：</p>
+    <pre><code>上方：XY 類比搖桿
+下方：ESC 油門滑桿</code></pre>
+    <p>等學生測試穩定後，可以再改成橫式遙控器風格：</p>
+    <pre><code>左邊：ESC 垂直油門
+右邊：XY 類比搖桿</code></pre>
+  </section>
+</main>
+
+<footer>
+  ESP32-CAM RC Joystick Web Control Guide | 適用於課堂講義與學生實作
+</footer>
+</body>
+</html>
