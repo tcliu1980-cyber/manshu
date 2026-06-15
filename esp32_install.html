@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arduino IDE 安裝與 ESP32-CAM 開發環境設定指南</title>
+  <meta name="description" content="ESP32-CAM 使用 Arduino IDE、ESP32 board package、ESP32Servo 函式庫與 USB-TTL 上傳程式的安裝指南。" />
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --paper:#ffffff;
+      --ink:#1f2937;
+      --muted:#64748b;
+      --line:#dbe3ee;
+      --brand:#0f766e;
+      --brand-2:#164e63;
+      --soft:#ecfeff;
+      --warn:#fff7ed;
+      --danger:#b91c1c;
+      --code:#0f172a;
+      --code-bg:#f1f5f9;
+      --shadow:0 12px 30px rgba(15, 23, 42, .08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      color:var(--ink);
+      background:linear-gradient(180deg,#e6fffb 0,#f6f8fb 280px,#f6f8fb 100%);
+      line-height:1.75;
+    }
+    a{color:var(--brand-2);}
+    .layout{
+      display:grid;
+      grid-template-columns:280px minmax(0,1fr);
+      gap:28px;
+      max-width:1240px;
+      margin:0 auto;
+      padding:24px;
+    }
+    header.hero{
+      grid-column:1/-1;
+      background:linear-gradient(135deg,#083344,#0f766e);
+      color:white;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:34px;
+      overflow:hidden;
+      position:relative;
+    }
+    header.hero:after{
+      content:"";
+      position:absolute;
+      width:360px;
+      height:360px;
+      right:-100px;
+      top:-120px;
+      border-radius:50%;
+      background:rgba(255,255,255,.10);
+    }
+    .eyebrow{
+      display:inline-block;
+      font-size:.92rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#ccfbf1;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+    h1{
+      margin:.1rem 0 .7rem;
+      font-size:clamp(2rem,4vw,3.3rem);
+      line-height:1.15;
+      letter-spacing:-.03em;
+    }
+    .hero p{max-width:820px;margin:0;color:#e0f2fe;font-size:1.1rem;}
+    .hero .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border:1px solid rgba(255,255,255,.28);
+      color:white;
+      border-radius:999px;
+      padding:6px 12px;
+      background:rgba(255,255,255,.10);
+      font-size:.92rem;
+    }
+    nav.toc{
+      position:sticky;
+      top:20px;
+      align-self:start;
+      background:rgba(255,255,255,.86);
+      backdrop-filter:blur(10px);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    nav.toc h2{font-size:1rem;margin:0 0 10px;color:var(--brand-2);}
+    nav.toc ol{margin:0;padding-left:1.25rem;}
+    nav.toc li{margin:6px 0;font-size:.96rem;line-height:1.45;}
+    nav.toc a{text-decoration:none;color:var(--ink);}
+    nav.toc a:hover{color:var(--brand);text-decoration:underline;}
+    main{min-width:0;}
+    section.card{
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:28px;
+      margin-bottom:22px;
+    }
+    h2{
+      margin:.15rem 0 1rem;
+      color:#0f3f46;
+      font-size:1.65rem;
+      line-height:1.25;
+    }
+    h3{margin:1.5rem 0 .55rem;color:#164e63;font-size:1.18rem;}
+    p{margin:.6rem 0;}
+    .lead{font-size:1.12rem;color:#334155;}
+    .goal{
+      margin:18px 0;
+      padding:18px;
+      background:var(--soft);
+      border:1px solid #a5f3fc;
+      border-radius:14px;
+      text-align:center;
+      font-size:1.25rem;
+      font-weight:800;
+      color:#155e75;
+    }
+    .warning{
+      border-left:6px solid #f97316;
+      background:var(--warn);
+      padding:14px 16px;
+      border-radius:12px;
+      color:#7c2d12;
+      font-weight:700;
+      margin:16px 0;
+    }
+    .danger{
+      border-left:6px solid var(--danger);
+      background:#fef2f2;
+      padding:14px 16px;
+      border-radius:12px;
+      color:#7f1d1d;
+      font-weight:800;
+      margin:16px 0;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+    .mini{
+      background:#f8fafc;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:12px 0 20px;
+      overflow:hidden;
+      border-radius:12px;
+      font-size:.96rem;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:10px 12px;
+      vertical-align:top;
+    }
+    th{
+      background:#e0f2fe;
+      color:#164e63;
+      text-align:left;
+    }
+    tr:nth-child(even) td{background:#fbfdff;}
+    code,kbd{
+      font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+      background:var(--code-bg);
+      color:#0f172a;
+      border:1px solid #d8e1ec;
+      border-radius:6px;
+      padding:.12rem .35rem;
+      font-size:.94em;
+    }
+    pre{
+      margin:12px 0 18px;
+      padding:15px 16px;
+      background:var(--code-bg);
+      color:var(--code);
+      border:1px solid #d8e1ec;
+      border-radius:14px;
+      overflow:auto;
+      line-height:1.5;
+    }
+    pre code{border:0;background:transparent;padding:0;}
+    figure{
+      margin:18px 0;
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      background:#fff;
+    }
+    figure img{display:block;width:100%;height:auto;}
+    figcaption{
+      padding:10px 14px;
+      color:var(--muted);
+      background:#f8fafc;
+      font-size:.92rem;
+    }
+    ol,ul{padding-left:1.35rem;}
+    li{margin:.25rem 0;}
+    .printbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:22px;
+    }
+    button,.btn{
+      appearance:none;
+      border:0;
+      border-radius:12px;
+      background:#0f766e;
+      color:white;
+      padding:10px 14px;
+      font-weight:700;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    button:hover,.btn:hover{background:#115e59;color:white;text-decoration:none;}
+    footer{
+      grid-column:1/-1;
+      color:var(--muted);
+      text-align:center;
+      padding:20px 0 40px;
+    }
+    @media (max-width:900px){
+      .layout{display:block;padding:14px;}
+      nav.toc{position:relative;top:0;margin:16px 0;}
+      section.card{padding:20px;}
+      .grid{grid-template-columns:1fr;}
+    }
+    @media print{
+      body{background:white;}
+      .layout{display:block;max-width:none;padding:0;}
+      header.hero,section.card{box-shadow:none;break-inside:avoid;}
+      nav.toc,.printbar{display:none;}
+      a{color:inherit;text-decoration:none;}
+      section.card{border:1px solid #ccc;}
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <header class="hero">
+      <span class="eyebrow">ESP32-CAM RC Control Workshop</span>
+      <h1>Arduino IDE 安裝與 ESP32-CAM 開發環境設定指南</h1>
+      <p>本網頁版指南說明如何安裝 Arduino IDE、加入 ESP32 開發板套件、安裝 ESP32Servo 函式庫、選擇 AI Thinker ESP32-CAM，並使用 USB-TTL 上傳程式。</p>
+      <div class="chips">
+        <span class="chip">Arduino IDE 2.x</span>
+        <span class="chip">AI Thinker ESP32-CAM</span>
+        <span class="chip">USB-TTL 上傳</span>
+        <span class="chip">Servo / ESC 控制</span>
+      </div>
+      <div class="printbar">
+        <button onclick="window.print()">列印 / 另存 PDF</button>
+        <a class="btn" href="#usb-ttl">直接看 USB-TTL 燒錄流程</a>
+      </div>
+    </header>
+
+    <nav class="toc" aria-label="章節目錄">
+      <h2>章節目錄</h2>
+      <ol>
+        <li><a href="#goal">目標</a></li>
+        <li><a href="#install-ide">下載並安裝 Arduino IDE</a></li>
+        <li><a href="#board-package">安裝 ESP32 開發板套件</a></li>
+        <li><a href="#select-board">選擇 ESP32-CAM 開發板</a></li>
+        <li><a href="#settings">建議開發板設定</a></li>
+        <li><a href="#library">安裝 Servo 函式庫</a></li>
+        <li><a href="#libraries">本專案需要的函式庫</a></li>
+        <li><a href="#pins">ESP32-CAM 腳位介紹</a></li>
+        <li><a href="#usb-ttl">USB-TTL 上傳流程</a></li>
+        <li><a href="#test">測試設定是否成功</a></li>
+        <li><a href="#troubleshooting">常見錯誤排除</a></li>
+        <li><a href="#summary">專案設定總表</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <section id="goal" class="card">
+        <h2>一、目標</h2>
+        <p class="lead">本指南用於建立 ESP32-CAM 的 Arduino 開發環境，後續可用手機連到 ESP32-CAM 熱點，透過網頁控制兩顆伺服馬達與一個無刷馬達 ESC。</p>
+        <div class="goal">手機 → Wi-Fi 連 ESP32-CAM → 網頁控制 2 顆 Servo + 1 個 ESC</div>
+        <table>
+          <thead><tr><th>項目</th><th>建議設定</th></tr></thead>
+          <tbody>
+            <tr><td>Arduino IDE</td><td>Arduino IDE 2.x</td></tr>
+            <tr><td>ESP32 開發板套件</td><td><code>esp32 by Espressif Systems</code></td></tr>
+            <tr><td>ESP32-CAM 開發板</td><td><code>AI Thinker ESP32-CAM</code></td></tr>
+            <tr><td>Servo 函式庫</td><td><code>ESP32Servo</code></td></tr>
+            <tr><td>控制方式</td><td>ESP32-CAM 建立 Wi-Fi 熱點，手機瀏覽器控制</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="install-ide" class="card">
+        <h2>二、下載並安裝 Arduino IDE</h2>
+        <h3>1. 下載 Arduino IDE</h3>
+        <p>請到 Arduino 官方網站下載 Arduino IDE：</p>
+        <pre><code>https://www.arduino.cc/en/software</code></pre>
+        <p>Windows 使用者建議下載：</p>
+        <pre><code>Windows Installer</code></pre>
+        <h3>2. 安裝 Arduino IDE</h3>
+        <p>下載後執行安裝程式，基本上依照以下流程安裝即可：</p>
+        <pre><code>Next → Install → Finish</code></pre>
+        <p>第一次開啟 Arduino IDE 時，如果 Windows 防火牆詢問是否允許網路存取，建議選擇允許。Arduino IDE 之後需要下載開發板套件與函式庫。</p>
+      </section>
+
+      <section id="board-package" class="card">
+        <h2>三、安裝 ESP32 開發板套件</h2>
+        <p>ESP32-CAM 並不是 Arduino 原廠開發板，因此 Arduino IDE 一開始不會直接支援，必須先安裝 Espressif 提供的 ESP32 board package。</p>
+        <h3>1. 開啟偏好設定</h3>
+        <pre><code>File → Preferences</code></pre>
+        <p>中文介面可能顯示為：</p>
+        <pre><code>檔案 → 偏好設定</code></pre>
+        <h3>2. 加入 ESP32 Board Manager URL</h3>
+        <p>找到 <code>Additional Boards Manager URLs</code> 欄位，加入下列網址：</p>
+        <pre><code>https://espressif.github.io/arduino-esp32/package_esp32_index.json</code></pre>
+        <p>如果欄位內已經有其他網址，可以用逗號分隔。</p>
+        <h3>3. 開啟 Boards Manager</h3>
+        <pre><code>Tools → Board → Boards Manager</code></pre>
+        <p>中文介面可能是：</p>
+        <pre><code>工具 → 開發板 → 開發板管理員</code></pre>
+        <h3>4. 搜尋並安裝 ESP32</h3>
+        <p>在 Boards Manager 搜尋：</p>
+        <pre><code>esp32</code></pre>
+        <p>找到 <code>esp32 by Espressif Systems</code>，按下 <code>Install</code>。安裝完成後，建議關閉並重新開啟 Arduino IDE。</p>
+      </section>
+
+      <section id="select-board" class="card">
+        <h2>四、選擇 ESP32-CAM 開發板</h2>
+        <p>重新開啟 Arduino IDE 後，選擇：</p>
+        <pre><code>Tools → Board → esp32 → AI Thinker ESP32-CAM</code></pre>
+        <p>中文介面可能是：</p>
+        <pre><code>工具 → 開發板 → esp32 → AI Thinker ESP32-CAM</code></pre>
+        <p>若使用的是常見的 ESP32-CAM 模組，例如具有 OV2640 攝影機、microSD 卡槽與 AI Thinker 模組，通常開發板請選擇 <strong>AI Thinker ESP32-CAM</strong>。</p>
+      </section>
+
+      <section id="settings" class="card">
+        <h2>五、建議的開發板設定</h2>
+        <table>
+          <thead><tr><th>項目</th><th>建議值</th></tr></thead>
+          <tbody>
+            <tr><td>Board</td><td>AI Thinker ESP32-CAM</td></tr>
+            <tr><td>Upload Speed</td><td>115200</td></tr>
+            <tr><td>CPU Frequency</td><td>240 MHz</td></tr>
+            <tr><td>Flash Frequency</td><td>40 MHz</td></tr>
+            <tr><td>Flash Mode</td><td>QIO 或 DIO，通常使用預設值即可</td></tr>
+            <tr><td>Partition Scheme</td><td>Huge APP 或預設值皆可</td></tr>
+            <tr><td>PSRAM</td><td>Enabled</td></tr>
+          </tbody>
+        </table>
+        <h3>PSRAM 為何建議 Enabled？</h3>
+        <p>如果只是控制 Servo 與 ESC，不一定需要 PSRAM。但是 ESP32-CAM 之後若要加入攝影串流，PSRAM 會非常重要，因此建議一開始就設定為 <code>PSRAM: Enabled</code>。</p>
+        <h3>Partition Scheme 如何選擇？</h3>
+        <p>如果只是做手機網頁控制 Servo 與 ESC，可以使用預設值。若之後要加入攝影串流，建議選擇：</p>
+        <pre><code>Huge APP (3MB No OTA/1MB SPIFFS)</code></pre>
+      </section>
+
+      <section id="library" class="card">
+        <h2>六、安裝 Servo 函式庫</h2>
+        <p>ESP32 控制 Servo 建議安裝：</p>
+        <pre><code>ESP32Servo</code></pre>
+        <h3>安裝方法</h3>
+        <pre><code>Tools → Manage Libraries</code></pre>
+        <p>或點選左側的 <code>Library Manager</code>，搜尋 <code>ESP32Servo</code>，找到後按下 <code>Install</code>。</p>
+      </section>
+
+      <section id="libraries" class="card">
+        <h2>七、本專案需要的函式庫</h2>
+        <table>
+          <thead><tr><th>函式庫</th><th>是否需要額外安裝</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td><code>WiFi.h</code></td><td>不需要</td><td>ESP32 內建，負責 Wi-Fi 連線</td></tr>
+            <tr><td><code>WebServer.h</code></td><td>不需要</td><td>ESP32 內建，負責網頁伺服器</td></tr>
+            <tr><td><code>ESP32Servo.h</code></td><td>需要</td><td>控制 Servo 與 ESC PWM</td></tr>
+          </tbody>
+        </table>
+        <p>也就是說，本專案只需要安裝 <code>esp32 by Espressif Systems</code> 與 <code>ESP32Servo</code>。</p>
+      </section>
+
+      <section id="pins" class="card">
+        <h2>八、ESP32-CAM 腳位介紹</h2>
+        <p>本專案使用常見的 <strong>AI Thinker ESP32-CAM</strong>。ESP32-CAM 的外接腳位數量比一般 ESP32 DevKit 少，因此要注意哪些腳位已被攝影機、microSD 卡、UART 燒錄功能或開機模式占用。</p>
+        <figure>
+          <img src="esp32/esp32cam-pins.jpg" alt="AI Thinker ESP32-CAM 腳位圖" loading="lazy">
+          <figcaption>AI Thinker ESP32-CAM 常見腳位圖</figcaption>
+        </figure>
+        <h3>1. 電源腳位</h3>
+        <table>
+          <thead><tr><th>腳位</th><th>說明</th></tr></thead>
+          <tbody>
+            <tr><td>5V</td><td>ESP32-CAM 主要供電輸入。建議使用穩定的 5V 電源供電。</td></tr>
+            <tr><td>3.3V / 3V3</td><td>3.3V 電源腳。通常不建議用來供應 Servo 或其他大電流負載。</td></tr>
+            <tr><td>GND</td><td>接地。USB-TTL、ESP32-CAM、Servo、ESC 必須共地。</td></tr>
+          </tbody>
+        </table>
+        <h3>2. UART 燒錄腳位</h3>
+        <table>
+          <thead><tr><th>ESP32-CAM 腳位</th><th>功能</th><th>說明</th></tr></thead>
+          <tbody>
+            <tr><td>GPIO1 / U0T / TX</td><td>UART0 TX</td><td>ESP32-CAM 傳送資料，接 USB-TTL 的 RX。</td></tr>
+            <tr><td>GPIO3 / U0R / RX</td><td>UART0 RX</td><td>ESP32-CAM 接收資料，接 USB-TTL 的 TX。</td></tr>
+            <tr><td>GPIO0</td><td>Boot Mode</td><td>上傳程式時接 GND，讓 ESP32-CAM 進入燒錄模式。</td></tr>
+            <tr><td>GND</td><td>接地</td><td>必須與 USB-TTL 的 GND 相接。</td></tr>
+            <tr><td>5V</td><td>供電</td><td>可由 USB-TTL 的 5V 供電，但電流不足時建議改用外部 5V。</td></tr>
+          </tbody>
+        </table>
+        <h3>3. 可用 GPIO 腳位</h3>
+        <table>
+          <thead><tr><th>腳位</th><th>常見功能</th><th>使用注意事項</th></tr></thead>
+          <tbody>
+            <tr><td>GPIO4</td><td>HS2_DATA1 / LED</td><td>常連接板上閃光 LED，不建議控制 Servo。</td></tr>
+            <tr><td>GPIO2</td><td>HS2_DATA0</td><td>microSD 相關腳位，不使用 SD 卡時可作為 GPIO。</td></tr>
+            <tr><td>GPIO14</td><td>HS2_CLK</td><td>microSD 相關腳位，不使用 SD 卡時可作為 Servo PWM。</td></tr>
+            <tr><td>GPIO15</td><td>HS2_CMD</td><td>microSD 相關腳位，不使用 SD 卡時可作為 ESC PWM。</td></tr>
+            <tr><td>GPIO13</td><td>HS2_DATA3</td><td>microSD 相關腳位，不使用 SD 卡時可作為 Servo PWM。</td></tr>
+            <tr><td>GPIO12</td><td>HS2_DATA2</td><td>開機狀態敏感腳位，初學者建議避免使用。</td></tr>
+            <tr><td>GPIO16</td><td>U2RXD</td><td>可作為一般 GPIO 使用，但若專案較複雜需再確認是否與其他功能衝突。</td></tr>
+            <tr><td>GPIO0</td><td>Boot / Camera XCLK</td><td>燒錄時使用，也常與攝影機時脈有關，不建議作為 Servo 腳位。</td></tr>
+            <tr><td>GPIO1 / GPIO3</td><td>UART0</td><td>上傳程式與 Serial Monitor 使用，不建議作為 Servo 腳位。</td></tr>
+          </tbody>
+        </table>
+        <h3>4. 本專案建議腳位分配</h3>
+        <table>
+          <thead><tr><th>裝置</th><th>ESP32-CAM 腳位</th><th>說明</th></tr></thead>
+          <tbody>
+            <tr><td>方向舵 Servo</td><td>GPIO13</td><td>PWM 輸出，控制方向舵。</td></tr>
+            <tr><td>升降舵 Servo</td><td>GPIO14</td><td>PWM 輸出，控制升降舵。</td></tr>
+            <tr><td>ESC 油門訊號</td><td>GPIO15</td><td>PWM 輸出，控制無刷馬達油門。</td></tr>
+            <tr><td>GND</td><td>GND</td><td>Servo、ESC、ESP32-CAM 必須共地。</td></tr>
+            <tr><td>5V</td><td>外部 5V / UBEC</td><td>Servo 不建議直接由 ESP32-CAM 供電。</td></tr>
+          </tbody>
+        </table>
+        <div class="danger">測試 ESC 與無刷馬達時，請務必先拆掉螺旋槳。</div>
+      </section>
+
+      <section id="usb-ttl" class="card">
+        <h2>九、使用 USB-TTL 上傳 ESP32-CAM 程式</h2>
+        <p>ESP32-CAM 通常沒有 USB 接口，因此無法像 Arduino UNO 或 ESP32 DevKit 一樣直接用 USB 線上傳程式。必須使用 USB-to-TTL 模組，也常稱為 USB-TTL、FTDI、CH340、CP2102 或 USB Serial 模組。</p>
+        <figure>
+          <img src="esp32/usb-ttl-wiring.webp" alt="ESP32-CAM 使用 USB-TTL 上傳程式接線圖" loading="lazy">
+          <figcaption>ESP32-CAM 使用 USB-TTL 上傳程式的接線示意圖</figcaption>
+        </figure>
+        <h3>1. USB-TTL 與 ESP32-CAM 接線</h3>
+        <table>
+          <thead><tr><th>USB-TTL 模組</th><th>ESP32-CAM</th><th>說明</th></tr></thead>
+          <tbody>
+            <tr><td>5V / VCC</td><td>5V</td><td>提供 ESP32-CAM 電源。不可接到 3.3V 腳位。</td></tr>
+            <tr><td>GND</td><td>GND</td><td>接地，必須連接。</td></tr>
+            <tr><td>TX</td><td>U0R / GPIO3 / RX</td><td>USB-TTL 傳送，接 ESP32-CAM 接收。</td></tr>
+            <tr><td>RX</td><td>U0T / GPIO1 / TX</td><td>USB-TTL 接收，接 ESP32-CAM 傳送。</td></tr>
+            <tr><td>GND</td><td>GPIO0</td><td>上傳程式時暫時連接，使 ESP32-CAM 進入燒錄模式。</td></tr>
+          </tbody>
+        </table>
+        <div class="warning">TX 與 RX 必須交叉連接：USB-TTL TX → ESP32-CAM RX；USB-TTL RX → ESP32-CAM TX。</div>
+        <h3>2. 進入燒錄模式</h3>
+        <ol>
+          <li>將 USB-TTL 的 GND 接到 ESP32-CAM 的 GND。</li>
+          <li>將 USB-TTL 的 5V 接到 ESP32-CAM 的 5V。</li>
+          <li>將 USB-TTL 的 TX 接到 ESP32-CAM 的 U0R / RX。</li>
+          <li>將 USB-TTL 的 RX 接到 ESP32-CAM 的 U0T / TX。</li>
+          <li>將 ESP32-CAM 的 GPIO0 接到 GND。</li>
+          <li>按一下 ESP32-CAM 的 RST 按鈕，或重新插拔 USB 電源。</li>
+        </ol>
+        <h3>3. Arduino IDE 上傳設定</h3>
+        <table>
+          <thead><tr><th>項目</th><th>設定</th></tr></thead>
+          <tbody>
+            <tr><td>Board</td><td>AI Thinker ESP32-CAM</td></tr>
+            <tr><td>Upload Speed</td><td>115200</td></tr>
+            <tr><td>CPU Frequency</td><td>240 MHz</td></tr>
+            <tr><td>Flash Frequency</td><td>40 MHz</td></tr>
+            <tr><td>Partition Scheme</td><td>Huge APP 或預設值</td></tr>
+            <tr><td>PSRAM</td><td>Enabled</td></tr>
+            <tr><td>Port</td><td>選擇對應的 COM Port</td></tr>
+          </tbody>
+        </table>
+        <h3>4. 上傳程式流程</h3>
+        <ol>
+          <li>確認 GPIO0 已經接到 GND。</li>
+          <li>在 Arduino IDE 選擇正確的 Board 與 Port。</li>
+          <li>按下 Arduino IDE 左上角的 Upload。</li>
+          <li>若畫面停在 <code>Connecting...</code>，請按一下 ESP32-CAM 的 RST 按鈕。</li>
+          <li>等待程式上傳完成。</li>
+          <li>上傳完成後，拔掉 GPIO0 與 GND 之間的接線。</li>
+          <li>再按一次 RST。</li>
+          <li>ESP32-CAM 會從 Flash 開機，開始執行剛剛上傳的程式。</li>
+        </ol>
+        <div class="goal">上傳程式時：GPIO0 接 GND<br>正常執行程式時：GPIO0 不要接 GND</div>
+      </section>
+
+      <section id="test" class="card">
+        <h2>十、測試 Arduino IDE 是否設定成功</h2>
+        <p>可以先上傳以下測試程式：</p>
+        <pre><code>#include &lt;WiFi.h&gt;
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+  Serial.println("ESP32-CAM is ready.");
+}
+
+void loop() {
+  Serial.println("Running...");
+  delay(1000);
+}</code></pre>
+        <p>上傳完成後，拔掉 <code>GPIO0 → GND</code>，按下 reset，開啟 Serial Monitor，並將鮑率設定為 <code>115200</code>。</p>
+        <p>若看到以下訊息，代表 Arduino IDE、ESP32 開發板套件與 Port 設定都正常。</p>
+        <pre><code>ESP32-CAM is ready.
+Running...
+Running...
+Running...</code></pre>
+      </section>
+
+      <section id="troubleshooting" class="card">
+        <h2>十一、常見錯誤排除</h2>
+        <div class="grid">
+          <div class="mini">
+            <h3>找不到 AI Thinker ESP32-CAM</h3>
+            <p>請確認已經安裝 <code>esp32 by Espressif Systems</code>。若沒有安裝 ESP32 board package，Arduino IDE 中不會出現 AI Thinker ESP32-CAM。</p>
+          </div>
+          <div class="mini">
+            <h3>找不到 COM Port</h3>
+            <ul>
+              <li>USB 線只有充電功能。</li>
+              <li>USB-to-TTL 驅動未安裝。</li>
+              <li>USB-to-TTL 模組故障。</li>
+              <li>TX/RX 接線錯誤。</li>
+            </ul>
+          </div>
+          <div class="mini">
+            <h3>一直顯示 Connecting...</h3>
+            <ul>
+              <li>確認 GPIO0 已接 GND。</li>
+              <li>按下 Upload 後按一下 reset。</li>
+              <li>確認 TX/RX 沒有接反。</li>
+              <li>確認 GND 有共地。</li>
+            </ul>
+          </div>
+          <div class="mini">
+            <h3>上傳成功，但程式不執行</h3>
+            <p>通常是忘記拔掉 <code>GPIO0 → GND</code>。上傳完成後一定要拔掉 GPIO0-GND，然後按 reset。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="summary" class="card">
+        <h2>十二、RC 飛機控制專案建議設定總表</h2>
+        <table>
+          <thead><tr><th>項目</th><th>建議設定</th></tr></thead>
+          <tbody>
+            <tr><td>Arduino IDE</td><td>Arduino IDE 2.x</td></tr>
+            <tr><td>Board package</td><td>esp32 by Espressif Systems</td></tr>
+            <tr><td>Board</td><td>AI Thinker ESP32-CAM</td></tr>
+            <tr><td>Library</td><td>ESP32Servo</td></tr>
+            <tr><td>Upload Speed</td><td>115200</td></tr>
+            <tr><td>PSRAM</td><td>Enabled</td></tr>
+            <tr><td>Serial Monitor</td><td>115200</td></tr>
+            <tr><td>Wi-Fi 模式</td><td>ESP32-CAM SoftAP 熱點</td></tr>
+            <tr><td>手機連線</td><td>手機連 ESP32-CAM Wi-Fi 後開啟 <code>192.168.4.1</code></td></tr>
+          </tbody>
+        </table>
+        <div class="danger">完成本指南後，即可開始上傳 ESP32-CAM 手機網頁控制程式。測試 ESC 與無刷馬達時，請先拆掉螺旋槳。</div>
+      </section>
+    </main>
+
+    <footer>
+      Arduino IDE 安裝與 ESP32-CAM 開發環境設定指南｜手機網頁控制 Servo / ESC 專案
+    </footer>
+  </div>
+</body>
+</html>
