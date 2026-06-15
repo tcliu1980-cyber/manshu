@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>已知馬達推力如何估算 RC 飛機速度與升力</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #5f6b7a;
+      --line: #d8e1ec;
+      --blue: #1f5f99;
+      --blue2: #eaf3fc;
+      --green: #047857;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --dark: #0f172a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.72;
+    }
+
+    header {
+      background: linear-gradient(135deg, #143653, #2470a7);
+      color: white;
+      padding: 42px 18px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 5vw, 46px);
+      letter-spacing: .03em;
+    }
+
+    header p {
+      max-width: 980px;
+      margin: 0 auto;
+      font-size: 18px;
+      opacity: .94;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 56px;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+      margin: 18px 0;
+      box-shadow: 0 8px 22px rgba(17, 31, 54, .06);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #143653;
+      font-size: 26px;
+      border-left: 8px solid var(--blue);
+      padding-left: 12px;
+    }
+
+    h3 {
+      color: #244e72;
+      margin-bottom: 8px;
+    }
+
+    .formula {
+      background: var(--blue2);
+      border: 1px solid #cfe2f4;
+      border-radius: 15px;
+      padding: 16px 20px;
+      text-align: center;
+      font-size: clamp(22px, 4vw, 33px);
+      font-family: "Times New Roman", "Noto Serif TC", serif;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .formula small {
+      display: block;
+      font-size: 15px;
+      color: var(--muted);
+      margin-top: 4px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+    }
+
+    .note, .warn, .good, .danger {
+      padding: 14px 16px;
+      border-radius: 13px;
+      margin: 14px 0;
+    }
+
+    .note {
+      background: #f8fbff;
+      border-left: 6px solid var(--blue);
+    }
+
+    .warn {
+      background: #fff7ed;
+      border-left: 6px solid #f59e0b;
+    }
+
+    .good {
+      background: #ecfdf5;
+      border-left: 6px solid var(--green);
+    }
+
+    .danger {
+      background: #fef2f2;
+      border-left: 6px solid #dc2626;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 15px;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #eef5fc;
+      color: #143653;
+    }
+
+    tr:nth-child(even) td {
+      background: #fafcff;
+    }
+
+    .calculator {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(300px, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .inputPanel, .resultPanel {
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .inputPanel {
+      background: #fbfdff;
+      border: 1px solid #dce8f4;
+    }
+
+    .resultPanel {
+      background: var(--dark);
+      color: #e6eefc;
+    }
+
+    .resultPanel h3 {
+      color: white;
+      margin-top: 0;
+      border-bottom: 1px solid rgba(255,255,255,.18);
+      padding-bottom: 9px;
+    }
+
+    .control {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #26384d;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 17px;
+      border-radius: 10px;
+      border: 1px solid #c7d3e1;
+      background: white;
+    }
+
+    input[type="range"] {
+      padding: 0;
+    }
+
+    .inline {
+      display: grid;
+      grid-template-columns: 1fr 96px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .resultItem {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .resultItem strong {
+      color: white;
+      font-size: 19px;
+      text-align: right;
+    }
+
+    .statusBox {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 13px;
+      background: rgba(255,255,255,.08);
+      color: white;
+    }
+
+    .statusOk { border-left: 6px solid #22c55e; }
+    .statusWarn { border-left: 6px solid #f59e0b; }
+    .statusBad { border-left: 6px solid #ef4444; }
+
+    canvas {
+      width: 100%;
+      height: 380px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .steps {
+      counter-reset: step;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      margin: 12px 0;
+      padding: 12px 14px 12px 54px;
+      background: #f8fbff;
+      border: 1px solid #dbe8f5;
+      border-radius: 12px;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 14px;
+      top: 13px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+
+    .code {
+      background: #101827;
+      color: #e5e7eb;
+      border-radius: 14px;
+      padding: 16px;
+      overflow-x: auto;
+      white-space: pre;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #e8f2fb;
+      color: #154d75;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 28px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .calculator { grid-template-columns: 1fr; }
+      section { padding: 18px; }
+      table { font-size: 14px; }
+      th, td { padding: 8px; }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>已知馬達＋螺旋槳推力，如何估算 RC 飛機速度與升力？</h1>
+  <p>用推力、機翼面積、機重與阻力模型，估算「能不能飛起來」、「失速速度」、「最大水平飛行速度」與「指定速度下的升力」。</p>
+</header>
+
+<main>
+
+<section>
+  <h2>1. 先講結論：可以估算，但不能只靠推力</h2>
+
+  <p>如果已知馬達搭配螺旋槳的推力，例如測得 <b>350 g 推力</b>，我們可以粗略估算飛機的水平速度與升力。不過要注意，單靠推力不能直接算出升力，因為升力主要由下式決定：</p>
+
+  <div class="formula">
+    L = 1/2 × ρ × V² × S × C<sub>L</sub>
+    <small>升力需要知道速度 V、機翼面積 S、升力係數 C<sub>L</sub></small>
+  </div>
+
+  <p>馬達推力比較適合用來估算「飛機能克服多少阻力」，也就是：</p>
+
+  <div class="formula">
+    T ≈ D
+    <small>水平定速飛行時，推力約等於阻力</small>
+  </div>
+
+  <div class="warn">
+    <b>重要：</b>一般網路上標示的推力多半是「靜態推力」，也就是飛機不動時測到的推力。飛機往前飛時，螺旋槳推力通常會下降，所以本網頁只適合做課堂設計估算，不等於精密飛行性能分析。
+  </div>
+</section>
+
+<section>
+  <h2>2. 本頁使用的簡化物理模型</h2>
+
+  <p>水平飛行時，飛機需要同時滿足兩個條件：</p>
+
+  <table>
+    <tr>
+      <th>方向</th>
+      <th>近似平衡條件</th>
+      <th>意義</th>
+    </tr>
+    <tr>
+      <td>垂直方向</td>
+      <td>L ≈ W</td>
+      <td>升力約等於重量，飛機才不會掉下去</td>
+    </tr>
+    <tr>
+      <td>水平方向</td>
+      <td>T ≈ D</td>
+      <td>推力約等於阻力，飛機才能維持定速</td>
+    </tr>
+  </table>
+
+  <h3>阻力估算</h3>
+
+  <p>本頁用一個簡化阻力模型：</p>
+
+  <div class="formula">
+    D = 1/2 ρ V² S C<sub>D0</sub> + k W² / (1/2 ρ V² S)
+    <small>總阻力 = 零升阻力 + 誘導阻力</small>
+  </div>
+
+  <p>其中：</p>
+
+  <table>
+    <tr>
+      <th>參數</th>
+      <th>意義</th>
+      <th>教學建議值</th>
+    </tr>
+    <tr>
+      <td>C<sub>D0</sub></td>
+      <td>零升阻力係數，代表機身、機翼表面、線材、起落架等造成的阻力</td>
+      <td>KT 板簡易飛機可先用 0.06 ~ 0.12</td>
+    </tr>
+    <tr>
+      <td>e</td>
+      <td>Oswald efficiency，有限翼效率</td>
+      <td>簡易矩形翼可先用 0.65 ~ 0.80</td>
+    </tr>
+    <tr>
+      <td>AR</td>
+      <td>展弦比，AR = b²/S</td>
+      <td>90 cm × 18.6 cm 約為 4.84</td>
+    </tr>
+    <tr>
+      <td>k</td>
+      <td>誘導阻力參數</td>
+      <td>k = 1/(π e AR)</td>
+    </tr>
+  </table>
+</section>
+
+<section>
+  <h2>3. 互動式推力、速度與升力估算器</h2>
+
+  <p>先輸入你的飛機重量、馬達靜態推力、翼展與翼弦。計算器會估算失速速度與最大水平速度。</p>
+
+  <div class="calculator">
+    <div class="inputPanel">
+      <div class="control">
+        <label for="mass">飛機總重：<span id="massValue">650</span> g</label>
+        <div class="inline">
+          <input id="mass" type="range" min="100" max="2000" step="10" value="650">
+          <input id="massNum" type="number" min="100" max="2000" step="10" value="650">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="thrust">馬達＋螺旋槳靜態推力：<span id="thrustValue">450</span> g</label>
+        <div class="inline">
+          <input id="thrust" type="range" min="50" max="2000" step="10" value="450">
+          <input id="thrustNum" type="number" min="50" max="2000" step="10" value="450">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="span">翼展 b：<span id="spanValue">90</span> cm</label>
+        <div class="inline">
+          <input id="span" type="range" min="30" max="200" step="1" value="90">
+          <input id="spanNum" type="number" min="30" max="200" step="1" value="90">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="chord">平均翼弦 c：<span id="chordValue">18.6</span> cm</label>
+        <div class="inline">
+          <input id="chord" type="range" min="5" max="50" step="0.1" value="18.6">
+          <input id="chordNum" type="number" min="5" max="50" step="0.1" value="18.6">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="clmax">最大升力係數 C<sub>L,max</sub>：<span id="clmaxValue">1.10</span></label>
+        <div class="inline">
+          <input id="clmax" type="range" min="0.5" max="2.0" step="0.01" value="1.10">
+          <input id="clmaxNum" type="number" min="0.5" max="2.0" step="0.01" value="1.10">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="cd0">零升阻力係數 C<sub>D0</sub>：<span id="cd0Value">0.08</span></label>
+        <div class="inline">
+          <input id="cd0" type="range" min="0.02" max="0.25" step="0.005" value="0.08">
+          <input id="cd0Num" type="number" min="0.02" max="0.25" step="0.005" value="0.08">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="eff">機翼效率 e：<span id="effValue">0.70</span></label>
+        <div class="inline">
+          <input id="eff" type="range" min="0.45" max="0.95" step="0.01" value="0.70">
+          <input id="effNum" type="number" min="0.45" max="0.95" step="0.01" value="0.70">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="rho">空氣密度 ρ：<span id="rhoValue">1.225</span> kg/m³</label>
+        <div class="inline">
+          <input id="rho" type="range" min="0.80" max="1.30" step="0.005" value="1.225">
+          <input id="rhoNum" type="number" min="0.80" max="1.30" step="0.005" value="1.225">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="thrustModel">飛行中推力模型</label>
+        <select id="thrustModel">
+          <option value="constant">簡化：推力不隨速度下降，會偏樂觀</option>
+          <option value="decay">較保守：推力隨速度下降，需要輸入近似槳距速度</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="pitchSpeed">近似槳距速度 / 推力歸零速度：<span id="pitchSpeedValue">20</span> m/s</label>
+        <div class="inline">
+          <input id="pitchSpeed" type="range" min="5" max="50" step="0.5" value="20">
+          <input id="pitchSpeedNum" type="number" min="5" max="50" step="0.5" value="20">
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="testSpeed">指定速度下檢查升力：<span id="testSpeedValue">8</span> m/s</label>
+        <div class="inline">
+          <input id="testSpeed" type="range" min="1" max="30" step="0.1" value="8">
+          <input id="testSpeedNum" type="number" min="1" max="30" step="0.1" value="8">
+        </div>
+      </div>
+    </div>
+
+    <div class="resultPanel">
+      <h3>估算結果</h3>
+
+      <div class="resultItem">
+        <span>機翼面積 S</span>
+        <strong id="areaOut">0.1674 m²</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>展弦比 AR</span>
+        <strong id="arOut">4.84</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>重量 W</span>
+        <strong id="weightOut">6.38 N</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>靜態推力 T</span>
+        <strong id="thrustOut">4.41 N</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>推重比 T/W</span>
+        <strong id="twOut">0.69</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>失速速度 V<sub>stall</sub></span>
+        <strong id="stallOut">7.45 m/s</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>估算最大水平速度</span>
+        <strong id="vmaxOut">16.2 m/s</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>最大速度時需要的 C<sub>L</sub></span>
+        <strong id="clAtVmaxOut">0.24</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>指定速度升力</span>
+        <strong id="liftAtTestOut">7.20 N</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>指定速度可支撐重量</span>
+        <strong id="liftMassOut">734 g</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>指定速度所需 C<sub>L</sub></span>
+        <strong id="needClOut">0.98</strong>
+      </div>
+
+      <div class="resultItem">
+        <span>指定速度阻力</span>
+        <strong id="dragTestOut">1.25 N</strong>
+      </div>
+
+      <div id="statusBox" class="statusBox">狀態判斷</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>4. 推力與阻力曲線</h2>
+  <p>藍線是可用推力，橘線是維持水平飛行所需阻力。兩條線交會處約為最大水平飛行速度。紅色虛線是失速速度，低於此速度即使推力足夠，也可能因升力不足而掉高度。</p>
+  <canvas id="chart" width="920" height="380"></canvas>
+</section>
+
+<section>
+  <h2>5. 如何判斷這組馬達與螺旋槳是否足夠？</h2>
+
+  <ol class="steps">
+    <li>先看推重比 T/W。初學 KT 板高翼機建議至少約 0.5 以上，0.7 以上會比較有餘裕。</li>
+    <li>看失速速度 V<sub>stall</sub>。如果失速速度太高，學生手拋會很困難。</li>
+    <li>看最大水平速度是否明顯大於失速速度。若 V<sub>max</sub> 只比 V<sub>stall</sub> 高一點點，飛機會非常難飛。</li>
+    <li>看指定速度所需 C<sub>L</sub> 是否小於 C<sub>L,max</sub>。若需要的 C<sub>L</sub> 超過 C<sub>L,max</sub>，該速度下升力不足。</li>
+    <li>確認飛機總重。相同推力下，減重通常比換大螺旋槳更有效且更安全。</li>
+  </ol>
+
+  <div class="good">
+    <b>對 90 cm 翼展、18.6 cm 翼弦的課堂高翼機：</b>若總重能壓在 500 g ~ 700 g，且靜態推力約 350 g ~ 600 g，通常比較容易進入可測試範圍。若總重接近 1 kg，則需要更高推力、更大機翼或更快速度。
+  </div>
+</section>
+
+<section>
+  <h2>6. 教學提醒：靜態推力不是飛行速度</h2>
+
+  <p>常見錯誤是把「450 g 推力」直接想成「可以吊起 450 g 飛機」。這只對垂直懸停概念有部分意義，但一般固定翼不是靠推力把飛機往上拉，而是靠機翼前進產生升力。</p>
+
+  <table>
+    <tr>
+      <th>概念</th>
+      <th>代表意義</th>
+      <th>固定翼設計時怎麼用</th>
+    </tr>
+    <tr>
+      <td>靜態推力</td>
+      <td>飛機不動時，馬達與槳可推多少力</td>
+      <td>判斷加速能力與爬升能力</td>
+    </tr>
+    <tr>
+      <td>飛行速度</td>
+      <td>飛機相對空氣的速度</td>
+      <td>決定升力大小</td>
+    </tr>
+    <tr>
+      <td>升力</td>
+      <td>機翼向上的力</td>
+      <td>要至少接近飛機重量才能平飛</td>
+    </tr>
+    <tr>
+      <td>阻力</td>
+      <td>飛機前進時受到的空氣阻力</td>
+      <td>決定馬達推力能讓飛機飛多快</td>
+    </tr>
+  </table>
+
+  <div class="warn">
+    <b>課堂實測建議：</b>先拆槳測 Servo，再固定機身測油門，再用彈簧秤或電子秤測靜態推力，最後才進行短距離滑跑或手拋測試。
+  </div>
+</section>
+
+<section>
+  <h2>7. 核心 JavaScript 公式</h2>
+
+  <p>若要把計算功能嵌入其他頁面，最核心的計算如下：</p>
+
+  <div class="code">const g = 9.81;
+const rho = 1.225;
+const massKg = 0.65;
+const staticThrustN = 0.45 * g;
+const span = 0.90;
+const chord = 0.186;
+
+const S = span * chord;
+const AR = span * span / S;
+const e = 0.70;
+const CD0 = 0.08;
+const k = 1 / (Math.PI * e * AR);
+
+const W = massKg * g;
+
+// 失速速度
+const CLmax = 1.10;
+const Vstall = Math.sqrt(2 * W / (rho * S * CLmax));
+
+// 水平飛行阻力：L = W
+function dragLevelFlight(V) {
+  const q = 0.5 * rho * V * V;
+  return q * S * CD0 + k * W * W / (q * S);
+}
+
+// 最大水平速度約在 T_available(V) = D(V) 的交點</div>
+</section>
+
+<div class="footer">
+  RC 固定翼教學講義｜本工具為簡化估算，未包含螺旋槳效率曲線、馬達電流限制、電池壓降、風、姿態變化、舵面偏轉阻力與機體結構變形。
+</div>
+
+</main>
+
+<script>
+function $(id) { return document.getElementById(id); }
+
+function bindPair(rangeId, numId, valueId) {
+  const range = $(rangeId);
+  const num = $(numId);
+  const val = $(valueId);
+
+  function fromRange() {
+    num.value = range.value;
+    val.textContent = range.value;
+    calculate();
+  }
+
+  function fromNum() {
+    let v = parseFloat(num.value);
+    const min = parseFloat(num.min);
+    const max = parseFloat(num.max);
+
+    if (isNaN(v)) v = parseFloat(range.value);
+    v = Math.max(min, Math.min(max, v));
+
+    num.value = v;
+    range.value = v;
+    val.textContent = v;
+    calculate();
+  }
+
+  range.addEventListener("input", fromRange);
+  num.addEventListener("input", fromNum);
+}
+
+bindPair("mass", "massNum", "massValue");
+bindPair("thrust", "thrustNum", "thrustValue");
+bindPair("span", "spanNum", "spanValue");
+bindPair("chord", "chordNum", "chordValue");
+bindPair("clmax", "clmaxNum", "clmaxValue");
+bindPair("cd0", "cd0Num", "cd0Value");
+bindPair("eff", "effNum", "effValue");
+bindPair("rho", "rhoNum", "rhoValue");
+bindPair("pitchSpeed", "pitchSpeedNum", "pitchSpeedValue");
+bindPair("testSpeed", "testSpeedNum", "testSpeedValue");
+
+$("thrustModel").addEventListener("change", calculate);
+
+function params() {
+  const massG = parseFloat($("mass").value);
+  const thrustG = parseFloat($("thrust").value);
+  const spanCm = parseFloat($("span").value);
+  const chordCm = parseFloat($("chord").value);
+  const clmax = parseFloat($("clmax").value);
+  const cd0 = parseFloat($("cd0").value);
+  const e = parseFloat($("eff").value);
+  const rho = parseFloat($("rho").value);
+  const model = $("thrustModel").value;
+  const pitchSpeed = parseFloat($("pitchSpeed").value);
+  const testSpeed = parseFloat($("testSpeed").value);
+
+  const g = 9.81;
+  const massKg = massG / 1000;
+  const W = massKg * g;
+  const staticT = thrustG / 1000 * g;
+
+  const b = spanCm / 100;
+  const c = chordCm / 100;
+  const S = b * c;
+  const AR = b * b / S;
+  const k = 1 / (Math.PI * e * AR);
+
+  return {massG, thrustG, b, c, S, AR, clmax, cd0, e, rho, model, pitchSpeed, testSpeed, g, massKg, W, staticT, k};
+}
+
+function thrustAvailable(V, p) {
+  if (p.model === "constant") {
+    return p.staticT;
+  }
+
+  if (V >= p.pitchSpeed) {
+    return 0;
+  }
+
+  // 簡化保守模型：速度越接近槳距速度，可用推力越低
+  const ratio = 1 - V / p.pitchSpeed;
+  return p.staticT * ratio * ratio;
+}
+
+function dragLevel(V, p) {
+  if (V <= 0) return Infinity;
+  const q = 0.5 * p.rho * V * V;
+  return q * p.S * p.cd0 + p.k * p.W * p.W / (q * p.S);
+}
+
+function liftAtSpeed(V, p, CL) {
+  const q = 0.5 * p.rho * V * V;
+  return q * p.S * CL;
+}
+
+function findVmax(p) {
+  let bestV = NaN;
+  let lastV = 0.5;
+  let lastF = thrustAvailable(lastV, p) - dragLevel(lastV, p);
+
+  // 掃描 0.5 ~ 50 m/s，找最後一個 T-D 從正變負的交點
+  for (let v = 0.6; v <= 50; v += 0.05) {
+    const f = thrustAvailable(v, p) - dragLevel(v, p);
+
+    if (lastF === 0) {
+      bestV = lastV;
+    }
+
+    if (lastF * f < 0) {
+      // bisection
+      let lo = lastV;
+      let hi = v;
+      for (let i = 0; i < 40; i++) {
+        const mid = 0.5 * (lo + hi);
+        const fm = thrustAvailable(mid, p) - dragLevel(mid, p);
+        const flo = thrustAvailable(lo, p) - dragLevel(lo, p);
+        if (flo * fm <= 0) hi = mid;
+        else lo = mid;
+      }
+      bestV = 0.5 * (lo + hi);
+    }
+
+    lastV = v;
+    lastF = f;
+  }
+
+  return bestV;
+}
+
+function statusText(p, Vstall, Vmax, needCL, dragTest, Ttest) {
+  const tw = p.staticT / p.W;
+
+  if (!isFinite(Vmax)) {
+    return {
+      cls: "statusBad",
+      text: "推力不足或阻力過大：在目前設定下找不到可維持水平飛行的速度。請減重、增大機翼、降低阻力或提高推力。"
+    };
+  }
+
+  if (Vmax < Vstall) {
+    return {
+      cls: "statusBad",
+      text: "危險：估算最大水平速度低於失速速度，代表飛機可能還沒產生足夠升力就已經推不動。"
+    };
+  }
+
+  if (Vmax < 1.3 * Vstall) {
+    return {
+      cls: "statusWarn",
+      text: "勉強可行：最大水平速度只比失速速度高一點，操控餘裕很小，手拋與轉彎容易失速。"
+    };
+  }
+
+  if (tw < 0.5) {
+    return {
+      cls: "statusWarn",
+      text: "速度條件看起來可行，但推重比偏低，加速與爬升能力可能不足，建議減重或提高推力。"
+    };
+  }
+
+  if (needCL > p.clmax) {
+    return {
+      cls: "statusWarn",
+      text: "指定速度下所需 C_L 超過 C_L,max，表示該速度太低，升力不足；需要提高速度或增大機翼。"
+    };
+  }
+
+  if (dragTest > Ttest) {
+    return {
+      cls: "statusWarn",
+      text: "指定速度下阻力大於可用推力，飛機可能無法維持這個速度，需要降低阻力或提高推力。"
+    };
+  }
+
+  return {
+    cls: "statusOk",
+    text: "估算結果大致可行：最大速度高於失速速度，且指定速度下升力與推力條件尚可。實際仍需拆槳與固定測試確認。"
+  };
+}
+
+function calculate() {
+  const p = params();
+
+  const Vstall = Math.sqrt(2 * p.W / (p.rho * p.S * p.clmax));
+  const Vmax = findVmax(p);
+  const qTest = 0.5 * p.rho * p.testSpeed * p.testSpeed;
+  const needCL = p.W / (qTest * p.S);
+  const liftAtCLmax = liftAtSpeed(p.testSpeed, p, p.clmax);
+  const liftMassG = liftAtCLmax / p.g * 1000;
+  const dragTest = dragLevel(p.testSpeed, p);
+  const Ttest = thrustAvailable(p.testSpeed, p);
+
+  let clAtVmax = NaN;
+  if (isFinite(Vmax)) {
+    const qVmax = 0.5 * p.rho * Vmax * Vmax;
+    clAtVmax = p.W / (qVmax * p.S);
+  }
+
+  $("areaOut").textContent = p.S.toFixed(4) + " m²";
+  $("arOut").textContent = p.AR.toFixed(2);
+  $("weightOut").textContent = p.W.toFixed(2) + " N";
+  $("thrustOut").textContent = p.staticT.toFixed(2) + " N";
+  $("twOut").textContent = (p.staticT / p.W).toFixed(2);
+  $("stallOut").textContent = Vstall.toFixed(2) + " m/s";
+  $("vmaxOut").textContent = isFinite(Vmax) ? Vmax.toFixed(1) + " m/s" : "無法平飛";
+  $("clAtVmaxOut").textContent = isFinite(clAtVmax) ? clAtVmax.toFixed(2) : "--";
+  $("liftAtTestOut").textContent = liftAtCLmax.toFixed(2) + " N";
+  $("liftMassOut").textContent = Math.round(liftMassG) + " g";
+  $("needClOut").textContent = needCL.toFixed(2);
+  $("dragTestOut").textContent = dragTest.toFixed(2) + " N";
+
+  const st = statusText(p, Vstall, Vmax, needCL, dragTest, Ttest);
+  const box = $("statusBox");
+  box.className = "statusBox " + st.cls;
+  box.textContent = st.text;
+
+  drawChart(p, Vstall, Vmax);
+}
+
+function drawChart(p, Vstall, Vmax) {
+  const canvas = $("chart");
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width;
+  const H = canvas.height;
+
+  const padL = 70;
+  const padR = 26;
+  const padT = 28;
+  const padB = 54;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, W, H);
+
+  const vmaxPlot = Math.max(25, isFinite(Vmax) ? Math.ceil((Vmax + 5) / 5) * 5 : 25);
+
+  let maxY = p.staticT;
+  for (let v = 1; v <= vmaxPlot; v += 0.5) {
+    maxY = Math.max(maxY, thrustAvailable(v, p), dragLevel(v, p));
+  }
+  maxY = Math.ceil(maxY / 2) * 2;
+  if (maxY < 2) maxY = 2;
+
+  function xScale(v) {
+    return padL + (v / vmaxPlot) * (W - padL - padR);
+  }
+
+  function yScale(y) {
+    return H - padB - (y / maxY) * (H - padT - padB);
+  }
+
+  // grid
+  ctx.strokeStyle = "#d7e0ea";
+  ctx.lineWidth = 1;
+  ctx.font = "15px system-ui, sans-serif";
+  ctx.fillStyle = "#475569";
+
+  for (let i = 0; i <= 5; i++) {
+    const yv = maxY * i / 5;
+    const y = yScale(yv);
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(W - padR, y);
+    ctx.stroke();
+    ctx.fillText(yv.toFixed(1) + " N", 10, y + 5);
+  }
+
+  for (let v = 0; v <= vmaxPlot; v += 5) {
+    const x = xScale(v);
+    ctx.beginPath();
+    ctx.moveTo(x, padT);
+    ctx.lineTo(x, H - padB);
+    ctx.stroke();
+    ctx.fillText(v + " m/s", x - 22, H - 18);
+  }
+
+  // axes
+  ctx.strokeStyle = "#334155";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(padL, padT);
+  ctx.lineTo(padL, H - padB);
+  ctx.lineTo(W - padR, H - padB);
+  ctx.stroke();
+
+  // thrust curve
+  ctx.strokeStyle = "#1f5f99";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  for (let i = 0; i <= 300; i++) {
+    const v = vmaxPlot * i / 300;
+    const yv = thrustAvailable(v, p);
+    const x = xScale(v);
+    const y = yScale(yv);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // drag curve
+  ctx.strokeStyle = "#b45309";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  let started = false;
+  for (let i = 1; i <= 300; i++) {
+    const v = vmaxPlot * i / 300;
+    const yv = dragLevel(v, p);
+    if (!isFinite(yv) || yv > maxY * 1.2) continue;
+    const x = xScale(v);
+    const y = yScale(yv);
+    if (!started) {
+      ctx.moveTo(x, y);
+      started = true;
+    } else {
+      ctx.lineTo(x, y);
+    }
+  }
+  ctx.stroke();
+
+  // stall line
+  if (isFinite(Vstall) && Vstall <= vmaxPlot) {
+    const x = xScale(Vstall);
+    ctx.strokeStyle = "#dc2626";
+    ctx.setLineDash([8, 6]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, padT);
+    ctx.lineTo(x, H - padB);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "#dc2626";
+    ctx.fillText("失速", x + 5, padT + 18);
+  }
+
+  // Vmax line
+  if (isFinite(Vmax) && Vmax <= vmaxPlot) {
+    const x = xScale(Vmax);
+    ctx.strokeStyle = "#047857";
+    ctx.setLineDash([8, 6]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, padT);
+    ctx.lineTo(x, H - padB);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "#047857";
+    ctx.fillText("Vmax", x + 5, padT + 40);
+  }
+
+  // labels
+  ctx.fillStyle = "#1f5f99";
+  ctx.fillText("可用推力 T", padL + 20, padT + 22);
+  ctx.fillStyle = "#b45309";
+  ctx.fillText("水平飛行所需阻力 D", padL + 20, padT + 46);
+
+  ctx.fillStyle = "#0f172a";
+  ctx.font = "17px system-ui, sans-serif";
+  ctx.fillText("推力與阻力 vs 速度", padL, 20);
+}
+
+calculate();
+</script>
+</body>
+</html>
