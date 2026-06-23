@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第1課｜看見電：電荷、電場與電弧｜詳細網頁版投影片</title>
+  <style>
+    :root{
+      --bg:#f4f8fc;
+      --paper:#ffffff;
+      --ink:#18324a;
+      --muted:#5b7186;
+      --line:#d9e4ef;
+      --accent:#0b78c8;
+      --accent2:#ffb51f;
+      --safe:#188857;
+      --warn:#d9541e;
+      --danger:#c5352e;
+      --dark:#0d2238;
+      --shadow:0 12px 28px rgba(13,34,56,.08);
+      --radius:22px;
+      --slide-gap:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      line-height:1.75;
+      background:
+        radial-gradient(circle at 12% -5%, rgba(11,120,200,.12), transparent 30rem),
+        radial-gradient(circle at 90% 8%, rgba(255,181,31,.12), transparent 26rem),
+        var(--bg);
+    }
+    a{color:var(--accent)}
+    .wrap{max-width:1180px;margin:0 auto;padding:24px}
+    .hero{
+      display:grid;grid-template-columns:1.25fr .75fr;gap:26px;align-items:center;
+      min-height:72vh;padding-top:24px;padding-bottom:8px;
+    }
+    .badge{display:inline-flex;gap:8px;align-items:center;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.9);font-weight:800;color:var(--muted)}
+    h1{font-size:clamp(2.4rem,5vw,4.7rem);line-height:1.05;margin:16px 0 10px;color:var(--dark);letter-spacing:-.04em}
+    .subtitle{font-size:clamp(1.05rem,2vw,1.35rem);color:var(--muted);max-width:760px}
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+    .btn{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:900;text-decoration:none;border:1px solid transparent;background:var(--accent);color:#fff;box-shadow:0 10px 20px rgba(11,120,200,.16)}
+    .btn.secondary{background:#fff;color:var(--accent);border-color:var(--line);box-shadow:none}
+    .panel,.slide{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .panel{padding:24px}
+    nav{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);background:rgba(244,248,252,.92);backdrop-filter:blur(10px)}
+    nav .wrap{display:flex;gap:12px;overflow:auto;padding-top:10px;padding-bottom:10px}
+    nav a{white-space:nowrap;text-decoration:none;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);font-weight:800}
+    .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+    .mini{background:#f8fbff;border:1px solid var(--line);border-radius:18px;padding:16px}
+    .mini strong{display:block;color:var(--dark);margin-bottom:6px;font-size:1.08rem}
+    .callout{padding:16px 18px;border-left:7px solid var(--accent);border-radius:14px;background:#f5fbff}
+    .callout.safe{border-left-color:var(--safe);background:#f3fff7}
+    .callout.warn{border-left-color:var(--warn);background:#fff8f1}
+    .callout.danger{border-left-color:var(--danger);background:#fff5f5}
+    .slides{display:grid;gap:var(--slide-gap);margin-top:26px}
+    .slide{padding:28px;scroll-margin-top:84px}
+    .slide-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
+    .slide-num{font-weight:900;color:var(--accent);font-size:1rem}
+    h2{margin:0 0 8px;color:var(--dark);font-size:clamp(1.6rem,3vw,2.15rem);line-height:1.2}
+    h3{margin:18px 0 8px;color:var(--dark);font-size:1.22rem}
+    .muted{color:var(--muted)}
+    .grid{display:grid;gap:16px}
+    .grid.two{grid-template-columns:repeat(2,1fr)}
+    .grid.three{grid-template-columns:repeat(3,1fr)}
+    .kpi{display:inline-flex;align-items:center;gap:8px;background:#eef7ff;border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-weight:800;color:var(--accent);margin-right:8px;margin-bottom:8px}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+    th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+    th{background:#eef7ff;color:var(--dark)}
+    tr:last-child td{border-bottom:0}
+    .timeline{display:grid;gap:12px}
+    .time-card{display:grid;grid-template-columns:120px 1fr;gap:14px;border:1px solid var(--line);border-radius:18px;padding:14px;background:#f8fbff}
+    .time{font-weight:900;color:var(--accent)}
+    .speaker{background:#0d2238;color:#fff;border-radius:18px;padding:18px}
+    .speaker h3{color:#fff;margin-top:0}
+    .question-list li{margin:.5em 0}
+    .diagram{background:#fbfdff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;justify-content:center;align-items:center}
+    .diagram svg{max-width:100%;height:auto}
+    .steps{counter-reset:item;padding-left:0;list-style:none}
+    .steps li{position:relative;padding-left:48px;margin:14px 0}
+    .steps li::before{counter-increment:item;content:counter(item);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900}
+    .accordion{display:grid;gap:10px}
+    details{border:1px solid var(--line);border-radius:16px;background:#fff;padding:12px 14px}
+    summary{cursor:pointer;font-weight:900;color:var(--dark)}
+    .worksheet{border:2px solid #22384f;border-radius:18px;padding:18px;background:#fff}
+    .blank{display:inline-block;min-width:110px;border-bottom:2px solid #20374d;height:1.3em;vertical-align:bottom}
+    .footer-note{font-size:.93rem;color:var(--muted)}
+    .print-only{display:none}
+
+    .video-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:16px}
+    .video-card{background:#fbfdff;border:1px solid var(--line);border-radius:18px;padding:14px}
+    .video-card h3{margin-top:0}
+    .video-note{font-size:.92rem;color:var(--muted);margin:.5em 0 0}
+    .ratio{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#dfeaf5;border:1px solid var(--line)}
+    .ratio iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .ratio.short{aspect-ratio:9/16;max-width:280px;margin:0 auto}
+    .state-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+    .state{border:1px solid var(--line);border-radius:18px;padding:14px;background:#f8fbff}
+    .state .icon{font-size:2rem;line-height:1}
+    .state strong{display:block;color:var(--dark);font-size:1.05rem;margin:6px 0}
+    @media(max-width:900px){.video-grid,.state-row{grid-template-columns:1fr}}
+    @media print{.video-grid{display:block}.video-card{break-inside:avoid;margin:10px 0}.ratio{display:none}.video-card::after{content:"影片請見網頁版";font-size:.9rem;color:#555}}
+
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr;min-height:0}
+      .quick-grid,.grid.two,.grid.three{grid-template-columns:1fr}
+      .time-card{grid-template-columns:1fr}
+      .wrap{padding:18px}
+    }
+    @media print{
+      body{background:#fff;color:#000}
+      nav,.cta-row{display:none}
+      .slide,.panel{box-shadow:none;break-inside:avoid}
+      .slide{page-break-inside:avoid}
+      .print-only{display:block}
+      .wrap{max-width:100%;padding:0 14mm}
+      .hero{min-height:0}
+      .speaker{background:#fff;color:#000;border:1px solid #888}
+      .speaker h3{color:#000}
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap hero" id="top">
+    <div>
+      <span class="badge">國小六年級｜第一堂課｜45 分鐘｜詳細版</span>
+      <h1>看見電：<br>電荷、電場與電弧</h1>
+      <p class="subtitle">這是一份可以直接投影上課的網頁版投影片。內容依照第一堂課流程完整展開，並加入「什麼是電弧」、「什麼是電漿」、「物質三態與第四態」以及對應影片。高壓與電漿相關影片一律定位為老師帶領觀看，不作為學生模仿操作。</p>
+      <div class="cta-row">
+        <a class="btn" href="#slides">開始播放內容</a>
+        <a class="btn secondary" href="#teacher">教師提示</a>
+        <a class="btn secondary" href="javascript:window.print()">列印講義</a>
+      </div>
+      <div class="quick-grid">
+        <div class="mini"><strong>本課大問題</strong>空氣平常不導電，為什麼有時會出現火花？</div>
+        <div class="mini"><strong>本課重點</strong>電荷、正負極、導體、絕緣體、電場、電弧。</div>
+        <div class="mini"><strong>安全原則</strong>高壓只由老師示範，學生不觸碰、不靠近、不自行操作。</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3 style="margin-top:0">本節課會銜接到什麼？</h3>
+      <p>這一堂課不是直接教離子風推進器的全部，而是先幫學生建立必要的背景知識：</p>
+      <ol class="steps">
+        <li>先知道「電荷」與「正負極」是什麼。</li>
+        <li>再知道哪些材料容易導電，哪些不容易導電。</li>
+        <li>接著理解看不見的「電場」會推動帶電粒子。</li>
+        <li>最後用老師示範的電弧，讓學生知道：空氣在高電壓下也可能被擊穿。</li>
+      </ol>
+      <div class="callout warn"><strong>對學生的說法：</strong>今天不是要你們「碰電」，而是要你們「看懂電」。</div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="wrap">
+      <a href="#overview">課程總覽</a>
+      <a href="#slides">投影片內容</a>
+      <a href="#worksheet">學習單</a>
+      <a href="#teacher">教師備註</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section id="overview" class="panel">
+      <h2>課程流程總覽</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>時間</th><th>單元</th><th>教學重點</th><th>學生任務</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0–5 分</td><td>情境引入</td><td>從閃電、靜電、插座電開始，喚起經驗。</td><td>回答生活中的「電」在哪裡。</td></tr>
+            <tr><td>5–12 分</td><td>電荷與正負極</td><td>認識正電、負電、吸引與排斥。</td><td>說出「同號相斥、異號相吸」。</td></tr>
+            <tr><td>12–20 分</td><td>導體與絕緣體</td><td>知道金屬易導電，塑膠、乾木頭較不易。</td><td>把常見物品分類。</td></tr>
+            <tr><td>20–28 分</td><td>電場概念</td><td>了解看不見的電場會推動帶電粒子。</td><td>用「斜坡推球」比喻說明電場。</td></tr>
+            <tr><td>28–36 分</td><td>老師示範：電弧與電漿</td><td>空氣在高電壓下可能被擊穿，局部形成帶電粒子組成的電漿通道。</td><td>觀察顏色、聲音、亮光、距離變化；只觀察不操作。</td></tr>
+            <tr><td>36–42 分</td><td>安全討論</td><td>理解為什麼高壓裝置不能碰。</td><td>回答安全規則與原因。</td></tr>
+            <tr><td>42–45 分</td><td>總結與出口題</td><td>整理本課知識，銜接離子風推進器。</td><td>完成一句話總結與小測驗。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="slides" class="slides">
+      <article class="slide" id="s1">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 1</div>
+            <h2>今天的大問題：空氣也會讓電通過嗎？</h2>
+          </div>
+          <div class="muted">0–5 分</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <p>先問學生幾個生活中的問題：</p>
+            <ul class="question-list">
+              <li>你看過閃電嗎？那是不是電？</li>
+              <li>冬天脫毛衣時，會不會聽到「啪」一聲？</li>
+              <li>頭髮被氣球摩擦後會豎起來，這跟插座裡的電有關嗎？</li>
+              <li>如果空氣都不會導電，為什麼天空會打雷閃電？</li>
+            </ul>
+            <div class="callout"><strong>引導結論：</strong>電在生活中很常見，但有些電看得到、有些看不到；有些很安全，有些非常危險。</div>
+          </div>
+          <div class="diagram">
+            <svg viewBox="0 0 460 260" aria-label="生活中的電示意圖">
+              <rect x="20" y="20" width="120" height="90" rx="16" fill="#eef7ff" stroke="#c9dceb"/>
+              <text x="80" y="52" text-anchor="middle" font-size="18" fill="#18324a" font-weight="700">閃電</text>
+              <path d="M80 62 l-14 28 h18 l-10 26 30-36 h-18 l12-18z" fill="#ffb51f" stroke="#d89400"/>
+              <rect x="170" y="20" width="120" height="90" rx="16" fill="#eef7ff" stroke="#c9dceb"/>
+              <text x="230" y="52" text-anchor="middle" font-size="18" fill="#18324a" font-weight="700">氣球靜電</text>
+              <circle cx="230" cy="84" r="22" fill="#ffdf8a" stroke="#d9ab18"/>
+              <path d="M220 86 q10 -20 20 0" stroke="#7b5a00" stroke-width="3" fill="none"/>
+              <rect x="320" y="20" width="120" height="90" rx="16" fill="#eef7ff" stroke="#c9dceb"/>
+              <text x="380" y="52" text-anchor="middle" font-size="18" fill="#18324a" font-weight="700">插座用電</text>
+              <rect x="350" y="68" width="60" height="36" rx="8" fill="#fff" stroke="#c9dceb"/>
+              <circle cx="370" cy="86" r="5" fill="#18324a"/><circle cx="390" cy="86" r="5" fill="#18324a"/>
+              <text x="230" y="164" text-anchor="middle" font-size="22" fill="#0b78c8" font-weight="800">都是「電」的現象，但情況和危險程度不同</text>
+              <line x1="80" y1="126" x2="230" y2="146" stroke="#8bb9dd" stroke-width="3" stroke-dasharray="8 8"/>
+              <line x1="380" y1="126" x2="230" y2="146" stroke="#8bb9dd" stroke-width="3" stroke-dasharray="8 8"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="video-grid">
+          <div class="video-card">
+            <h3>影片：靜電如何產生？</h3>
+            <div class="ratio">
+              <iframe src="https://www.youtube.com/embed/owla5xPR268" title="靜電發生影片 1" allowfullscreen></iframe>
+            </div>
+            <p class="video-note">建議放在情境引入後，讓學生先看到摩擦、接觸與電荷累積造成的現象。</p>
+          </div>
+          <div class="video-card">
+            <h3>影片：靜電示範補充</h3>
+            <div class="ratio">
+              <iframe src="https://www.youtube.com/embed/3aB6TyhaSsQ" title="靜電發生影片 2" allowfullscreen></iframe>
+            </div>
+            <p class="video-note">可用來補充「平常看不見的電荷，會透過物體動作表現出來」。</p>
+          </div>
+        </div>
+
+        <div class="speaker">
+          <h3>提示</h3>
+          <p>「電就在生活裡」：閃電、靜電、插座，都和電有關，但形式不同，危險程度也不同。</p>
+        </div>
+      </article>
+
+      <article class="slide" id="s2">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 2</div>
+            <h2>電荷是什麼？為什麼有正負極？</h2>
+          </div>
+          <div class="muted">5–12 分</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <p>可以把電荷想成一種「會互相影響的小特性」。我們把它分成兩種：</p>
+            <div>
+              <span class="kpi">正電</span>
+              <span class="kpi">負電</span>
+              <span class="kpi">異號相吸</span>
+              <span class="kpi">同號相斥</span>
+            </div>
+            <ul>
+              <li><strong>同樣的電荷</strong>彼此會排斥，例如正正、負負。</li>
+              <li><strong>不一樣的電荷</strong>彼此會吸引，例如正負。</li>
+              <li>在很多情況下，電子帶負電，失去電子的物體容易表現出正電。</li>
+              <li>今天先不用背很難的定義，只要知道「正負電會互相作用」就可以。</li>
+            </ul>
+            <div class="callout safe"><strong>對學生的一句話：</strong>電荷就像物體身上的「電的標記」，正和負會互相影響。</div>
+          </div>
+          <div class="diagram">
+            <svg viewBox="0 0 460 260" aria-label="正負電吸引排斥示意圖">
+              <text x="120" y="30" text-anchor="middle" font-size="20" font-weight="800" fill="#18324a">同號相斥</text>
+              <circle cx="85" cy="110" r="34" fill="#ffefb8" stroke="#d9ab18" stroke-width="3"/>
+              <text x="85" y="118" text-anchor="middle" font-size="34" font-weight="800" fill="#8a6500">+</text>
+              <circle cx="155" cy="110" r="34" fill="#ffefb8" stroke="#d9ab18" stroke-width="3"/>
+              <text x="155" y="118" text-anchor="middle" font-size="34" font-weight="800" fill="#8a6500">+</text>
+              <path d="M60 110 h-26" stroke="#d9541e" stroke-width="4"/>
+              <path d="M37 110 l10 -8 v16 z" fill="#d9541e"/>
+              <path d="M180 110 h26" stroke="#d9541e" stroke-width="4"/>
+              <path d="M203 110 l-10 -8 v16 z" fill="#d9541e"/>
+
+              <text x="340" y="30" text-anchor="middle" font-size="20" font-weight="800" fill="#18324a">異號相吸</text>
+              <circle cx="305" cy="110" r="34" fill="#ffefb8" stroke="#d9ab18" stroke-width="3"/>
+              <text x="305" y="118" text-anchor="middle" font-size="34" font-weight="800" fill="#8a6500">+</text>
+              <circle cx="375" cy="110" r="34" fill="#e4f4ff" stroke="#71a8d4" stroke-width="3"/>
+              <text x="375" y="118" text-anchor="middle" font-size="34" font-weight="800" fill="#256b9b">−</text>
+              <path d="M330 110 h20" stroke="#188857" stroke-width="4"/>
+              <path d="M347 110 l-10 -8 v16 z" fill="#188857"/>
+              <path d="M350 110 h-20" stroke="#188857" stroke-width="4"/>
+              <path d="M333 110 l10 -8 v16 z" fill="#188857"/>
+
+              <text x="230" y="220" text-anchor="middle" font-size="22" fill="#0b78c8" font-weight="800">記憶口訣：同號相斥，異號相吸</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="video-grid">
+          <div class="video-card">
+            <h3>影片：頭髮被電荷吸引，接近放電</h3>
+            <div class="ratio short">
+              <iframe src="https://www.youtube.com/embed/dlzabA4L1iA" title="頭髮被電荷吸引 Shorts" allowfullscreen></iframe>
+            </div>
+            <p class="video-note">適合放在「同號相斥、異號相吸」後。提醒學生：影片中的高壓或強靜電現象只能觀看，不模仿。</p>
+          </div>
+          <div class="video-card">
+            <h3>觀察問題</h3>
+            <ul>
+              <li>頭髮為什麼會被拉起來？</li>
+              <li>頭髮彼此之間為什麼可能分開？</li>
+              <li>這個現象比較像「吸引」還是「排斥」？</li>
+            </ul>
+            <div class="callout warn"><strong>安全提醒：</strong>不要用人體測試高壓電或火花。課堂上只做低風險靜電活動，高壓示範由老師完成。</div>
+          </div>
+        </div>
+
+      </article>
+
+      <article class="slide" id="s3">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 3</div>
+            <h2>導體與絕緣體：什麼東西比較容易讓電通過？</h2>
+          </div>
+          <div class="muted">12–20 分</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <p>不是所有材料都一樣容易讓電通過。可以用兩大類來理解：</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>類別</th><th>特徵</th><th>例子</th></tr></thead>
+                <tbody>
+                  <tr><td>導體</td><td>比較容易讓電流通過</td><td>銅線、鋁箔、鐵釘、硬幣</td></tr>
+                  <tr><td>絕緣體</td><td>比較不容易讓電流通過</td><td>塑膠尺、橡皮、乾木頭、玻璃</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <h3>給學生的理解方式</h3>
+            <ul>
+              <li>金屬裡有比較容易移動的電子，所以通常比較容易導電。</li>
+              <li>塑膠、橡膠中的電子不容易自由移動，所以比較不容易導電。</li>
+              <li>「比較不容易」不等於「永遠不會」。在很高電壓、潮濕或特殊情況下，表現可能改變。</li>
+            </ul>
+          </div>
+          <div>
+            <div class="diagram" style="margin-bottom:16px">
+              <svg viewBox="0 0 460 250" aria-label="導體與絕緣體粒子示意圖">
+                <rect x="30" y="30" width="170" height="160" rx="18" fill="#eef7ff" stroke="#c9dceb"/>
+                <text x="115" y="58" text-anchor="middle" font-size="22" font-weight="800" fill="#18324a">導體</text>
+                <circle cx="75" cy="100" r="10" fill="#6f8ba3"/><circle cx="115" cy="95" r="10" fill="#6f8ba3"/><circle cx="155" cy="115" r="10" fill="#6f8ba3"/>
+                <circle cx="95" cy="140" r="10" fill="#6f8ba3"/><circle cx="145" cy="150" r="10" fill="#6f8ba3"/>
+                <path d="M58 78 h110" stroke="#0b78c8" stroke-width="4" stroke-dasharray="9 7"/>
+                <path d="M160 78 l-10 -8 v16 z" fill="#0b78c8"/>
+                <text x="115" y="180" text-anchor="middle" font-size="18" fill="#0b78c8">電子較容易移動</text>
+
+                <rect x="260" y="30" width="170" height="160" rx="18" fill="#fff8f1" stroke="#efd5bd"/>
+                <text x="345" y="58" text-anchor="middle" font-size="22" font-weight="800" fill="#18324a">絕緣體</text>
+                <circle cx="305" cy="100" r="10" fill="#c29e74"/><circle cx="345" cy="95" r="10" fill="#c29e74"/><circle cx="385" cy="115" r="10" fill="#c29e74"/>
+                <circle cx="325" cy="140" r="10" fill="#c29e74"/><circle cx="375" cy="150" r="10" fill="#c29e74"/>
+                <path d="M300 80 h88" stroke="#d9541e" stroke-width="4"/>
+                <path d="M385 80 l-10 -8 v16 z" fill="#d9541e"/>
+                <line x1="390" y1="72" x2="410" y2="92" stroke="#d9541e" stroke-width="4"/>
+                <line x1="410" y1="72" x2="390" y2="92" stroke="#d9541e" stroke-width="4"/>
+                <text x="345" y="180" text-anchor="middle" font-size="18" fill="#d9541e">電子不容易自由移動</text>
+              </svg>
+            </div>
+            <div class="callout"><strong>小活動：</strong>拿出銅線、鋁箔、塑膠尺、木棒，請學生先猜哪一些比較容易導電，再公佈分類。</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide" id="s4">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 4</div>
+            <h2>電場：看不見的推力</h2>
+          </div>
+          <div class="muted">20–28 分</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <p>學生最容易卡住的地方是：<strong>既然看不到，怎麼知道電場存在？</strong></p>
+            <p>你可以這樣說：</p>
+            <ul>
+              <li>風看不見，但我們可以看到樹葉搖動，所以知道有風。</li>
+              <li>電場看不見，但它會推動帶電粒子，所以我們知道有電場。</li>
+              <li>電場通常從<strong>正極指向負極</strong>。</li>
+              <li>如果有一個帶電粒子在裡面，它就會受到推力。</li>
+            </ul>
+            <div class="callout safe"><strong>簡單比喻：</strong>電場就像一個看不見的斜坡，帶電粒子像在斜坡上的小球，會被推著移動。</div>
+          </div>
+          <div class="diagram">
+            <svg viewBox="0 0 460 260" aria-label="電場示意圖">
+              <circle cx="95" cy="130" r="42" fill="#ffefb8" stroke="#d9ab18" stroke-width="3"/>
+              <text x="95" y="140" text-anchor="middle" font-size="38" font-weight="800" fill="#8a6500">+</text>
+              <circle cx="365" cy="130" r="42" fill="#e4f4ff" stroke="#71a8d4" stroke-width="3"/>
+              <text x="365" y="140" text-anchor="middle" font-size="38" font-weight="800" fill="#256b9b">−</text>
+
+              <defs>
+                <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                  <path d="M0,0 L8,4 L0,8 z" fill="#0b78c8"></path>
+                </marker>
+              </defs>
+              <line x1="145" y1="85" x2="315" y2="85" stroke="#0b78c8" stroke-width="4" marker-end="url(#arr)"/>
+              <line x1="145" y1="130" x2="315" y2="130" stroke="#0b78c8" stroke-width="4" marker-end="url(#arr)"/>
+              <line x1="145" y1="175" x2="315" y2="175" stroke="#0b78c8" stroke-width="4" marker-end="url(#arr)"/>
+              <circle cx="220" cy="130" r="16" fill="#ffe3e0" stroke="#d9541e" stroke-width="3"/>
+              <text x="220" y="136" text-anchor="middle" font-size="22" font-weight="800" fill="#d9541e">•</text>
+              <text x="230" y="60" text-anchor="middle" font-size="22" font-weight="800" fill="#18324a">電場方向：由正極指向負極</text>
+              <text x="230" y="230" text-anchor="middle" font-size="19" fill="#5b7186">如果中間有帶電粒子，就會受到電場的推動</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="video-grid">
+          <div class="video-card">
+            <h3>影片：Electric Force 電力是什麼？</h3>
+            <div class="ratio">
+              <iframe src="https://www.youtube.com/embed/2EBNY3QnCGA" title="Electric Force" allowfullscreen></iframe>
+            </div>
+            <p class="video-note">建議放在電場示意圖之後。可引導學生把「電場」理解成讓帶電粒子受力的原因。</p>
+          </div>
+          <div class="video-card">
+            <h3>看影片時要抓的重點</h3>
+            <ul>
+              <li>帶電物體之間會有力。</li>
+              <li>距離越近，作用通常越明顯。</li>
+              <li>正負電的組合不同，力的方向也不同。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="speaker">
+          <h3>教師提示</h3>
+          <p>電場會引導帶電粒子，而不是「電自己亂跑」。</p>
+        </div>
+      </article>
+
+      <article class="slide" id="s5">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 5</div>
+            <h2>空氣平常是絕緣體，為什麼有時會跳火花？</h2>
+          </div>
+          <div class="muted">承上啟下</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <p>大多數時候，空氣不容易讓電通過，所以平常我們不會看到空中一直有電流跑來跑去。</p>
+            <p>但是，如果<strong>電壓很高</strong>、距離很近，或尖端讓局部電場變得很強，空氣中的分子可能會被影響，變得比較容易導電。這時就可能出現：</p>
+            <ul>
+              <li><strong>電弧</strong>：明顯的火花，亮、熱、聲音也比較明顯。</li>
+              <li><strong>電暈</strong>：比較像微弱發光或周圍空氣被游離，沒有那麼劇烈。</li>
+            </ul>
+            <div class="callout warn"><strong>今天第一堂課只重點認識：</strong>電弧是空氣被高電壓擊穿後形成的可見放電現象。</div>
+          </div>
+          <div class="diagram">
+            <svg viewBox="0 0 460 260" aria-label="空氣被擊穿形成電弧示意圖">
+              <circle cx="100" cy="130" r="34" fill="#ffefb8" stroke="#d9ab18" stroke-width="3"/>
+              <text x="100" y="138" text-anchor="middle" font-size="34" font-weight="800" fill="#8a6500">+</text>
+              <circle cx="360" cy="130" r="34" fill="#e4f4ff" stroke="#71a8d4" stroke-width="3"/>
+              <text x="360" y="138" text-anchor="middle" font-size="34" font-weight="800" fill="#256b9b">−</text>
+              <path d="M140 130 C185 95, 250 165, 320 128" stroke="#77d7ff" stroke-width="8" fill="none" stroke-linecap="round"/>
+              <path d="M145 130 C190 90, 255 170, 315 125" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <circle cx="230" cy="128" r="58" fill="none" stroke="#bcecff" stroke-width="3" stroke-dasharray="8 8"/>
+              <text x="230" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#18324a">高電壓 → 空氣被擊穿 → 形成電弧</text>
+              <text x="230" y="225" text-anchor="middle" font-size="18" fill="#5b7186">看起來像一條亮亮的放電通道</text>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+
+      <article class="slide" id="s5a">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 6</div>
+            <h2>什麼是電弧？</h2>
+          </div>
+          <div class="muted">電弧概念補充</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <p><strong>電弧</strong>是兩個電極之間，空氣或其他氣體被高電壓擊穿後形成的明亮放電通道。</p>
+            <div class="callout"><strong>一句話：</strong>電弧就是「電壓高到把原本不容易導電的空氣打開一條可以導電的路」。</div>
+            <h3>電弧的特徵</h3>
+            <ul>
+              <li>通常會發光，像小閃電或火花。</li>
+              <li>可能有「啪」或「滋滋」的聲音。</li>
+              <li>可能產生熱，也可能讓附近空氣產生特殊氣味。</li>
+              <li>它不是普通的火焰，而是氣體放電現象。</li>
+            </ul>
+            <div class="callout danger"><strong>安全定位：</strong>電弧是高壓危險現象。課堂中只由老師在隔離距離內示範，學生只觀察，不操作、不靠近。</div>
+          </div>
+          <div class="diagram">
+            <svg viewBox="0 0 460 260" aria-label="電弧形成步驟">
+              <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#0b78c8"/></marker></defs>
+              <circle cx="80" cy="95" r="28" fill="#ffefb8" stroke="#d9ab18" stroke-width="3"/><text x="80" y="104" text-anchor="middle" font-size="28" font-weight="800" fill="#8a6500">+</text>
+              <circle cx="380" cy="95" r="28" fill="#e4f4ff" stroke="#71a8d4" stroke-width="3"/><text x="380" y="104" text-anchor="middle" font-size="28" font-weight="800" fill="#256b9b">−</text>
+              <path d="M115 95 C160 60, 230 130, 345 92" stroke="#76d7ff" stroke-width="8" fill="none" stroke-linecap="round"/>
+              <path d="M118 95 C162 58, 232 132, 342 92" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <text x="230" y="38" text-anchor="middle" font-size="21" fill="#18324a" font-weight="800">高電壓讓空氣產生放電通道</text>
+              <line x1="110" y1="172" x2="350" y2="172" stroke="#0b78c8" stroke-width="4" marker-end="url(#arr2)"/>
+              <text x="230" y="207" text-anchor="middle" font-size="18" fill="#5b7186">空氣被擊穿後，電流沿著通道通過</text>
+            </svg>
+          </div>
+        </div>
+        <div class="video-grid">
+          <div class="video-card">
+            <h3>影片：Lightning 閃電簡介</h3>
+            <div class="ratio">
+              <iframe src="https://www.youtube.com/embed/ZR0O1wodxyE" title="Lightning 簡介" allowfullscreen></iframe>
+            </div>
+            <p class="video-note">適合在講完電弧後播放：閃電可以視為自然界巨大尺度的放電現象，用來連結「教室火花」與「天空閃電」。</p>
+          </div>
+          <div class="video-card">
+            <h3>影片後提問</h3>
+            <ul>
+              <li>閃電為什麼會發光？</li>
+              <li>雲和地面之間可能有很大的什麼差異？</li>
+              <li>教室中的小電弧和天空中的閃電，哪裡相似、哪裡不同？</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide" id="s5b">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 7</div>
+            <h2>什麼是電漿？三態之外的「離子態」</h2>
+          </div>
+          <div class="muted">物質狀態補充</div>
+        </div>
+        <p>學生已經熟悉水的三態：固態、液態、氣態。這裡加入第四種常見於高溫、高能量或放電環境中的狀態：<strong>電漿</strong>。</p>
+        <div class="state-row">
+          <div class="state"><div class="icon">🧊</div><strong>固態</strong><p>形狀和體積大多固定。例：冰、石頭、金屬塊。</p></div>
+          <div class="state"><div class="icon">💧</div><strong>液態</strong><p>體積較固定，但形狀會隨容器改變。例：水、油。</p></div>
+          <div class="state"><div class="icon">💨</div><strong>氣態</strong><p>形狀和體積都容易改變。例：空氣、水蒸氣。</p></div>
+          <div class="state"><div class="icon">⚡</div><strong>電漿／離子態</strong><p>氣體中的部分粒子變成離子和電子，整體能受電場影響並發光。</p></div>
+        </div>
+        <div class="grid two">
+          <div>
+            <h3>給六年級學生的說法</h3>
+            <div class="callout"><strong>一句話：</strong>電漿就像「被電能量激發後，裡面有很多帶電粒子的氣體」。</div>
+            <ul>
+              <li>普通空氣大多是中性分子，不太會被電場整體推動。</li>
+              <li>電漿裡有離子和電子，所以會受到電場影響。</li>
+              <li>電弧、電暈、閃電、霓虹燈、太陽表面，都和電漿有關。</li>
+            </ul>
+          </div>
+          <div>
+            <h3>和離子風的關係</h3>
+            <p>下一堂課的離子風推進器會利用尖端附近很強的電場，讓空氣局部產生帶電粒子。這些帶電粒子被電場推動，再撞到附近的空氣分子，就可能形成可以感受到的風。</p>
+            <div class="callout safe"><strong>銜接句：</strong>要理解離子風，必須先知道「空氣可以被游離」，也就是局部變成含有帶電粒子的狀態。</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide" id="s5c">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 8</div>
+            <h2>危險實驗只觀看：電漿為什麼會有顏色？</h2>
+          </div>
+          <div class="muted">電漿顏色補充</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <p>不同氣體、不同能量條件下，電漿可能發出不同顏色的光。可以先用很簡單的方式告訴學生：</p>
+            <div class="callout"><strong>一句話：</strong>不同氣體被電激發後，放出的光顏色可能不同，所以我們會看到不同顏色的電漿。</div>
+            <ul>
+              <li>霓虹燈會有不同顏色，和氣體種類與燈管材料有關。</li>
+              <li>閃電、電弧、電漿球的顏色，不只是「漂亮」，也代表氣體和能量狀態不同。</li>
+              <li>這一段只做影片觀察，不做學生實作。</li>
+            </ul>
+            <div class="callout danger"><strong>安全提醒：</strong>高壓、微波、特斯拉線圈、裸露電極等實驗都不適合讓國小學生模仿。課堂只用影片與老師受控示範。</div>
+          </div>
+          <div class="video-card">
+            <h3>影片：Plasmas and Rainbows!</h3>
+            <div class="ratio">
+              <iframe src="https://www.youtube.com/embed/-Hq1VZVpl-o" title="Plasmas and Rainbows" allowfullscreen></iframe>
+            </div>
+            <p class="video-note">這裡先放入「電漿顏色」相關影片作為占位示範。若你有指定的「危險實驗：電漿的顏色」影片連結，可直接替換這個 iframe 的影片 ID。</p>
+          </div>
+        </div>
+        <h3>影片觀察任務</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>看到的顏色</th><th>可能代表什麼？</th><th>可以問學生的問題</th></tr></thead>
+            <tbody>
+              <tr><td>藍紫色</td><td>常見於空氣或某些氣體放電情境。</td><td>這和我們看到的小電弧顏色像不像？</td></tr>
+              <tr><td>紅橘色</td><td>可能來自不同氣體或不同發光材料。</td><td>為什麼不是所有電漿都同一種顏色？</td></tr>
+              <tr><td>白亮光</td><td>可能是高亮度、多種光混合或強放電。</td><td>亮度越亮是否一定越安全？為什麼？</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+
+      <article class="slide" id="s6">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 9</div>
+            <h2>老師示範：觀察電弧時，要看什麼？</h2>
+          </div>
+          <div class="muted">28–36 分</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <p>這一段是老師示範，高壓裝置由老師操作。學生的任務是「觀察與記錄」，不是操作。</p>
+            <h3>建議觀察重點</h3>
+            <ul>
+              <li>火花是什麼顏色？</li>
+              <li>有沒有聲音？像「啪」還是「滋滋」？</li>
+              <li>當兩極距離不同時，火花是否比較容易出現？</li>
+              <li>火花只會在空中隨便出現嗎？還是出現在兩極之間？</li>
+              <li>火花出現時，代表空氣發生了什麼事？</li>
+            </ul>
+            <div class="callout"><strong>示範目的：</strong>不是炫耀火花，而是讓學生知道：空氣在特殊條件下，也可能讓電通過。</div>
+          </div>
+          <div>
+            <div class="speaker" style="margin-bottom:16px">
+              <h3>學生觀察記錄句型</h3>
+              <ul>
+                <li>我看到火花出現在 <span class="blank"></span> 和 <span class="blank"></span> 之間。</li>
+                <li>我聽到的聲音像 <span class="blank"></span> 。</li>
+                <li>我猜空氣原本 <span class="blank"></span> 導電，但高電壓下會 <span class="blank"></span> 。</li>
+              </ul>
+            </div>
+            <div class="callout danger"><strong>重要：</strong>這一頁不提供學生操作步驟。只需要寫「老師示範、學生觀察」即可。</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide" id="s7">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 10</div>
+            <h2>安全討論：為什麼不能碰？</h2>
+          </div>
+          <div class="muted">36–42 分</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <h3>學生一定要知道的 5 條規則</h3>
+            <ol class="steps">
+              <li>高壓裝置只能老師操作。</li>
+              <li>看到火花或聽到放電聲，不可以伸手靠近。</li>
+              <li>不跨越安全線，不圍上去看。</li>
+              <li>裝置關掉後，也要等老師確認安全，不能自行接近。</li>
+              <li>如果聞到刺鼻味、看到異常連續火花，要立即停止示範。</li>
+            </ol>
+          </div>
+          <div>
+            <div class="callout danger"><strong>為什麼不能碰？</strong><br>因為高壓可能造成電擊、燙傷，也可能讓空氣突然放電。你看見的火花很小，但背後的電壓可能非常高。</div>
+            <div class="callout safe" style="margin-top:14px"><strong>對六年級學生的安全說法：</strong><br>好奇可以，但不能用手去試。科學課不是用身體當儀器，而是用眼睛、耳朵和腦袋來觀察。</div>
+            <h3>課堂提問</h3>
+            <ul>
+              <li>為什麼要畫安全線？</li>
+              <li>為什麼老師要先斷電再調整？</li>
+              <li>為什麼學生不能自己測試火花距離？</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide" id="s8">
+        <div class="slide-header">
+          <div>
+            <div class="slide-num">投影片 11</div>
+            <h2>本課總結：今天我們學到了什麼？</h2>
+          </div>
+          <div class="muted">42–45 分</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <div class="quick-grid" style="grid-template-columns:1fr 1fr">
+              <div class="mini"><strong>1. 電荷有正負</strong>同號相斥，異號相吸。</div>
+              <div class="mini"><strong>2. 材料有差別</strong>金屬較易導電，塑膠較不易。</div>
+              <div class="mini"><strong>3. 電場看不見</strong>但它會推動帶電粒子。</div>
+              <div class="mini"><strong>4. 空氣也可能導電</strong>在高電壓下可能被擊穿，出現電弧。</div>
+            </div>
+            <div class="callout"><strong>銜接下一堂：</strong>既然電場能推動帶電粒子，那麼它能不能「推動空氣」，形成沒有風扇的風呢？下一堂就會看到離子風。</div>
+          </div>
+          <div>
+            <h3>出口題</h3>
+            <ol>
+              <li>空氣平常比較像導體還是絕緣體？</li>
+              <li>電場通常從哪一極指向哪一極？</li>
+              <li>電弧代表空氣發生了什麼事？</li>
+            </ol>
+            <h3>一句話總結</h3>
+            <p>請學生完成這句話：</p>
+            <div class="worksheet">
+              <p>我今天知道：空氣平常不容易導電，但是在 <span class="blank"></span> 很高時，可能會被 <span class="blank"></span> ，於是出現 <span class="blank"></span> 。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="worksheet" class="panel">
+      <h2>可列印學習單</h2>
+      <div class="worksheet">
+        <p><strong>姓名：</strong><span class="blank"></span>　<strong>班級：</strong><span class="blank"></span>　<strong>日期：</strong><span class="blank"></span></p>
+        <h3>一、選一選</h3>
+        <p>1. 下列哪一個通常比較容易導電？</p>
+        <p>□ 塑膠尺　□ 銅線　□ 橡皮擦　□ 乾木棒</p>
+        <p>2. 電場通常從哪裡指向哪裡？</p>
+        <p>□ 從負極到正極　□ 從正極到負極　□ 沒有方向　□ 從電池到燈泡</p>
+        <p>3. 電弧表示：</p>
+        <p>□ 空氣變成冰　□ 空氣被高電壓擊穿　□ 電池沒電了　□ 燈泡壞掉了</p>
+        <p>4. 電漿比較接近哪一種說法？</p>
+        <p>□ 完全靜止的固體　□ 帶有許多帶電粒子的氣體狀態　□ 普通水蒸氣　□ 沒有能量的空氣</p>
+
+        <h3>二、填一填</h3>
+        <p>1. 同號電荷會 <span class="blank"></span> ，異號電荷會 <span class="blank"></span> 。</p>
+        <p>2. 金屬通常屬於 <span class="blank"></span> ，塑膠通常屬於 <span class="blank"></span> 。</p>
+        <p>3. 我看到的電弧像 <span class="blank"></span> ，聲音像 <span class="blank"></span> 。</p>
+        <p>4. 電漿中有帶電的 <span class="blank"></span> 和 <span class="blank"></span> 。</p>
+
+        <h3>三、寫一句話</h3>
+        <p>請用自己的話寫出：「為什麼空氣有時會出現火花？」</p>
+        <p style="height:5.5em;border:1px solid #b8c8d8;border-radius:10px;padding:8px"></p>
+      </div>
+      <p class="footer-note">這份網頁列印時，會保留重點內容與學習單，適合作為學生講義使用。</p>
+    </section>
+
+    <section id="teacher" class="panel">
+      <h2>教師備課補充</h2>
+      <div class="grid two">
+        <div>
+          <h3>教學語氣建議</h3>
+          <ul>
+            <li>避免一開始就用太多專業名詞，把「電場」講成看不見的推力。</li>
+            <li>對國小六年級來說，重點不是精確定義，而是概念清楚。</li>
+            <li>每個單元都盡量回到學生的生活經驗：閃電、靜電、插座、金屬、塑膠。</li>
+            <li>講到高壓時，要強調「老師示範」與「學生觀察」。</li>
+          </ul>
+          <h3>本課不要過度展開的內容</h3>
+          <ul>
+            <li>不必解釋複雜電路公式。</li>
+            <li>不必講太細的電子結構。</li>
+            <li>不必提供高壓裝置製作或調整細節。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>板書建議</h3>
+          <ol>
+            <li>同號相斥，異號相吸</li>
+            <li>導體：銅、鋁、鐵</li>
+            <li>絕緣體：塑膠、橡膠、乾木頭</li>
+            <li>電場：看不見，但會推電荷</li>
+            <li>高電壓 → 空氣被擊穿 → 電弧</li>
+          </ol>
+          <div class="callout warn"><strong>銜接下一課的句子：</strong><br>「今天我們看到空氣有時能讓電通過。那如果空氣中真的出現帶電粒子，電場能不能把它們推動，甚至形成風呢？」</div>
+        </div>
+      </div>
+
+      <h3>本頁嵌入影片清單</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>放置位置</th><th>影片主題</th><th>網址</th></tr></thead>
+          <tbody>
+            <tr><td>投影片 1</td><td>靜電發生影片 1</td><td>https://www.youtube.com/watch?v=owla5xPR268</td></tr>
+            <tr><td>投影片 1</td><td>靜電發生影片 2</td><td>https://www.youtube.com/watch?v=3aB6TyhaSsQ</td></tr>
+            <tr><td>投影片 2</td><td>頭髮被電荷吸引</td><td>https://www.youtube.com/shorts/dlzabA4L1iA</td></tr>
+            <tr><td>投影片 4</td><td>Electric Force</td><td>https://www.youtube.com/watch?v=2EBNY3QnCGA</td></tr>
+            <tr><td>投影片 6</td><td>Lightning 簡介</td><td>https://www.youtube.com/watch?v=ZR0O1wodxyE</td></tr>
+            <tr><td>投影片 8</td><td>電漿顏色補充，暫用 Plasmas and Rainbows!</td><td>https://www.youtube.com/watch?v=-Hq1VZVpl-o</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>常見迷思與修正</h3>
+      <div class="accordion">
+        <details>
+          <summary>迷思 1：火花就是火。</summary>
+          <div>修正：電弧看起來像火花，但本質上是空氣中的放電現象，不是一般燃燒的火焰。</div>
+        </details>
+        <details>
+          <summary>迷思 2：只要是塑膠就永遠絕對安全。</summary>
+          <div>修正：絕緣體是「比較不容易導電」，不是在所有情況下都完全不導電。高電壓、潮濕、損壞都可能改變狀況。</div>
+        </details>
+        <details>
+          <summary>迷思 3：電場就是電線裡跑來跑去的電。</summary>
+          <div>修正：電場比較像一種看不見的作用範圍，它會對帶電粒子施加作用；它不是一條會自己爬來爬去的線。</div>
+        </details>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

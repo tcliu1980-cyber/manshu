@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>單極馬達｜用電池、銅線與強力磁鐵做出會旋轉的馬達</title>
+  <style>
+    :root{
+      --bg:#f5f8fb; --paper:#fff; --ink:#18324a; --muted:#5b7186; --line:#d9e4ef;
+      --accent:#0b78c8; --accent2:#ffb51f; --safe:#188857; --warn:#d9541e; --danger:#c5352e;
+      --dark:#0d2238; --shadow:0 12px 28px rgba(13,34,56,.08); --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0; color:var(--ink); line-height:1.75;
+      font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:radial-gradient(circle at 12% -5%,rgba(11,120,200,.13),transparent 30rem),
+                 radial-gradient(circle at 92% 8%,rgba(255,181,31,.16),transparent 28rem),var(--bg);
+    }
+    .wrap{max-width:1180px;margin:0 auto;padding:24px}
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center;min-height:72vh}
+    .badge{display:inline-flex;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:800;color:var(--muted)}
+    h1{font-size:clamp(2.3rem,5vw,4.5rem);line-height:1.05;margin:16px 0 10px;color:var(--dark);letter-spacing:-.04em}
+    h2{margin:0 0 8px;color:var(--dark);font-size:clamp(1.6rem,3vw,2.15rem);line-height:1.2}
+    h3{margin:18px 0 8px;color:var(--dark);font-size:1.22rem}
+    .subtitle{font-size:clamp(1.05rem,2vw,1.35rem);color:var(--muted)}
+    .btn{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:900;text-decoration:none;border:1px solid transparent;background:var(--accent);color:#fff;box-shadow:0 10px 20px rgba(11,120,200,.16)}
+    .btn.secondary{background:#fff;color:var(--accent);border-color:var(--line);box-shadow:none}
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+    .panel,.slide{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .panel{padding:24px}
+    nav{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);background:rgba(245,248,251,.92);backdrop-filter:blur(10px)}
+    nav .wrap{display:flex;gap:12px;overflow:auto;padding-top:10px;padding-bottom:10px}
+    nav a{white-space:nowrap;text-decoration:none;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);font-weight:800}
+    .quick-grid,.grid.three{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .quick-grid{margin-top:18px}
+    .grid{display:grid;gap:16px}.grid.two{grid-template-columns:repeat(2,1fr)}
+    .mini{background:#f8fbff;border:1px solid var(--line);border-radius:18px;padding:16px}
+    .mini strong{display:block;color:var(--dark);margin-bottom:6px;font-size:1.08rem}
+    .callout{padding:16px 18px;border-left:7px solid var(--accent);border-radius:14px;background:#f5fbff}
+    .callout.safe{border-left-color:var(--safe);background:#f3fff7}.callout.warn{border-left-color:var(--warn);background:#fff8f1}.callout.danger{border-left-color:var(--danger);background:#fff5f5}
+    .slides{display:grid;gap:22px;margin-top:26px}.slide{padding:28px;scroll-margin-top:84px}
+    .slide-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
+    .slide-num{font-weight:900;color:var(--accent);font-size:1rem}.muted{color:var(--muted)}
+    .diagram{background:#fbfdff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;justify-content:center;align-items:center}.diagram svg{max-width:100%;height:auto}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+    th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#eef7ff;color:var(--dark)}
+    tr:last-child td{border-bottom:0}.table-wrap{overflow:auto}
+    .steps{counter-reset:item;padding-left:0;list-style:none}.steps li{position:relative;padding-left:48px;margin:14px 0}
+    .steps li::before{counter-increment:item;content:counter(item);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900}
+    details{border:1px solid var(--line);border-radius:16px;background:#fff;padding:12px 14px;margin:10px 0}summary{cursor:pointer;font-weight:900;color:var(--dark)}
+    .worksheet{border:2px solid #22384f;border-radius:18px;padding:18px;background:#fff}.blank{display:inline-block;min-width:110px;border-bottom:2px solid #20374d;height:1.3em;vertical-align:bottom}
+    .hero-device{position:relative;height:380px;border-radius:20px;background:radial-gradient(circle at 50% 42%,rgba(255,181,31,.20),transparent 110px),linear-gradient(180deg,#eef8ff,#fff);border:1px dashed #b7cde4;overflow:hidden}
+    .battery{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:94px;height:210px;border-radius:20px;background:linear-gradient(90deg,#dce5ee,#fff,#b8c9d8);border:3px solid #8198aa}
+    .battery:before{content:"+";position:absolute;left:50%;top:-34px;transform:translateX(-50%);font-size:30px;font-weight:900;color:#d9541e}.battery:after{content:"−";position:absolute;left:50%;bottom:-40px;transform:translateX(-50%);font-size:38px;font-weight:900;color:#0b78c8}
+    .nub{position:absolute;left:50%;top:-12px;transform:translateX(-50%);width:38px;height:14px;border-radius:8px;background:#d8a326;border:2px solid #a97d12}
+    .magnet{position:absolute;left:50%;top:76%;transform:translate(-50%,-50%);width:110px;height:34px;border-radius:18px;background:linear-gradient(90deg,#c5352e 0 50%,#0b78c8 50% 100%);border:3px solid #6c7d8d}
+    .magnet span{position:absolute;top:3px;color:#fff;font-weight:900}.magnet .n{left:24px}.magnet .s{right:24px}
+    .wire{position:absolute;left:50%;top:39%;transform:translate(-50%,-50%);width:230px;height:250px;border:8px solid #c27a28;border-top-width:10px;border-radius:115px 115px 44px 44px;border-bottom:0;filter:drop-shadow(0 4px 5px rgba(13,34,56,.12));animation:spinGlow 2.5s infinite}
+    .wire:before,.wire:after{content:"";position:absolute;bottom:-86px;width:8px;height:110px;background:#c27a28;border-radius:6px}.wire:before{left:19px;transform:rotate(12deg)}.wire:after{right:19px;transform:rotate(-12deg)}
+    @keyframes spinGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(255,181,31,0))}50%{filter:drop-shadow(0 0 12px rgba(255,181,31,.7))}}
+    .arrow-spin{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:285px;height:285px;border-radius:50%;border:4px dashed rgba(11,120,200,.45);animation:rotate 5s linear infinite}
+    .arrow-spin:after{content:"";position:absolute;right:16px;top:36px;border-left:18px solid #0b78c8;border-top:10px solid transparent;border-bottom:10px solid transparent;transform:rotate(35deg)}
+    @keyframes rotate{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+    .label{position:absolute;padding:6px 10px;border-radius:10px;background:#fff;border:1px solid var(--line);font-size:.92rem;font-weight:900;box-shadow:0 8px 16px rgba(13,34,56,.08)}
+    .label.l1{top:20px;left:18px;color:#d9541e}.label.l2{bottom:18px;right:18px;color:#0b78c8}.label.l3{top:160px;right:14px;color:#8a4d16}
+    @media(max-width:900px){.hero,.grid.two,.quick-grid,.grid.three{grid-template-columns:1fr}.hero{min-height:0}.wrap{padding:18px}}
+    @media print{body{background:#fff;color:#000}nav,.cta-row{display:none}.slide,.panel{box-shadow:none;break-inside:avoid}.wrap{max-width:100%;padding:0 14mm}.hero{min-height:0}.hero-device{height:300px}}
+  </style>
+</head>
+<body>
+  <header class="wrap hero" id="top">
+    <div>
+      <span class="badge">國小高年級～國中｜低電壓電磁實驗｜單頁網頁</span>
+      <h1>單極馬達：<br>用電池、銅線與強力磁鐵做出會旋轉的馬達</h1>
+      <p class="subtitle">這是一個材料很少、效果明顯的電磁學示範。學生可以看到：只要有電流、磁場與可以移動的導線，就可能產生讓銅線旋轉的力。課程重點不是做出漂亮造型，而是理解「電流遇到磁場會受力」。</p>
+      <div class="cta-row"><a class="btn" href="#slides">開始上課</a><a class="btn secondary" href="#worksheet">列印學習單</a><a class="btn secondary" href="javascript:window.print()">列印網頁</a></div>
+      <div class="quick-grid">
+        <div class="mini"><strong>本課大問題</strong>為什麼一條銅線放在電池和磁鐵上，竟然會自己旋轉？</div>
+        <div class="mini"><strong>本課重點</strong>電流、磁場、受力、轉動、短路安全。</div>
+        <div class="mini"><strong>安全原則</strong>只用 AA 電池；每次運轉 5–10 秒；銅線發熱就立刻停止。</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3 style="margin-top:0">今天要做的裝置</h3>
+      <div class="hero-device" aria-label="單極馬達示意圖">
+        <div class="arrow-spin"></div><div class="wire"></div><div class="battery"><div class="nub"></div></div><div class="magnet"><span class="n">N</span><span class="s">S</span></div>
+        <div class="label l1">AA 電池正極接觸銅線頂端</div><div class="label l2">強力磁鐵接電池負極</div><div class="label l3">銅線形成電流路徑並旋轉</div>
+      </div>
+      <p><strong>一句話預告：</strong>電池讓銅線有電流，磁鐵提供磁場，電流在磁場中受到力，所以銅線開始轉動。</p>
+    </div>
+  </header>
+
+  <nav><div class="wrap"><a href="#overview">課程總覽</a><a href="#slides">網頁內容</a><a href="#worksheet">學習單</a><a href="#teacher">教師備註</a></div></nav>
+
+  <main class="wrap">
+    <section id="overview" class="panel">
+      <h2>課程流程建議：45 分鐘</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>時間</th><th>單元</th><th>教學重點</th><th>學生任務</th></tr></thead>
+        <tbody>
+          <tr><td>0–5 分</td><td>情境引入</td><td>馬達在哪裡？電風扇、玩具車、無人機、手機震動馬達。</td><td>說出生活中的馬達。</td></tr>
+          <tr><td>5–10 分</td><td>材料與安全</td><td>AA 電池、銅線、強力磁鐵；說明短路與發熱。</td><td>辨認材料與安全規則。</td></tr>
+          <tr><td>10–20 分</td><td>組裝示範</td><td>老師示範銅線造型與接觸點，讓學生看到銅線旋轉。</td><td>觀察接觸點與旋轉方向。</td></tr>
+          <tr><td>20–30 分</td><td>原理解釋</td><td>電流、磁場、受力與轉動。</td><td>完成「電流＋磁場＝力」流程圖。</td></tr>
+          <tr><td>30–38 分</td><td>變因討論</td><td>磁鐵方向、電池方向、銅線形狀、接觸摩擦。</td><td>預測旋轉方向與速度改變。</td></tr>
+          <tr><td>38–45 分</td><td>整理與學習單</td><td>單極馬達不是永動機；能量來自電池。</td><td>完成出口題。</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="slides" class="slides">
+      <article class="slide">
+        <div class="slide-header"><div><div class="slide-num">第 1 頁</div><h2>馬達是什麼？生活中哪裡有馬達？</h2></div><div class="muted">0–5 分</div></div>
+        <div class="grid two">
+          <div>
+            <p><strong>馬達</strong>是一種把電能轉成轉動或運動的裝置。</p>
+            <ul><li>電風扇：馬達讓扇葉旋轉。</li><li>玩具車：馬達讓輪子轉動。</li><li>無人機：馬達讓螺旋槳高速旋轉。</li><li>手機震動：小馬達讓手機產生震動。</li></ul>
+            <div class="callout"><strong>本課大問題：</strong>只用一顆電池、一段銅線和一個磁鐵，能不能做出最簡單的馬達？</div>
+          </div>
+          <div class="diagram"><svg viewBox="0 0 460 270" aria-label="生活中的馬達">
+            <rect x="30" y="42" width="115" height="80" rx="16" fill="#eef7ff" stroke="#c9dceb"/><text x="88" y="75" text-anchor="middle" font-size="20" font-weight="800" fill="#18324a">電風扇</text><circle cx="88" cy="98" r="18" fill="none" stroke="#0b78c8" stroke-width="4"/><path d="M88 98 C70 82, 78 65, 91 83 M88 98 C110 85, 126 95, 104 104 M88 98 C88 120, 70 126, 78 104" stroke="#0b78c8" stroke-width="4" fill="none"/>
+            <rect x="173" y="42" width="115" height="80" rx="16" fill="#eef7ff" stroke="#c9dceb"/><text x="231" y="75" text-anchor="middle" font-size="20" font-weight="800" fill="#18324a">玩具車</text><rect x="198" y="88" width="66" height="22" rx="8" fill="#ffb51f" stroke="#d89a00"/><circle cx="210" cy="113" r="10" fill="#18324a"/><circle cx="254" cy="113" r="10" fill="#18324a"/>
+            <rect x="316" y="42" width="115" height="80" rx="16" fill="#eef7ff" stroke="#c9dceb"/><text x="374" y="75" text-anchor="middle" font-size="20" font-weight="800" fill="#18324a">無人機</text><circle cx="350" cy="100" r="12" fill="none" stroke="#0b78c8" stroke-width="4"/><circle cx="398" cy="100" r="12" fill="none" stroke="#0b78c8" stroke-width="4"/><line x1="350" y1="100" x2="398" y2="100" stroke="#18324a" stroke-width="4"/>
+            <text x="230" y="198" text-anchor="middle" font-size="24" font-weight="900" fill="#0b78c8">馬達：把電能變成運動</text>
+          </svg></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-header"><div><div class="slide-num">第 2 頁</div><h2>材料：只需要三種主要材料</h2></div><div class="muted">5–10 分</div></div>
+        <div class="grid three">
+          <div class="mini"><strong>1. AA 鹼性電池</strong><p>建議使用一般 1.5 V AA 鹼性電池。不要使用鋰電池、充電鋰電池或大電流電池。</p></div>
+          <div class="mini"><strong>2. 裸銅線</strong><p>建議使用直徑約 0.8–1.2 mm 的裸銅線，容易彎形，也能維持形狀。</p></div>
+          <div class="mini"><strong>3. 強力磁鐵</strong><p>使用釹鐵硼圓片磁鐵或圓柱磁鐵，吸在電池負極下方。</p></div>
+        </div>
+        <div class="callout danger"><strong>安全提醒：</strong>這個實驗會讓電池短時間短路，所以電池、銅線與磁鐵可能發熱。每次只運轉 5–10 秒，摸到發熱就停止，等冷卻再繼續。</div>
+        <div class="callout warn" style="margin-top:14px"><strong>磁鐵提醒：</strong>強力磁鐵不能靠近悠遊卡、信用卡、磁條卡、機械手錶，也不能讓幼兒接觸或吞食。</div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-header"><div><div class="slide-num">第 3 頁</div><h2>組裝方式：讓銅線同時接觸正極與磁鐵</h2></div><div class="muted">老師示範或學生分組操作</div></div>
+        <div class="grid two">
+          <div>
+            <ol class="steps">
+              <li><strong>把磁鐵吸在電池負極：</strong>磁鐵放在電池底部，和電池負極接觸。</li>
+              <li><strong>把銅線彎成對稱形狀：</strong>上端要能輕輕碰到電池正極，下端兩側要能碰到磁鐵側面或底部。</li>
+              <li><strong>把銅線放上去：</strong>銅線上端接觸電池正極，下端接觸磁鐵，形成電流路徑。</li>
+              <li><strong>觀察旋轉：</strong>如果接觸良好、摩擦不太大，銅線會開始旋轉。</li>
+            </ol>
+            <div class="callout safe"><strong>操作口訣：</strong>上碰正極、下碰磁鐵、左右平衡、輕輕旋轉。</div>
+          </div>
+          <div class="diagram"><svg viewBox="0 0 460 330" aria-label="單極馬達接觸點示意圖">
+            <defs><marker id="arr1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#0b78c8"/></marker></defs>
+            <rect x="198" y="62" width="70" height="170" rx="18" fill="#f5f8fb" stroke="#8198aa" stroke-width="3"/><rect x="216" y="45" width="34" height="18" rx="8" fill="#d8a326" stroke="#a97d12" stroke-width="2"/>
+            <text x="233" y="35" text-anchor="middle" font-size="28" font-weight="900" fill="#d9541e">+</text><text x="233" y="260" text-anchor="middle" font-size="34" font-weight="900" fill="#0b78c8">−</text>
+            <rect x="185" y="240" width="98" height="32" rx="16" fill="#0b78c8" stroke="#466b90" stroke-width="3"/><text x="234" y="263" text-anchor="middle" font-size="18" font-weight="900" fill="#fff">磁鐵</text>
+            <path d="M233 54 C154 72, 130 145, 149 230 M233 54 C312 72, 336 145, 317 230" stroke="#c27a28" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <circle cx="233" cy="54" r="10" fill="#ffb51f" stroke="#b87936" stroke-width="3"/><circle cx="149" cy="230" r="10" fill="#ffb51f" stroke="#b87936" stroke-width="3"/><circle cx="317" cy="230" r="10" fill="#ffb51f" stroke="#b87936" stroke-width="3"/>
+            <text x="82" y="62" font-size="17" font-weight="800" fill="#d9541e">接觸點 1：正極</text><line x1="145" y1="70" x2="223" y2="55" stroke="#d9541e" stroke-width="3" marker-end="url(#arr1)"/>
+            <text x="72" y="250" font-size="17" font-weight="800" fill="#0b78c8">接觸點 2：磁鐵</text><line x1="145" y1="244" x2="149" y2="230" stroke="#0b78c8" stroke-width="3" marker-end="url(#arr1)"/>
+            <text x="318" y="300" font-size="18" font-weight="800" fill="#188857">形成閉合電路後，銅線可旋轉</text>
+          </svg></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-header"><div><div class="slide-num">第 4 頁</div><h2>為什麼會轉？電流遇到磁場會受到力</h2></div><div class="muted">20–30 分</div></div>
+        <div class="grid two">
+          <div>
+            <p>單極馬達的核心原理可以簡化成：</p>
+            <div class="callout"><strong>電流 + 磁場 → 導線受到力 → 產生轉動</strong></div>
+            <p>銅線接上電池後，電流會通過銅線。磁鐵提供磁場。當有電流的導線位在磁場中，導線會受到一個方向的力。銅線左右兩邊的受力方向可以造成轉動，所以銅線開始繞著電池旋轉。</p>
+            <ul><li>電池負責讓電流流動。</li><li>磁鐵負責提供磁場。</li><li>銅線是會動的導線。</li><li>電流和磁場一起作用，讓銅線受到推力。</li></ul>
+          </div>
+          <div class="diagram"><svg viewBox="0 0 460 330" aria-label="電流磁場受力示意圖">
+            <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#0b78c8"/></marker></defs>
+            <rect x="70" y="50" width="320" height="230" rx="20" fill="#fbfdff" stroke="#c9dceb"/>
+            <text x="230" y="82" text-anchor="middle" font-size="22" font-weight="900" fill="#18324a">三件事一起出現</text>
+            <circle cx="120" cy="150" r="38" fill="#eef7ff" stroke="#0b78c8" stroke-width="4"/><text x="120" y="144" text-anchor="middle" font-size="18" font-weight="900" fill="#0b78c8">電流</text><text x="120" y="168" text-anchor="middle" font-size="15" fill="#5b7186">I</text>
+            <circle cx="230" cy="150" r="38" fill="#fff8f1" stroke="#ffb51f" stroke-width="4"/><text x="230" y="144" text-anchor="middle" font-size="18" font-weight="900" fill="#8a6500">磁場</text><text x="230" y="168" text-anchor="middle" font-size="15" fill="#5b7186">B</text>
+            <circle cx="340" cy="150" r="38" fill="#f3fff7" stroke="#188857" stroke-width="4"/><text x="340" y="144" text-anchor="middle" font-size="18" font-weight="900" fill="#188857">受力</text><text x="340" y="168" text-anchor="middle" font-size="15" fill="#5b7186">F</text>
+            <line x1="158" y1="150" x2="190" y2="150" stroke="#0b78c8" stroke-width="4" marker-end="url(#arr2)"/><line x1="268" y1="150" x2="300" y2="150" stroke="#0b78c8" stroke-width="4" marker-end="url(#arr2)"/>
+            <path d="M160 230 C210 200, 275 260, 325 225" stroke="#188857" stroke-width="6" fill="none" stroke-linecap="round"/><text x="230" y="255" text-anchor="middle" font-size="20" font-weight="900" fill="#188857">受力方向持續造成轉動</text>
+          </svg></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-header"><div><div class="slide-num">第 5 頁</div><h2>電流路徑：它其實是一個短時間短路實驗</h2></div><div class="muted">安全核心</div></div>
+        <div class="grid two">
+          <div>
+            <p>單極馬達會讓電池的正負極透過銅線和磁鐵直接連接，形成很大的電流。</p>
+            <div class="callout danger"><strong>這就是為什麼它不能長時間運轉。</strong>長時間短路會讓電池、銅線、磁鐵變熱，甚至可能讓電池漏液或損壞。</div>
+            <ol class="steps"><li>只用一般 AA 鹼性電池，不用鋰電池或行動電源。</li><li>每次運轉 5–10 秒就停止。</li><li>覺得銅線或電池變熱，就放下等待冷卻。</li><li>不要把銅線一直固定在電池上。</li><li>課後把電池、磁鐵、銅線分開收納。</li></ol>
+          </div>
+          <div class="diagram"><svg viewBox="0 0 460 330" aria-label="短路與發熱提醒">
+            <rect x="205" y="55" width="70" height="170" rx="18" fill="#f5f8fb" stroke="#8198aa" stroke-width="3"/><rect x="222" y="38" width="34" height="18" rx="8" fill="#d8a326" stroke="#a97d12" stroke-width="2"/><rect x="194" y="238" width="94" height="32" rx="16" fill="#0b78c8" stroke="#466b90" stroke-width="3"/>
+            <path d="M240 48 C115 70, 100 210, 200 253 M240 48 C365 70, 380 210, 280 253" stroke="#c27a28" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <path d="M112 110 C90 95, 97 72, 120 84 C133 62, 165 72, 160 99 C190 100, 193 134, 166 141 C162 170, 120 165, 124 139 C96 144, 85 122, 112 110Z" fill="#fff8f1" stroke="#d9541e" stroke-width="3"/>
+            <text x="132" y="124" text-anchor="middle" font-size="18" font-weight="900" fill="#d9541e">會發熱</text><text x="240" y="302" text-anchor="middle" font-size="21" font-weight="900" fill="#c5352e">不要長時間短路</text>
+          </svg></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-header"><div><div class="slide-num">第 6 頁</div><h2>實驗觀察：改變方向會怎樣？</h2></div><div class="muted">30–38 分</div></div>
+        <div class="grid two">
+          <div>
+            <p>學生可以用觀察和推測來理解單極馬達，不需要先學完整的電磁方程式。</p>
+            <ul><li><strong>把電池上下反過來：</strong>電流方向改變，旋轉方向可能改變。</li><li><strong>把磁鐵翻面：</strong>磁場方向改變，旋轉方向可能改變。</li><li><strong>改變銅線形狀：</strong>平衡、接觸點和摩擦都會影響轉動。</li><li><strong>換更弱的磁鐵：</strong>磁場變弱，轉動可能變慢或不明顯。</li></ul>
+            <div class="callout"><strong>科學觀察重點：</strong>一次只改變一個條件，才知道是哪個變因造成結果改變。</div>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>改變項目</th><th>預測結果</th><th>可能原因</th></tr></thead><tbody>
+            <tr><td>磁鐵翻面</td><td>旋轉方向可能相反</td><td>磁場方向改變。</td></tr>
+            <tr><td>電池上下反過來</td><td>旋轉方向可能相反</td><td>電流方向改變。</td></tr>
+            <tr><td>銅線太歪</td><td>可能卡住或不轉</td><td>重心不穩、摩擦太大。</td></tr>
+            <tr><td>接觸點太緊</td><td>可能轉很慢</td><td>摩擦力變大。</td></tr>
+            <tr><td>磁鐵太弱</td><td>可能不容易轉</td><td>磁場較弱，受力較小。</td></tr>
+          </tbody></table></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-header"><div><div class="slide-num">第 7 頁</div><h2>故障排除：為什麼我的不會轉？</h2></div><div class="muted">實作修正</div></div>
+        <div class="grid two">
+          <div>
+            <details open><summary>問題 1：完全不動</summary><div>檢查銅線是否真的同時碰到電池正極和磁鐵；如果沒有形成閉合電路，就不會有電流。</div></details>
+            <details><summary>問題 2：只抖一下就停</summary><div>可能銅線重心不平衡、接觸點太緊、摩擦太大。調整銅線讓它左右對稱，並讓接觸點輕輕碰到即可。</div></details>
+            <details><summary>問題 3：銅線或電池很快變熱</summary><div>立刻停止，讓材料冷卻。這代表電流很大，不能長時間運轉。</div></details>
+            <details><summary>問題 4：轉得很慢</summary><div>可能磁鐵太弱、銅線太重、接觸點摩擦太大，或銅線形狀不夠平衡。</div></details>
+          </div>
+          <div class="callout safe"><h3 style="margin-top:0">最常見成功技巧</h3><ul><li>銅線左右盡量對稱。</li><li>銅線頂端只要輕碰正極，不要壓太緊。</li><li>銅線下端要能碰到磁鐵側面或底部。</li><li>磁鐵要夠強，並且穩定吸在電池負極。</li><li>啟動前可以輕輕撥一下銅線，降低靜摩擦影響。</li></ul></div>
+        </div>
+      </article>
+
+      <article class="slide">
+        <div class="slide-header"><div><div class="slide-num">第 8 頁</div><h2>這不是永動機：能量從哪裡來？</h2></div><div class="muted">38–45 分</div></div>
+        <div class="grid two">
+          <div>
+            <p>單極馬達看起來很神奇，但它不是永動機。</p>
+            <ul><li>能量來自電池的化學能。</li><li>電池提供電能，電流通過銅線。</li><li>電流與磁場作用，讓銅線受力旋轉。</li><li>部分能量變成銅線的運動，部分能量變成熱。</li><li>電池用久會沒電，所以它不是無限運轉。</li></ul>
+            <div class="callout"><strong>一句話總結：</strong>單極馬達把電池的能量，經由電流與磁場，轉成銅線的旋轉。</div>
+          </div>
+          <div class="diagram"><svg viewBox="0 0 460 300" aria-label="能量轉換流程">
+            <defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#0b78c8"/></marker></defs>
+            <rect x="30" y="90" width="95" height="70" rx="16" fill="#fff8f1" stroke="#efd5bd"/><text x="78" y="118" text-anchor="middle" font-size="17" font-weight="900" fill="#18324a">化學能</text><text x="78" y="143" text-anchor="middle" font-size="15" fill="#5b7186">電池</text>
+            <line x1="130" y1="125" x2="175" y2="125" stroke="#0b78c8" stroke-width="4" marker-end="url(#arr3)"/>
+            <rect x="180" y="90" width="95" height="70" rx="16" fill="#eef7ff" stroke="#c9dceb"/><text x="228" y="118" text-anchor="middle" font-size="17" font-weight="900" fill="#18324a">電能</text><text x="228" y="143" text-anchor="middle" font-size="15" fill="#5b7186">電流</text>
+            <line x1="280" y1="125" x2="325" y2="125" stroke="#0b78c8" stroke-width="4" marker-end="url(#arr3)"/>
+            <rect x="330" y="90" width="95" height="70" rx="16" fill="#f3fff7" stroke="#b9e3cd"/><text x="378" y="118" text-anchor="middle" font-size="17" font-weight="900" fill="#18324a">動能</text><text x="378" y="143" text-anchor="middle" font-size="15" fill="#5b7186">旋轉</text>
+            <path d="M225 180 C250 210, 310 220, 345 192" stroke="#d9541e" stroke-width="5" fill="none" stroke-linecap="round"/><text x="286" y="245" text-anchor="middle" font-size="19" font-weight="900" fill="#d9541e">也會產生熱</text>
+          </svg></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="worksheet" class="panel">
+      <h2>可列印學習單</h2>
+      <div class="worksheet">
+        <p><strong>姓名：</strong><span class="blank"></span>　<strong>班級：</strong><span class="blank"></span>　<strong>日期：</strong><span class="blank"></span></p>
+        <h3>一、選一選</h3>
+        <p>1. 單極馬達主要需要哪三種材料？</p><p>□ 電池、銅線、強力磁鐵　□ 紙杯、吸管、水　□ 燈泡、橡皮筋、膠水　□ 鹽水、蠟燭、玻璃</p>
+        <p>2. 銅線會旋轉，主要是因為：</p><p>□ 電流和磁場作用，使導線受力　□ 銅線自己想轉　□ 電池裡有風　□ 磁鐵會吸引所有東西</p>
+        <p>3. 這個實驗為什麼不能長時間運轉？</p><p>□ 因為會太安靜　□ 因為短路電流可能讓電池與銅線發熱　□ 因為磁鐵會變成木頭　□ 因為銅線會變透明</p>
+        <p>4. 如果把磁鐵翻面，可能會發生什麼事？</p><p>□ 旋轉方向可能改變　□ 電池變成兩顆　□ 銅線變塑膠　□ 完全沒有任何可能變化</p>
+        <h3>二、填一填</h3>
+        <p>1. 單極馬達中，電池提供 <span class="blank"></span> ，磁鐵提供 <span class="blank"></span> ，銅線通過電流後受到 <span class="blank"></span> 。</p>
+        <p>2. 單極馬達不是永動機，因為能量來自 <span class="blank"></span> 。</p>
+        <p>3. 每次運轉建議只做 <span class="blank"></span> 秒，發熱就要停止。</p>
+        <h3>三、觀察紀錄</h3>
+        <div class="table-wrap"><table><thead><tr><th>觀察項目</th><th>我的紀錄</th></tr></thead><tbody>
+          <tr><td>銅線形狀</td><td></td></tr><tr><td>是否能旋轉</td><td></td></tr><tr><td>旋轉方向</td><td></td></tr><tr><td>磁鐵翻面後的變化</td><td></td></tr><tr><td>電池或銅線是否發熱</td><td></td></tr>
+        </tbody></table></div>
+        <h3>四、寫一句話</h3><p>請用自己的話說明：「為什麼單極馬達會旋轉？」</p><p style="height:5.5em;border:1px solid #b8c8d8;border-radius:10px;padding:8px"></p>
+      </div>
+    </section>
+
+    <section id="teacher" class="panel">
+      <h2>教師備課補充</h2>
+      <div class="grid two">
+        <div>
+          <h3>適合材料規格</h3>
+          <ul><li><strong>電池：</strong>AA 鹼性電池最適合。不要用鋰電池、18650、行動電源或高放電倍率電池。</li><li><strong>銅線：</strong>裸銅線直徑約 0.8–1.2 mm。太細容易變形，太粗太重不易轉。</li><li><strong>磁鐵：</strong>釹鐵硼圓片磁鐵，直徑略大於電池底部較容易接觸。</li><li><strong>備品：</strong>砂紙、尖嘴鉗、膠帶、護目鏡、隔熱墊。</li></ul>
+        </div>
+        <div>
+          <h3>板書建議</h3>
+          <ol><li>電池：提供電流</li><li>磁鐵：提供磁場</li><li>銅線：通電後在磁場中受力</li><li>受力方向造成轉動</li><li>能量來源是電池，不是永動機</li><li>短路會發熱：每次 5–10 秒</li></ol>
+          <div class="callout warn"><strong>安全收尾句：</strong><br>「這是一個很漂亮的低電壓實驗，但低電壓不代表沒有風險；因為它會造成短路電流，所以時間要短、發熱要停。」</div>
+        </div>
+      </div>
+      <h3>常見迷思與修正</h3>
+      <details><summary>迷思 1：磁鐵把銅線吸著轉。</summary><div>修正：銅不是鐵磁性材料，主要不是被磁鐵直接吸引。銅線旋轉的關鍵是通電後在磁場中受到力。</div></details>
+      <details><summary>迷思 2：它是永動機。</summary><div>修正：不是。能量來自電池，電池用久會沒電，而且一部分能量會變成熱。</div></details>
+      <details><summary>迷思 3：轉越久越好。</summary><div>修正：錯。這是短路型實驗，轉太久會發熱，安全上應短時間觀察。</div></details>
+      <details><summary>迷思 4：換成更強電池一定更好。</summary><div>修正：不建議。更大電流會增加發熱與危險，課堂應使用一般 AA 鹼性電池即可。</div></details>
+    </section>
+  </main>
+</body>
+</html>
