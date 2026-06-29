@@ -1,0 +1,10 @@
+<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg">
+<rect width="640" height="300" fill="#fff"/><g stroke="#d8d8d2" stroke-width="1"><path d="M40 80H600M40 150H600M40 220H600"/><path d="M120 40V260M240 40V260M360 40V260M480 40V260"/></g>
+<g stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<rect x="70" y="95" width="110" height="80" rx="8"/><text x="92" y="140" font-family="Arial" font-size="22" fill="#111">Phone</text>
+<rect x="260" y="86" width="130" height="100" rx="10"/><text x="285" y="125" font-family="Arial" font-size="18" fill="#111">ESP32</text><text x="282" y="150" font-family="Arial" font-size="18" fill="#111">CAM</text>
+<rect x="470" y="65" width="100" height="70" rx="8"/><text x="500" y="108" font-family="Arial" font-size="18" fill="#111">ESC</text>
+<circle cx="520" cy="218" r="35"/><text x="496" y="225" font-family="Arial" font-size="18" fill="#111">Motor</text>
+<path d="M180 135H260"/><path d="M390 120H470"/><path d="M520 135V183"/><path d="M390 162 C430 185 455 202 485 218"/>
+</g><g fill="#1f4e79" font-family="Noto Sans TC,Arial" font-size="18" font-weight="700"><text x="70" y="40">手機遠端控制：Wi‑Fi AP / Web 控制介面 / PWM 訊號</text><text x="405" y="260">油門・升降舵・方向舵</text></g>
+</svg>

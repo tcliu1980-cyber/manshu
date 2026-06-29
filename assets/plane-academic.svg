@@ -1,0 +1,20 @@
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+<title id="t">90公分高翼定翼機示意圖</title><desc id="d">白底黑線的高翼訓練機工程示意圖</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#111"/></marker></defs>
+<rect width="760" height="420" fill="#fff"/>
+<g stroke="#d2d2cc" stroke-width="1"><path d="M40 70H720M40 140H720M40 210H720M40 280H720M40 350H720"/><path d="M100 40V380M220 40V380M340 40V380M460 40V380M580 40V380M700 40V380"/></g>
+<g stroke="#111" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round">
+  <path d="M160 220 C240 190 390 180 555 205 C585 210 598 222 580 234 C480 262 300 260 160 235 Z"/>
+  <path d="M360 118 C390 142 412 188 410 248 C407 305 380 342 350 356"/>
+  <path d="M340 120 C365 150 380 192 378 248 C375 302 355 336 328 354"/>
+  <path d="M380 126 L465 126 L485 148 L398 150 Z"/>
+  <path d="M396 255 L482 276 L492 300 L386 282 Z"/>
+  <path d="M150 218 L92 205 L88 188 L162 202"/>
+  <path d="M92 205 L65 221 L91 236"/>
+</g>
+<g stroke="#1f4e79" stroke-width="2" fill="none" stroke-dasharray="6 7">
+  <path d="M70 86H690" marker-start="url(#arrow)" marker-end="url(#arrow)"/><path d="M610 125V315" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+</g>
+<g fill="#111" font-family="Noto Sans TC,Arial" font-size="20" font-weight="700"><text x="320" y="78">翼展 900 mm</text><text x="625" y="225" transform="rotate(90 625 225)">高翼訓練機</text></g>
+<g fill="#1f4e79" font-family="Noto Sans TC,Arial" font-size="17"><text x="105" y="275">無刷馬達</text><text x="420" y="105">主翼</text><text x="500" y="315">尾翼</text><text x="230" y="300">ESP32-CAM / ESC / 伺服</text></g>
+</svg>
