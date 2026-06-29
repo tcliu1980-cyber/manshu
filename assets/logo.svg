@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Fixed-wing UAV Workshop logo">
+<defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#55e2ff"/><stop offset="1" stop-color="#b7f4ff"/></linearGradient></defs>
+<rect x="8" y="8" width="112" height="112" rx="24" fill="#07192b" stroke="url(#g)" stroke-width="3"/>
+<path d="M64 18 100 38v52L64 110 28 90V38Z" fill="none" stroke="#7eeaff" stroke-width="2" opacity=".65"/>
+<path d="M20 65h88M64 28v72" stroke="#7eeaff" stroke-width="2" opacity=".35"/>
+<path d="M23 65c16-7 29-11 41-11s25 4 41 11c-16 7-29 11-41 11s-25-4-41-11Z" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
+<path d="M54 62h20l13-17 6 2-8 20 8 20-6 2-13-17H54L41 89l-6-2 8-20-8-20 6-2Z" fill="url(#g)" opacity=".75"/>
+<circle cx="64" cy="64" r="5" fill="#fff"/>
+</svg>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-label="90 cm 高翼無人定翼機藍圖示意">
+<defs>
+  <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e9fbff"/><stop offset=".55" stop-color="#89edff"/><stop offset="1" stop-color="#2ac9ff"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <pattern id="mesh" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M22 0H0v22" fill="none" stroke="#8feeff" stroke-width=".6" opacity=".15"/></pattern>
+</defs>
+<rect width="960" height="520" fill="none"/>
+<g opacity=".35" stroke="#50dfff" stroke-width="1" fill="none">
+  <circle cx="500" cy="250" r="210"/><circle cx="500" cy="250" r="160"/><circle cx="500" cy="250" r="110"/>
+  <path d="M80 430h790M72 115h790M125 80v350M820 70v370"/>
+</g>
+<g filter="url(#glow)">
+  <!-- wing -->
+  <path d="M120 185 C280 145 640 145 870 185 C675 210 310 210 120 185Z" fill="url(#mesh)" stroke="url(#cyan)" stroke-width="3"/>
+  <path d="M140 185H850M220 171v31M320 163v44M420 158v50M520 157v52M620 160v48M720 168v38" stroke="#dffbff" stroke-width="1.3" opacity=".62"/>
+  <!-- fuselage -->
+  <path d="M250 250 C270 198 360 186 468 195 C600 206 704 260 752 330 C612 355 440 352 320 325 C268 313 241 286 250 250Z" fill="rgba(126,234,255,.10)" stroke="#eafcff" stroke-width="3"/>
+  <path d="M268 254C350 225 552 225 726 320M298 304C410 323 570 333 725 320M348 210v122M430 198v146M520 203v144M610 230v108M306 240h410M290 275h448" stroke="#a9f2ff" stroke-width="1.1" opacity=".55" fill="none"/>
+  <!-- nose and prop -->
+  <ellipse cx="242" cy="256" rx="34" ry="46" fill="#061827" stroke="#eafcff" stroke-width="3"/>
+  <circle cx="220" cy="256" r="12" fill="#eafcff"/><path d="M216 256c-72-55-80-113-19-95 44 13 43 55 19 95ZM216 256c-80 39-96 96-34 93 46-2 54-43 34-93Z" fill="none" stroke="#bdf7ff" stroke-width="4" opacity=".9"/>
+  <!-- tail -->
+  <path d="M724 319l116-78 58 18-92 86Z" fill="rgba(126,234,255,.08)" stroke="#eafcff" stroke-width="3"/>
+  <path d="M790 246l35-120 68-2-18 150Z" fill="rgba(126,234,255,.10)" stroke="#eafcff" stroke-width="3"/>
+  <path d="M840 132v128M810 200h78M760 292l100-20" stroke="#a9f2ff" stroke-width="1.2" opacity=".55"/>
+  <!-- landing gear -->
+  <path d="M468 333l-42 70M558 335l38 72" stroke="#eafcff" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="420" cy="415" r="22" fill="#061827" stroke="#eafcff" stroke-width="4"/><circle cx="604" cy="418" r="22" fill="#061827" stroke="#eafcff" stroke-width="4"/>
+</g>
+<!-- dimension labels -->
+<g font-family="system-ui, 'Noto Sans TC', sans-serif" font-size="20" fill="#eafcff" stroke="#eafcff" stroke-width="1" opacity=".95">
+  <path d="M120 112h750M120 102v20M870 102v20" fill="none"/><text x="470" y="96" text-anchor="middle" stroke="none">翼展 900 mm</text>
+  <path d="M910 124v150M900 124h20M900 274h20" fill="none"/><text x="925" y="205" writing-mode="tb" stroke="none">高度 150 mm</text>
+  <path d="M250 452h500M250 442v20M750 442v20" fill="none"/><text x="500" y="492" text-anchor="middle" stroke="none">高翼訓練機・無刷馬達・ESP32-CAM 手機控制</text>
+</g>
+</svg>

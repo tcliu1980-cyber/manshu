@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" role="img" aria-label="尾翼配置藍圖">
+<rect width="520" height="300" rx="18" fill="#071a2e"/>
+<g stroke="#8feeff" opacity=".18"><path d="M0 30h520M0 60h520M0 90h520M0 120h520M0 150h520M0 180h520M0 210h520M0 240h520M0 270h520M40 0v300M80 0v300M120 0v300M160 0v300M200 0v300M240 0v300M280 0v300M320 0v300M360 0v300M400 0v300M440 0v300M480 0v300"/></g>
+<g fill="none" stroke="#eaffff" stroke-width="4">
+<path d="M38 206H368L462 166"/><path d="M282 206l112-126h82l-30 126z" fill="rgba(126,234,255,.08)"/><path d="M370 172h92"/><path d="M338 206l-42 58h174l-62-58" fill="rgba(126,234,255,.05)"/><path d="M390 92v114M408 92v114" stroke="#8feeff" stroke-width="2" opacity=".6"/>
+</g>
+<g font-family="system-ui, sans-serif" fill="#eaffff" font-size="18">
+<text x="28" y="44" font-weight="700">尾翼配置 TAIL LAYOUT</text>
+<text x="290" y="78">垂直尾翼高度 150 mm</text><text x="60" y="190">機身尾段約 280 mm</text><text x="322" y="280">水平尾翼 360 mm</text><text x="392" y="160">方向舵</text>
+</g>
+</svg>

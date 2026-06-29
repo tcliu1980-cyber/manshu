@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" role="img" aria-label="ESC 與 ESP32-CAM 接線藍圖">
+<rect width="520" height="300" rx="18" fill="#071a2e"/>
+<g stroke="#8feeff" opacity=".18"><path d="M0 30h520M0 60h520M0 90h520M0 120h520M0 150h520M0 180h520M0 210h520M0 240h520M0 270h520M40 0v300M80 0v300M120 0v300M160 0v300M200 0v300M240 0v300M280 0v300M320 0v300M360 0v300M400 0v300M440 0v300M480 0v300"/></g>
+<g fill="none" stroke-linecap="round">
+<rect x="190" y="92" width="134" height="88" rx="14" fill="#09213a" stroke="#eaffff" stroke-width="4"/>
+<text x="257" y="145" text-anchor="middle" font-family="Arial" font-size="42" font-weight="700" fill="#eaffff">ESC</text>
+<path d="M190 120C140 112 108 96 72 96" stroke="#ff355b" stroke-width="8"/><path d="M190 150C140 152 110 169 72 169" stroke="#e8eef2" stroke-width="8"/><path d="M324 110C378 98 420 82 470 82M324 136C378 136 420 136 470 136M324 162C378 174 420 190 470 190" stroke="#58aaff" stroke-width="6"/>
+<rect x="40" y="76" width="54" height="112" rx="8" fill="#09213a" stroke="#eaffff" stroke-width="3"/><circle cx="72" cy="96" r="7" fill="#ff355b"/><circle cx="72" cy="168" r="7" fill="#e8eef2"/>
+<circle cx="474" cy="136" r="48" fill="#09213a" stroke="#eaffff" stroke-width="4"/><circle cx="474" cy="136" r="16" stroke="#8feeff" stroke-width="3"/><path d="M474 88v96M426 136h96M440 102l68 68M508 102l-68 68" stroke="#8feeff" stroke-width="2" opacity=".6"/>
+<path d="M250 180v54" stroke="#ffcc3d" stroke-width="5"/><path d="M266 180v54" stroke="#e8eef2" stroke-width="5"/><path d="M234 180v54" stroke="#b16b39" stroke-width="5"/><rect x="210" y="232" width="92" height="44" rx="8" fill="#09213a" stroke="#eaffff" stroke-width="3"/><text x="256" y="260" text-anchor="middle" font-family="Arial" font-size="16" fill="#eaffff">ESP32-CAM</text>
+</g>
+<g font-family="system-ui, sans-serif" fill="#eaffff" font-size="18">
+<text x="28" y="44" font-weight="700">電控整合 ESC / ESP32-CAM</text>
+<text x="42" y="224">2S LiPo 主電源</text><text x="358" y="238">無刷馬達</text><text x="220" y="72">BEC 5V / PWM / GND</text>
+</g>
+</svg>

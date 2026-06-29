@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" role="img" aria-label="單木條機翼剖面藍圖">
+<defs><filter id="glow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect width="520" height="300" rx="18" fill="#071a2e"/>
+<g stroke="#8feeff" opacity=".18"><path d="M0 30h520M0 60h520M0 90h520M0 120h520M0 150h520M0 180h520M0 210h520M0 240h520M0 270h520M40 0v300M80 0v300M120 0v300M160 0v300M200 0v300M240 0v300M280 0v300M320 0v300M360 0v300M400 0v300M440 0v300M480 0v300"/></g>
+<g filter="url(#glow)" fill="none" stroke="#eaffff" stroke-width="4">
+<path d="M54 174 C120 78 319 64 466 172 C330 196 160 194 54 174Z" fill="rgba(126,234,255,.08)"/>
+<path d="M54 174H466" stroke-width="3"/>
+<rect x="158" y="130" width="52" height="52" fill="rgba(126,234,255,.12)"/>
+</g>
+<g font-family="system-ui, sans-serif" fill="#eaffff" font-size="18">
+<text x="28" y="44" font-weight="700">機翼剖面 WING SECTION</text>
+<text x="92" y="240">弦長 160 mm</text><text x="232" y="126">10×10 mm 方木主樑</text><text x="330" y="94">上蒙皮約 185 mm</text><text x="340" y="222">最大厚度約 18–20 mm</text>
+</g>
+<g stroke="#8feeff" stroke-width="2" fill="none"><path d="M55 220h410M55 211v18M465 211v18"/><path d="M380 110v82M371 110h18M371 192h18"/></g>
+</svg>
