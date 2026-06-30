@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plane 2｜機身藍圖</title>
+  <style>
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#132033;
+  --muted:#607087;
+  --line:#d9e2ef;
+  --primary:#2563eb;
+  --primary-dark:#1e40af;
+  --shadow:0 12px 34px rgba(15, 23, 42, .08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",Arial,sans-serif;
+  line-height:1.65;
+}
+a{color:var(--primary);text-decoration:none}
+.site-nav{
+  position:sticky; top:0; z-index:9999;
+  backdrop-filter:blur(14px);
+  background:rgba(255,255,255,.92);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{
+  max-width:1320px; margin:0 auto; padding:12px 20px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{display:flex; flex-direction:column; gap:2px}
+.brand strong{font-size:18px; letter-spacing:.03em; color:#0f2747}
+.brand span{font-size:12px; color:var(--muted)}
+.nav-links{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+.nav-links a{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:38px; padding:8px 13px; border-radius:999px;
+  color:#334155; font-weight:800; border:1px solid transparent;
+}
+.nav-links a:hover{background:#eef4ff; color:var(--primary-dark)}
+.nav-links a.active{
+  background:var(--primary); color:#fff;
+  box-shadow:0 8px 18px rgba(37,99,235,.22);
+}
+.hero{max-width:1320px; margin:22px auto 14px; padding:0 20px}
+.hero-card{
+  border-radius:24px;
+  background:linear-gradient(135deg,#0f2747 0%,#2659b8 55%,#47a3ff 100%);
+  color:#fff; box-shadow:var(--shadow); padding:28px 30px;
+}
+.hero-card h1{margin:0 0 8px; font-size:clamp(28px,4.2vw,46px); line-height:1.15}
+.hero-card p{margin:0; color:rgba(255,255,255,.9); font-size:16px}
+.quick-note{max-width:1320px; margin:0 auto 18px; padding:0 20px}
+.quick-note-inner{
+  background:#fff; border:1px solid var(--line); border-radius:18px;
+  padding:14px 18px; color:var(--muted);
+}
+.content-shell{max-width:1320px; margin:0 auto 48px; padding:0 20px}
+.content-panel{
+  background:var(--card); border:1px solid var(--line); border-radius:24px;
+  box-shadow:var(--shadow); overflow:hidden; padding:0;
+}
+.content-panel > .page,
+.content-panel > header,
+.content-panel > main,
+.content-panel > div.page{margin-top:0 !important}
+.package-footer{max-width:1320px; margin:0 auto 50px; padding:0 20px}
+.package-footer .box{
+  background:#fff; border:1px solid var(--line); border-radius:18px;
+  padding:16px 18px; color:var(--muted);
+}
+@media (max-width:860px){
+  .nav-inner{align-items:flex-start; flex-direction:column}
+  .nav-links{justify-content:flex-start}
+}
+</style>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <strong>RC 高翼無人機製作網站</strong>
+        <span>5 mm KT 板｜翼展 900 mm｜45 × 45 mm 機身｜KV1400 / ESP32-CAM</span>
+      </div>
+      <div class="nav-links">
+        <a class="" href="plane1.html">Plane 1 機翼</a>
+        <a class="active" href="plane2.html">Plane 2 機身</a>
+        <a class="" href="plane3.html">Plane 3 尾翼</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-card">
+      <h1>Plane 2｜機身藍圖</h1>
+      <p>RC 高翼無人機｜45 × 45 mm 機身與尾段上翹設計</p>
+    </div>
+  </section>
+
+  <section class="quick-note">
+    <div class="quick-note-inner">
+      這是三頁式整合版網站的一部分。上方導覽列可切換機翼、機身與尾翼頁面；每一頁都保留原本的工程藍圖內容，並加入一致的網站導覽。
+    </div>
+  </section>
+
+  <main class="content-shell">
+    <div class="content-panel">
+<div class="page">
+    <h1>RC高翼機機身 KT板切割藍圖</h1>
+    <div class="sub">材料：5 mm 白色 KT板　　單位：mm</div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>① 機身展開圖（整體一片式）－上視展開</h2>
+        <svg viewBox="0 0 980 430" aria-label="機身展開圖">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+              <path d="M0,4 L8,0 L8,8 Z" fill="#111"></path>
+            </marker>
+          </defs>
+
+          <!-- outer board -->
+          <rect x="110" y="80" width="720" height="220" class="box"/>
+          <!-- fold lines -->
+          <line x1="110" y1="135" x2="830" y2="135" class="thin dash"/>
+          <line x1="110" y1="190" x2="830" y2="190" class="thin dash"/>
+          <line x1="110" y1="245" x2="830" y2="245" class="thin dash"/>
+          <!-- front/rear split -->
+          <line x1="470" y1="80" x2="470" y2="300" class="thin fine-dash"/>
+
+          <!-- upturned tail cut guides -->
+          <line x1="470" y1="190" x2="830" y2="135" class="thin dash"/>
+          <line x1="470" y1="245" x2="830" y2="280" class="thin dash"/>
+
+          <!-- labels -->
+          <text x="125" y="112" class="label">A　上蒙皮（頂板）</text>
+          <text x="125" y="167" class="label">B　側板 A（左側板）</text>
+          <text x="125" y="222" class="label">C　下蒙皮（底板）</text>
+          <text x="125" y="277" class="label">D　側板 B（右側板）</text>
+
+          <text x="300" y="112" class="txt">虛線：半切 2.5 mm（折90°）</text>
+          <text x="300" y="167" class="txt">方形段：45 × 45（0 ～ 300 mm）</text>
+          <text x="300" y="188" class="txt">虛線：半切 2.5 mm（折90°）</text>
+          <text x="300" y="222" class="txt">虛線：半切 2.5 mm（折90°）</text>
+          <text x="300" y="277" class="txt">方形段：45 × 45（0 ～ 300 mm）</text>
+          <text x="300" y="298" class="txt">虛線：半切 2.5 mm（折90°）</text>
+          <text x="535" y="168" class="txt">尾段上翹收束（300 mm）</text>
+          <text x="535" y="278" class="txt">尾段上翹收束（300 mm）</text>
+
+          <!-- width dims on left -->
+          <line x1="70" y1="80" x2="70" y2="135" class="thin"/>
+          <line x1="60" y1="80" x2="80" y2="80" class="thin"/>
+          <line x1="60" y1="135" x2="80" y2="135" class="thin"/>
+          <text x="28" y="111" class="txt">45</text>
+
+          <line x1="70" y1="135" x2="70" y2="190" class="thin"/>
+          <line x1="60" y1="190" x2="80" y2="190" class="thin"/>
+          <text x="28" y="166" class="txt">45</text>
+
+          <line x1="70" y1="190" x2="70" y2="245" class="thin"/>
+          <line x1="60" y1="245" x2="80" y2="245" class="thin"/>
+          <text x="28" y="221" class="txt">45</text>
+
+          <line x1="70" y1="245" x2="70" y2="300" class="thin"/>
+          <line x1="60" y1="300" x2="80" y2="300" class="thin"/>
+          <text x="28" y="276" class="txt">45</text>
+
+          <!-- top overall dims -->
+          <line x1="110" y1="40" x2="830" y2="40" class="dim"/>
+          <line x1="110" y1="40" x2="110" y2="65" class="thin"/>
+          <line x1="830" y1="40" x2="830" y2="65" class="thin"/>
+          <text x="420" y="28" class="label">600（機身總長）</text>
+
+          <line x1="110" y1="60" x2="470" y2="60" class="dim"/>
+          <line x1="470" y1="60" x2="830" y2="60" class="dim"/>
+          <text x="280" y="53" class="label">300（前艙段）</text>
+          <text x="635" y="53" class="label">300（尾段上翹收束）</text>
+
+          <!-- total width -->
+          <line x1="910" y1="80" x2="910" y2="300" class="dim"/>
+          <line x1="890" y1="80" x2="915" y2="80" class="thin"/>
+          <line x1="890" y1="300" x2="915" y2="300" class="thin"/>
+          <text x="935" y="190" class="label" transform="rotate(90 935 190)">展開總寬 180（45 × 4）</text>
+        </svg>
+        <div class="panel small" style="margin-top:10px;border-style:dashed;">
+          <strong>說明（組裝後外形規格）：</strong><br>
+          本機身為一片式無分段包覆式機身殼，前段為 45 × 45 mm 方形機艙，長度 300 mm；尾段為上翹收束，長度 300 mm，尾端建議截面約 20 × 20 mm。<br>
+          虛線為半切折線（深約 2.5 mm），折起後以熱熔膠黏合。
+        </div>
+      </div>
+
+      <div class="panel notes">
+        <h2>圖例（切割說明）</h2>
+        <svg viewBox="0 0 420 110" aria-label="圖例">
+          <line x1="25" y1="30" x2="140" y2="30" class="med"/>
+          <text x="165" y="36" class="label">實線＝全切斷</text>
+          <line x1="25" y1="75" x2="140" y2="75" class="med dash"/>
+          <text x="165" y="81" class="label">虛線＝半切 2.5 mm（供折彎用）</text>
+        </svg>
+        <h2 style="margin-top:10px;">⑥ 備註（總結）</h2>
+        <ul>
+          <li>機身外徑：45 × 45 mm（前段）</li>
+          <li>機身總長：600 mm</li>
+          <li>前艙長度：300 mm（方形艙）</li>
+          <li>尾段長度：300 mm（上翹收束）</li>
+          <li>前端馬達座：30 × 30 mm 木板</li>
+          <li>適用：KV1400 無刷馬達、ESP32-CAM、2S 電池（76 g）</li>
+          <li>接合建議：使用熱熔膠</li>
+          <li>表面修飾：若切割後表面有刀痕，可用透明 OPP 膠帶覆蓋作為簡易蒙皮</li>
+          <li>畫線建議：請使用直尺與原子筆畫線</li>
+          <li>本圖為製作參考，可依實際重心與設備尺寸微調</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h2>② 側視圖（組裝後外形）</h2>
+        <svg viewBox="0 0 980 230" aria-label="側視圖">
+          <defs>
+            <marker id="arrow2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+              <path d="M0,4 L8,0 L8,8 Z" fill="#111"></path>
+            </marker>
+          </defs>
+          <rect x="70" y="95" width="360" height="55" class="box"/>
+          <path d="M430 95 L760 105 L760 120 L430 150 Z" class="box"/>
+          <line x1="430" y1="75" x2="430" y2="170" class="thin fine-dash"/>
+
+          <line x1="70" y1="55" x2="430" y2="55" class="dim"/>
+          <line x1="430" y1="55" x2="760" y2="55" class="dim"/>
+          <text x="225" y="45" class="label">300（前艙段）</text>
+          <text x="555" y="45" class="label">300（尾段向上收束）</text>
+
+          <line x1="70" y1="195" x2="760" y2="195" class="dim"/>
+          <text x="360" y="214" class="label">600（機身總長）</text>
+
+          <line x1="40" y1="95" x2="40" y2="150" class="dim"/>
+          <text x="8" y="126" class="txt">45</text>
+
+          <line x1="785" y1="110" x2="785" y2="130" class="dim"/>
+          <text x="795" y="123" class="txt">約 20</text>
+          <text x="795" y="141" class="tiny">（建議尾端截面）</text>
+
+          <rect x="780" y="75" width="165" height="95" fill="none" stroke="#111" stroke-width="1.8" stroke-dasharray="6 4"/>
+          <text x="795" y="98" class="txt">尾段向上收束</text>
+          <text x="795" y="118" class="txt">使機身中心線</text>
+          <text x="795" y="138" class="txt">上仰，尾端截面</text>
+          <text x="795" y="158" class="txt">建議約 20 × 20 mm。</text>
+        </svg>
+      </div>
+      <div class="panel">
+        <h2>③ A-A 剖面圖（前機艙）</h2>
+        <svg viewBox="0 0 420 250" aria-label="前艙剖面圖">
+          <rect x="90" y="55" width="180" height="180" class="box"/>
+          <rect x="130" y="95" width="100" height="100" fill="none" stroke="#111" stroke-width="1.6" stroke-dasharray="6 4"/>
+          <line x1="90" y1="35" x2="270" y2="35" class="dim"/>
+          <text x="166" y="26" class="label">45</text>
+          <line x1="292" y1="55" x2="292" y2="235" class="dim"/>
+          <text x="302" y="150" class="label" transform="rotate(90 302 150)">45</text>
+          <line x1="130" y1="75" x2="230" y2="75" class="dim"/>
+          <text x="170" y="68" class="label">30</text>
+          <text x="150" y="132" class="txt">30 × 30 mm</text>
+          <text x="141" y="153" class="txt">馬達木板馬達座</text>
+          <text x="142" y="174" class="txt">（KV1400 無刷馬達）</text>
+          <text x="55" y="240" class="txt">內部淨空：約 35 × 35 mm（機艙內）</text>
+          <text x="55" y="260" class="txt">可容納 ESC、ESP32-CAM、電池等設備。</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="bottom-grid">
+      <div class="panel">
+        <h2>⑤ 零件配置建議（沿機身長度方向）</h2>
+        <svg viewBox="0 0 920 310" aria-label="零件配置建議">
+          <line x1="50" y1="240" x2="860" y2="240" class="thin"/>
+          <text x="18" y="38" class="txt">機身長度基準（mm）</text>
+          <text x="75" y="38" class="txt">0（鼻端）</text>
+          <text x="260" y="38" class="txt">220</text>
+          <text x="360" y="38" class="txt">300</text>
+          <text x="495" y="38" class="txt">385</text>
+          <text x="645" y="38" class="txt">540</text>
+          <text x="745" y="38" class="txt">580</text>
+          <text x="828" y="38" class="txt">600（尾端）</text>
+
+          <!-- reference lines -->
+          <g class="thin fine-dash">
+            <line x1="70" y1="45" x2="70" y2="250"/>
+            <line x1="270" y1="45" x2="270" y2="250"/>
+            <line x1="365" y1="45" x2="365" y2="250"/>
+            <line x1="495" y1="45" x2="495" y2="250"/>
+            <line x1="645" y1="45" x2="645" y2="250"/>
+            <line x1="740" y1="45" x2="740" y2="250"/>
+            <line x1="845" y1="45" x2="845" y2="250"/>
+          </g>
+
+          <!-- boxes -->
+          <rect x="20" y="90" width="110" height="68" fill="none" stroke="#111" stroke-width="1.8" stroke-dasharray="6 4"/>
+          <text x="42" y="116" class="txt">30 × 30 mm</text>
+          <text x="35" y="136" class="txt">木板馬達座</text>
+          <text x="27" y="156" class="txt">（KV1400 無刷馬達）</text>
+
+          <rect x="140" y="95" width="90" height="58" fill="none" stroke="#111" stroke-width="1.8" stroke-dasharray="6 4"/>
+          <text x="173" y="127" class="txt">ESC</text>
+          <text x="152" y="146" class="tiny">（建議貼於底板）</text>
+
+          <rect x="240" y="86" width="120" height="78" fill="none" stroke="#111" stroke-width="1.8" stroke-dasharray="6 4"/>
+          <text x="259" y="112" class="txt">2S 電池（76 g）</text>
+          <text x="255" y="132" class="txt">可置於機艙內</text>
+          <text x="250" y="152" class="txt">位置：約 120 ～ 220 mm</text>
+
+          <rect x="360" y="80" width="155" height="90" fill="none" stroke="#111" stroke-width="1.8" stroke-dasharray="6 4"/>
+          <text x="387" y="106" class="txt">主翼建議安裝位置</text>
+          <text x="382" y="126" class="txt">（翼前緣約在 220 mm）</text>
+          <text x="384" y="146" class="txt">建議翼展／弦長區域</text>
+          <text x="408" y="166" class="txt">220 ～ 385 mm</text>
+
+          <rect x="530" y="95" width="95" height="58" fill="none" stroke="#111" stroke-width="1.8" stroke-dasharray="6 4"/>
+          <text x="545" y="118" class="txt">ESP32-CAM</text>
+          <text x="550" y="138" class="txt">建議位置</text>
+          <text x="548" y="157" class="tiny">約 250 ～ 320 mm</text>
+
+          <rect x="665" y="98" width="90" height="52" fill="none" stroke="#111" stroke-width="1.8" stroke-dasharray="6 4"/>
+          <text x="682" y="120" class="txt">水平尾翼</text>
+          <text x="677" y="139" class="tiny">約 540 ～ 580 mm</text>
+
+          <rect x="760" y="98" width="100" height="52" fill="none" stroke="#111" stroke-width="1.8" stroke-dasharray="6 4"/>
+          <text x="782" y="120" class="txt">垂直尾翼</text>
+          <text x="772" y="139" class="tiny">約 570 ～ 600 mm</text>
+
+          <line x1="70" y1="270" x2="365" y2="270" class="dim"/>
+          <line x1="365" y1="270" x2="845" y2="270" class="dim"/>
+          <text x="165" y="293" class="label">前方方形機艙：300 mm</text>
+          <text x="560" y="293" class="label">尾段向上收束：300 mm</text>
+        </svg>
+      </div>
+
+      <div class="panel">
+        <h2>④ B-B 剖面圖（尾段）</h2>
+        <svg viewBox="0 0 420 260" aria-label="尾段剖面圖">
+          <rect x="145" y="82" width="90" height="90" class="box"/>
+          <line x1="145" y1="60" x2="235" y2="60" class="dim"/>
+          <text x="182" y="52" class="label">20</text>
+          <line x1="258" y1="82" x2="258" y2="172" class="dim"/>
+          <text x="268" y="127" class="label" transform="rotate(90 268 127)">20</text>
+          <text x="160" y="116" class="txt">建議尾端</text>
+          <text x="175" y="136" class="txt">截面</text>
+          <text x="156" y="156" class="txt">約 20 × 20 mm</text>
+          <text x="80" y="214" class="txt">尾段上、下蒙皮以熱熔膠封閉。</text>
+          <text x="145" y="238" class="txt muted">（尾端／後方）</text>
+        </svg>
+      </div>
+
+      <div class="panel">
+        <h2>製作與組裝補充</h2>
+        <table class="table">
+          <tr><th>項目</th><th>建議</th></tr>
+          <tr><td>接合劑</td><td>熱熔膠</td></tr>
+          <tr><td>畫線工具</td><td>直尺 + 原子筆</td></tr>
+          <tr><td>折線方式</td><td>半切 2.5 mm 後折彎</td></tr>
+          <tr><td>表面整理</td><td>透明 OPP 膠帶覆蓋刀痕</td></tr>
+          <tr><td>主翼位置</td><td>前緣約 220 mm</td></tr>
+          <tr><td>尾翼位置</td><td>水平尾翼約 540–580 mm；垂直尾翼約 570–600 mm</td></tr>
+        </table>
+        <p class="small" style="margin-top:10px;">
+          尾段設計為上翹形式，可提升尾部安裝空間與姿態外觀。尾端收束仍建議保留約 20 × 20 mm 截面，方便黏貼水平尾翼與垂直尾翼。
+        </p>
+      </div>
+    </div>
+
+    <div class="warn">⚠ 注意事項：請使用直尺與原子筆畫線；虛線為半切（約 2.5 mm）供折彎；組裝時以熱熔膠黏合上下與側板；若切割後表面有刀痕，可用透明 OPP 膠帶覆蓋作為表面蒙皮。</div>
+  </div>
+    </div>
+  </main>
+
+  <footer class="package-footer">
+    <div class="box">
+      <strong>製作提醒：</strong>請使用直尺與原子筆畫線；虛線為半切約 2.5 mm；接合建議使用熱熔膠；若切割後表面有刀痕，可用透明 OPP 膠帶覆蓋作為簡易蒙皮。
+    </div>
+  </footer>
+</body>
+</html>
