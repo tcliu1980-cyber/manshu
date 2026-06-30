@@ -3,116 +3,134 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plane 2｜機身藍圖</title>
+  <title>Plane 2｜RC高翼無人機｜機身/機艙藍圖</title>
   <style>
-:root{
-  --bg:#f5f7fb;
-  --card:#ffffff;
-  --text:#132033;
-  --muted:#607087;
-  --line:#d9e2ef;
-  --primary:#2563eb;
-  --primary-dark:#1e40af;
-  --shadow:0 12px 34px rgba(15, 23, 42, .08);
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",Arial,sans-serif;
-  line-height:1.65;
-}
-a{color:var(--primary);text-decoration:none}
-.site-nav{
-  position:sticky; top:0; z-index:9999;
-  backdrop-filter:blur(14px);
-  background:rgba(255,255,255,.92);
-  border-bottom:1px solid var(--line);
-}
-.nav-inner{
-  max-width:1320px; margin:0 auto; padding:12px 20px;
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-}
-.brand{display:flex; flex-direction:column; gap:2px}
-.brand strong{font-size:18px; letter-spacing:.03em; color:#0f2747}
-.brand span{font-size:12px; color:var(--muted)}
-.nav-links{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
-.nav-links a{
-  display:inline-flex; align-items:center; justify-content:center;
-  min-height:38px; padding:8px 13px; border-radius:999px;
-  color:#334155; font-weight:800; border:1px solid transparent;
-}
-.nav-links a:hover{background:#eef4ff; color:var(--primary-dark)}
-.nav-links a.active{
-  background:var(--primary); color:#fff;
-  box-shadow:0 8px 18px rgba(37,99,235,.22);
-}
-.hero{max-width:1320px; margin:22px auto 14px; padding:0 20px}
-.hero-card{
-  border-radius:24px;
-  background:linear-gradient(135deg,#0f2747 0%,#2659b8 55%,#47a3ff 100%);
-  color:#fff; box-shadow:var(--shadow); padding:28px 30px;
-}
-.hero-card h1{margin:0 0 8px; font-size:clamp(28px,4.2vw,46px); line-height:1.15}
-.hero-card p{margin:0; color:rgba(255,255,255,.9); font-size:16px}
-.quick-note{max-width:1320px; margin:0 auto 18px; padding:0 20px}
-.quick-note-inner{
-  background:#fff; border:1px solid var(--line); border-radius:18px;
-  padding:14px 18px; color:var(--muted);
-}
-.content-shell{max-width:1320px; margin:0 auto 48px; padding:0 20px}
-.content-panel{
-  background:var(--card); border:1px solid var(--line); border-radius:24px;
-  box-shadow:var(--shadow); overflow:hidden; padding:0;
-}
-.content-panel > .page,
-.content-panel > header,
-.content-panel > main,
-.content-panel > div.page{margin-top:0 !important}
-.package-footer{max-width:1320px; margin:0 auto 50px; padding:0 20px}
-.package-footer .box{
-  background:#fff; border:1px solid var(--line); border-radius:18px;
-  padding:16px 18px; color:var(--muted);
-}
-@media (max-width:860px){
-  .nav-inner{align-items:flex-start; flex-direction:column}
-  .nav-links{justify-content:flex-start}
-}
+    :root{
+      --ink:#111;
+      --bg:#fff;
+      --line:#111;
+      --dash:#444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:#f3f3f3;
+      color:var(--ink);
+      font-family:"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      line-height:1.45;
+    }
+    .page{
+      max-width:1500px;
+      margin:24px auto;
+      background:#fff;
+      border:2px solid #111;
+      padding:18px 18px 28px;
+      box-shadow:0 2px 12px rgba(0,0,0,.08);
+    }
+    h1{
+      margin:4px 0 2px;
+      text-align:center;
+      font-size:34px;
+      letter-spacing:2px;
+    }
+    .sub{
+      text-align:center;
+      font-size:18px;
+      margin-bottom:12px;
+      font-weight:700;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:2.25fr 1fr;
+      gap:16px;
+      align-items:start;
+    }
+    .panel{
+      border:2px solid #111;
+      padding:10px 12px 12px;
+      background:#fff;
+    }
+    .panel h2{
+      margin:0 0 6px;
+      font-size:18px;
+    }
+    .small{font-size:13px}
+    .notes ul{
+      margin:8px 0 0 18px;
+      padding:0;
+    }
+    .notes li{margin:4px 0}
+    .two-col{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:16px;
+      margin-top:16px;
+    }
+    .bottom-grid{
+      display:grid;
+      grid-template-columns:1.8fr .9fr .9fr;
+      gap:16px;
+      margin-top:16px;
+    }
+    .warn{
+      margin-top:16px;
+      border:2px solid #111;
+      padding:10px 14px;
+      font-size:16px;
+      font-weight:700;
+      background:#fff;
+    }
+    svg{width:100%;height:auto;display:block}
+    .legend-line{stroke:#111;stroke-width:2}
+    .dash{stroke-dasharray:7 5}
+    .fine-dash{stroke-dasharray:5 4}
+    .dim{stroke:#111;stroke-width:1.5;marker-start:url(#arrow);marker-end:url(#arrow)}
+    .thin{stroke:#111;stroke-width:1.4;fill:none}
+    .med{stroke:#111;stroke-width:2;fill:none}
+    .box{fill:none;stroke:#111;stroke-width:2}
+    .label{font-size:16px;fill:#111;font-weight:700}
+    .txt{font-size:14px;fill:#111}
+    .tiny{font-size:12px;fill:#111}
+    .section-num{font-size:22px;font-weight:800}
+    .table{
+      width:100%; border-collapse:collapse; font-size:14px;
+    }
+    .table th,.table td{
+      border:1.8px solid #111; padding:6px 8px; text-align:center;
+    }
+    .table th{font-weight:700}
+    .muted{color:#333}
+    @media (max-width: 1100px){
+      .grid,.two-col,.bottom-grid{grid-template-columns:1fr}
+      h1{font-size:28px}
+    }
+  
+/* Integrated RC plane navigation */
+.plane-nav{position:sticky;top:0;z-index:9999;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid #d6dee8;box-shadow:0 2px 12px rgba(15,23,42,.08);font-family:"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif}
+.plane-nav-inner{max-width:1280px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.plane-nav-title{font-weight:900;color:#17324d;letter-spacing:.02em}
+.plane-nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.plane-nav a{display:inline-block;padding:8px 12px;border-radius:999px;text-decoration:none;font-weight:800;color:#25415f;background:#eef4fb;border:1px solid #d6e1ee}
+.plane-nav a.active{background:#17324d;color:#fff;border-color:#17324d}
+.plane-nav a:hover{transform:translateY(-1px)}
+@media print{.plane-nav{display:none}}
+
 </style>
 </head>
 <body>
-  <nav class="site-nav">
-    <div class="nav-inner">
-      <div class="brand">
-        <strong>RC 高翼無人機製作網站</strong>
-        <span>5 mm KT 板｜翼展 900 mm｜45 × 45 mm 機身｜KV1400 / ESP32-CAM</span>
-      </div>
-      <div class="nav-links">
-        <a class="" href="plane1.html">Plane 1 機翼</a>
-        <a class="active" href="plane2.html">Plane 2 機身</a>
-        <a class="" href="plane3.html">Plane 3 尾翼</a>
-      </div>
-    </div>
-  </nav>
 
-  <section class="hero">
-    <div class="hero-card">
-      <h1>Plane 2｜機身藍圖</h1>
-      <p>RC 高翼無人機｜45 × 45 mm 機身與尾段上翹設計</p>
+<nav class="plane-nav">
+  <div class="plane-nav-inner">
+    <div class="plane-nav-title">RC 高翼無人機整合藍圖</div>
+    <div class="plane-nav-links">
+      <a href="plane1.html" >Plane 1｜機翼</a>
+      <a href="plane2.html" class="active">Plane 2｜機身/機艙</a>
+      <a href="plane3.html" >Plane 3｜尾翼</a>
     </div>
-  </section>
+  </div>
+</nav>
 
-  <section class="quick-note">
-    <div class="quick-note-inner">
-      這是三頁式整合版網站的一部分。上方導覽列可切換機翼、機身與尾翼頁面；每一頁都保留原本的工程藍圖內容，並加入一致的網站導覽。
-    </div>
-  </section>
-
-  <main class="content-shell">
-    <div class="content-panel">
-<div class="page">
+  <div class="page">
     <h1>RC高翼機機身 KT板切割藍圖</h1>
     <div class="sub">材料：5 mm 白色 KT板　　單位：mm</div>
 
@@ -376,13 +394,17 @@ a{color:var(--primary);text-decoration:none}
 
     <div class="warn">⚠ 注意事項：請使用直尺與原子筆畫線；虛線為半切（約 2.5 mm）供折彎；組裝時以熱熔膠黏合上下與側板；若切割後表面有刀痕，可用透明 OPP 膠帶覆蓋作為表面蒙皮。</div>
   </div>
-    </div>
-  </main>
 
-  <footer class="package-footer">
-    <div class="box">
-      <strong>製作提醒：</strong>請使用直尺與原子筆畫線；虛線為半切約 2.5 mm；接合建議使用熱熔膠；若切割後表面有刀痕，可用透明 OPP 膠帶覆蓋作為簡易蒙皮。
+<section class="plane-nav" style="position:static;border-top:1px solid #d6dee8;border-bottom:0;margin-top:24px;">
+  <div class="plane-nav-inner">
+    <div class="plane-nav-title">頁面導覽</div>
+    <div class="plane-nav-links">
+      <a href="plane1.html">Plane 1｜機翼</a>
+      <a href="plane2.html">Plane 2｜機身/機艙</a>
+      <a href="plane3.html">Plane 3｜尾翼</a>
     </div>
-  </footer>
+  </div>
+</section>
+
 </body>
 </html>
