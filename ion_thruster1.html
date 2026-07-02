@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ion Thruster 電場方向互動演示（軸對稱銅環版）</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --panel: #ffffff;
+      --ink: #162033;
+      --muted: #64748b;
+      --line: #d8e0eb;
+      --accent: #2456d6;
+      --danger: #c8332d;
+      --ring: #b36b1f;
+      --good: #0e8f66;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #eef5ff, var(--bg) 48%, #f8fafc);
+      min-height: 100vh;
+    }
+    header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 16px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.55rem, 3vw, 2.35rem);
+      letter-spacing: 0.03em;
+    }
+    .subtitle {
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.65;
+      max-width: 980px;
+    }
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 18px 32px;
+      display: grid;
+      grid-template-columns: 330px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(216, 224, 235, 0.85);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .controls {
+      padding: 18px;
+      position: sticky;
+      top: 14px;
+    }
+    .canvas-card {
+      padding: 14px;
+      min-width: 0;
+    }
+    .control-group {
+      border-bottom: 1px solid var(--line);
+      padding: 0 0 16px;
+      margin-bottom: 16px;
+    }
+    .control-group:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    .group-title {
+      font-weight: 800;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    label {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin: 12px 0 6px;
+      font-size: 0.95rem;
+      color: #26344f;
+    }
+    .value {
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      font-weight: 750;
+      min-width: 72px;
+      text-align: right;
+    }
+    input[type="range"] { width: 100%; }
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+    .segmented button {
+      appearance: none;
+      border: 0;
+      padding: 10px 8px;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--muted);
+      border-right: 1px solid var(--line);
+    }
+    .segmented button:last-child { border-right: 0; }
+    .segmented button.active {
+      background: var(--accent);
+      color: white;
+    }
+    .checkbox-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 10px 0;
+      color: #334155;
+      line-height: 1.45;
+      font-size: 0.94rem;
+    }
+    .checkbox-row input { margin-top: 3px; }
+    .ring-panel {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px 12px;
+      margin: 10px 0;
+      background: #fbfdff;
+    }
+    .ring-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 800;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+    .note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.58;
+      margin: 10px 0 0;
+    }
+    .warning {
+      color: #7c2d12;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      padding: 10px 12px;
+      border-radius: 14px;
+      line-height: 1.55;
+      font-size: 0.9rem;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      padding: 10px 4px 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      align-items: center;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .swatch {
+      width: 18px;
+      height: 4px;
+      border-radius: 99px;
+      display: inline-block;
+      background: #777;
+    }
+    .swatch.red { background: var(--danger); }
+    .swatch.blue { background: var(--accent); }
+    .swatch.copper { background: var(--ring); }
+    .swatch.green { background: var(--good); }
+    canvas {
+      width: 100%;
+      min-height: 520px;
+      height: min(68vh, 720px);
+      display: block;
+      border-radius: 15px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff, #f7fbff);
+    }
+    .readout {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .readout .box {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+    .readout .k {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 3px;
+    }
+    .readout .v {
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+    }
+    .footer-note {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 18px 30px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+      .controls { position: static; }
+      canvas { height: 560px; }
+      .readout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ion Thruster 電場方向互動演示</h1>
+    <p class="subtitle">正極為 +45 kV 針尖，負極為 0 V 銅環。此版本將銅環改成 <strong>旋轉 90° 的側視／軸對稱表示</strong>：針尖位於銅環軸線上，因此針尖到整個銅環邊緣的距離相同。可加入 1–3 個同軸銅環，並調整每個銅環的半徑與軸向位置，用來觀察電場方向、場線與高場強區的變化。</p>
+  </header>
+
+  <main>
+    <section class="card controls">
+      <div class="control-group">
+        <p class="group-title">銅環數量</p>
+        <div class="segmented" id="ringCountButtons">
+          <button data-count="1" class="active">1 個</button>
+          <button data-count="2">2 個</button>
+          <button data-count="3">3 個</button>
+        </div>
+        <p class="note">所有銅環都以針尖軸線為中心。增加銅環後，電場線會分流到不同的接地環。</p>
+      </div>
+
+      <div class="control-group">
+        <p class="group-title">針尖與顯示設定</p>
+        <label>針尖電壓 <span class="value" id="needleVoltageLabel">+45 kV</span></label>
+        <input id="needleVoltage" type="range" min="5" max="45" step="1" value="45" />
+
+        <label>箭頭密度 <span class="value" id="arrowDensityLabel">中</span></label>
+        <input id="arrowDensity" type="range" min="12" max="30" step="1" value="20" />
+
+        <label>場線數量 <span class="value" id="lineCountLabel">22</span></label>
+        <input id="lineCount" type="range" min="8" max="40" step="1" value="22" />
+
+        <div class="checkbox-row"><input id="showFieldLines" type="checkbox" checked /><span>顯示電場線：由 +45 kV 針尖出發，終止在 0 V 銅環附近。</span></div>
+        <div class="checkbox-row"><input id="showArrows" type="checkbox" checked /><span>顯示電場方向箭頭：正電荷受力方向，也就是由高電位指向低電位。</span></div>
+        <div class="checkbox-row"><input id="showPotential" type="checkbox" checked /><span>顯示等位勢背景：紅色偏高電位，藍色偏低電位。</span></div>
+      </div>
+
+      <div class="control-group" id="ringControls">
+        <p class="group-title">銅環半徑與軸向位置</p>
+      </div>
+
+      <div class="warning">
+        <strong>安全提醒：</strong>這是概念演示，不是高壓裝置設計圖。45 kV 高壓實驗必須使用限流、絕緣、單手操作、固定電極與防誤觸外殼。
+      </div>
+    </section>
+
+    <section class="card canvas-card">
+      <canvas id="fieldCanvas"></canvas>
+      <div class="legend">
+        <span class="legend-item"><span class="swatch red"></span>+ 高電位針尖</span>
+        <span class="legend-item"><span class="swatch copper"></span>0 V 銅環（側視）</span>
+        <span class="legend-item"><span class="swatch blue"></span>電場線／方向</span>
+        <span class="legend-item"><span class="swatch green"></span>高場強區</span>
+      </div>
+      <div class="readout">
+        <div class="box"><div class="k">目前銅環數量</div><div class="v" id="readRingCount">1</div></div>
+        <div class="box"><div class="k">針尖到最近銅環邊緣距離</div><div class="v" id="readDistance">-- cm</div></div>
+        <div class="box"><div class="k">概念重點</div><div class="v">E 方向：+ → 0 V</div></div>
+      </div>
+    </section>
+  </main>
+
+  <p class="footer-note">
+    模型說明：本頁改用軸對稱環電極的簡化模型。畫面是側視圖，銅環相對於原本平面圖已旋轉 90°，針尖位於環軸線上，因此「針尖到整個銅環邊緣等距」的幾何關係可被保留。此版本中，每個銅環的半徑可獨立調整為 1–5 cm。這仍是教學級近似模型，若要做真實電場強度、電暈區域或擊穿電壓分析，仍建議使用有限元素法或實測校正。
+  </p>
+
+  <script>
+    const canvas = document.getElementById('fieldCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const state = {
+      ringCount: 1,
+      needleVoltage: 45,
+      arrowDensity: 20,
+      lineCount: 22,
+      showFieldLines: true,
+      showArrows: true,
+      showPotential: true,
+      dragging: null,
+      rings: [
+        { xCm: 5.8, rCm: 1.50 },
+        { xCm: 7.4, rCm: 1.20 },
+        { xCm: 9.0, rCm: 1.00 }
+      ]
+    };
+
+    const ui = {
+      ringControls: document.getElementById('ringControls'),
+      needleVoltage: document.getElementById('needleVoltage'),
+      needleVoltageLabel: document.getElementById('needleVoltageLabel'),
+      arrowDensity: document.getElementById('arrowDensity'),
+      arrowDensityLabel: document.getElementById('arrowDensityLabel'),
+      lineCount: document.getElementById('lineCount'),
+      lineCountLabel: document.getElementById('lineCountLabel'),
+      showFieldLines: document.getElementById('showFieldLines'),
+      showArrows: document.getElementById('showArrows'),
+      showPotential: document.getElementById('showPotential'),
+      readRingCount: document.getElementById('readRingCount'),
+      readDistance: document.getElementById('readDistance')
+    };
+
+    let layout = null;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    }
+
+    function makeLayout() {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const margin = { left: 72, right: 52, top: 45, bottom: 45 };
+      const xMinCm = -0.8;
+      const xMaxCm = 10.2;
+      const maxRadius = Math.max(...activeRings().map(r => r.rCm), 1);
+      const yRangeCm = Math.max(12.0, maxRadius * 2 + 2.5);
+      const plotW = w - margin.left - margin.right;
+      const plotH = h - margin.top - margin.bottom;
+      const scale = Math.min(plotW / (xMaxCm - xMinCm), plotH / yRangeCm);
+      const originX = margin.left + (-xMinCm) * scale;
+      const originY = h / 2;
+      return { w, h, margin, scale, originX, originY, xMinCm, xMaxCm, yMinCm: -yRangeCm / 2, yMaxCm: yRangeCm / 2 };
+    }
+
+    function cmToPx(xCm, yCm) {
+      return {
+        x: layout.originX + xCm * layout.scale,
+        y: layout.originY - yCm * layout.scale
+      };
+    }
+
+    function pxToCm(x, y) {
+      return {
+        xCm: (x - layout.originX) / layout.scale,
+        yCm: (layout.originY - y) / layout.scale
+      };
+    }
+
+    function activeRings() {
+      return state.rings.slice(0, state.ringCount);
+    }
+
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    function addRingContribution(field, x, y, ring, strength) {
+      const a = Math.max(0.02, ring.rCm);
+      const x0 = ring.xCm;
+      const n = 56;
+      for (let i = 0; i < n; i++) {
+        const theta = (Math.PI * 2 * i) / n;
+        const rx = x - x0;
+        const ry = y - a * Math.cos(theta);
+        const rz = -a * Math.sin(theta);
+        const soften = 0.03;
+        const r2 = rx * rx + ry * ry + rz * rz + soften * soften;
+        const r = Math.sqrt(r2);
+        const f = strength / (n * r2 * r);
+        field.ex += f * rx;
+        field.ey += f * ry;
+      }
+    }
+
+    function addRingPotential(sumObj, x, y, ring, strength) {
+      const a = Math.max(0.02, ring.rCm);
+      const x0 = ring.xCm;
+      const n = 56;
+      for (let i = 0; i < n; i++) {
+        const theta = (Math.PI * 2 * i) / n;
+        const rx = x - x0;
+        const ry = y - a * Math.cos(theta);
+        const rz = -a * Math.sin(theta);
+        const soften = 0.05;
+        const r = Math.sqrt(rx * rx + ry * ry + rz * rz + soften * soften);
+        sumObj.v += strength / (n * r);
+      }
+    }
+
+    function fieldAt(x, y) {
+      const voltageScale = state.needleVoltage / 45;
+      let field = { ex: 0, ey: 0 };
+
+      addPointCharge(field, 1.85 * voltageScale, 0, 0, 0.035);
+      activeRings().forEach((ring) => {
+        const radius = Math.max(0.02, ring.rCm);
+        const ringWeight = Math.max(0.35, Math.sqrt(radius / 0.6));
+        addRingContribution(field, x, y, ring, -1.65 * voltageScale * ringWeight / Math.max(1, state.ringCount));
+      });
+
+      field.ex += 0.01 * voltageScale;
+      return { ex: field.ex, ey: field.ey, mag: Math.hypot(field.ex, field.ey) };
+    }
+
+    function addPointCharge(field, q, cx, cy, soften) {
+      const x = addPointCharge._x;
+      const y = addPointCharge._y;
+      const dx = x - cx;
+      const dy = y - cy;
+      const r2 = dx * dx + dy * dy + soften * soften;
+      const r = Math.sqrt(r2);
+      const f = q / (r2 * r);
+      field.ex += f * dx;
+      field.ey += f * dy;
+    }
+
+    function potentialAt(x, y) {
+      const voltageScale = state.needleVoltage / 45;
+      let total = { v: 0 };
+      addPointPotential(total, 1.8 * voltageScale, 0, 0, x, y, 0.055);
+      activeRings().forEach((ring) => {
+        const radius = Math.max(0.02, ring.rCm);
+        const ringWeight = Math.max(0.35, Math.sqrt(radius / 0.6));
+        addRingPotential(total, x, y, ring, -1.30 * voltageScale * ringWeight / Math.max(1, state.ringCount));
+      });
+      return total.v;
+    }
+
+    function addPointPotential(total, q, cx, cy, x, y, soften) {
+      const dx = x - cx;
+      const dy = y - cy;
+      const r = Math.sqrt(dx * dx + dy * dy + soften * soften);
+      total.v += q / r;
+    }
+
+    function draw() {
+      layout = makeLayout();
+      ctx.clearRect(0, 0, layout.w, layout.h);
+      drawGrid();
+      if (state.showPotential) drawPotentialBackground();
+      drawHighFieldGlow();
+      if (state.showFieldLines) drawFieldLines();
+      if (state.showArrows) drawVectorField();
+      drawDevice();
+      updateReadouts();
+    }
+
+    function drawGrid() {
+      ctx.save();
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, layout.w, layout.h);
+      ctx.strokeStyle = '#edf2f7';
+      ctx.lineWidth = 1;
+      ctx.font = '12px system-ui, sans-serif';
+      ctx.fillStyle = '#94a3b8';
+      for (let x = 0; x <= 10; x += 1) {
+        const p = cmToPx(x, 0);
+        ctx.beginPath();
+        ctx.moveTo(p.x, layout.margin.top);
+        ctx.lineTo(p.x, layout.h - layout.margin.bottom);
+        ctx.stroke();
+        ctx.fillText(`${x} cm`, p.x - 12, layout.h - 18);
+      }
+      for (let y = -3; y <= 3; y += 1) {
+        const p = cmToPx(0, y);
+        ctx.beginPath();
+        ctx.moveTo(layout.margin.left - 18, p.y);
+        ctx.lineTo(layout.w - layout.margin.right + 12, p.y);
+        ctx.stroke();
+        if (y !== 0) ctx.fillText(`${y}`, 18, p.y + 4);
+      }
+      const axis = cmToPx(0, 0);
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(layout.margin.left - 18, axis.y);
+      ctx.lineTo(layout.w - layout.margin.right + 12, axis.y);
+      ctx.stroke();
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('軸線', layout.w - layout.margin.right - 30, axis.y - 8);
+      ctx.restore();
+    }
+
+    function drawPotentialBackground() {
+      const cols = Math.max(42, Math.floor(layout.w / 18));
+      const rows = Math.max(28, Math.floor(layout.h / 18));
+      const cellW = layout.w / cols;
+      const cellH = layout.h / rows;
+
+      ctx.save();
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const px = i * cellW + cellW / 2;
+          const py = j * cellH + cellH / 2;
+          const cm = pxToCm(px, py);
+          if (cm.xCm < layout.xMinCm || cm.xCm > layout.xMaxCm || cm.yCm < layout.yMinCm || cm.yCm > layout.yMaxCm) continue;
+          const v = potentialAt(cm.xCm, cm.yCm);
+          const t = clamp((v + 0.9) / 2.3, 0, 1);
+          const alpha = 0.12;
+          if (t >= 0.5) {
+            ctx.fillStyle = `rgba(200, 51, 45, ${alpha * (t - 0.5) * 2})`;
+          } else {
+            ctx.fillStyle = `rgba(36, 86, 214, ${alpha * (0.5 - t) * 2})`;
+          }
+          ctx.fillRect(i * cellW, j * cellH, cellW + 1, cellH + 1);
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawHighFieldGlow() {
+      const needle = cmToPx(0, 0);
+      const gradient = ctx.createRadialGradient(needle.x, needle.y, 0, needle.x, needle.y, 70);
+      gradient.addColorStop(0, 'rgba(14, 143, 102, 0.30)');
+      gradient.addColorStop(0.35, 'rgba(14, 143, 102, 0.14)');
+      gradient.addColorStop(1, 'rgba(14, 143, 102, 0)');
+      ctx.save();
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(needle.x, needle.y, 70, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawVectorField() {
+      const stepCm = 10 / state.arrowDensity;
+      ctx.save();
+      for (let x = 0.45; x <= 9.7; x += stepCm) {
+        for (let y = -2.65; y <= 2.65; y += stepCm) {
+          if (nearElectrode(x, y)) continue;
+          const f = fieldAt(x, y);
+          const mag = f.mag;
+          if (!isFinite(mag) || mag < 0.015) continue;
+          const nx = f.ex / mag;
+          const ny = f.ey / mag;
+          const len = clamp(9 + Math.log10(1 + mag) * 7, 7, 18);
+          const p = cmToPx(x, y);
+          const alpha = clamp(0.28 + mag * 0.06, 0.28, 0.72);
+          drawArrow(p.x - nx * len * 0.42, p.y + ny * len * 0.42, p.x + nx * len * 0.58, p.y - ny * len * 0.58, `rgba(36, 86, 214, ${alpha})`, 1.1);
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawFieldLines() {
+      const n = state.lineCount;
+      const startRadius = 0.16;
+      const maxSteps = 800;
+      const step = 0.035;
+      ctx.save();
+      ctx.lineCap = 'round';
+      for (let i = 0; i < n; i++) {
+        const a = -Math.PI * 0.68 + (Math.PI * 1.36 * i) / Math.max(1, n - 1);
+        let x = Math.cos(a) * startRadius;
+        let y = Math.sin(a) * startRadius;
+        const points = [];
+        for (let k = 0; k < maxSteps; k++) {
+          if (x < -0.25 || x > 10.1 || y < -2.95 || y > 2.95) break;
+          points.push(cmToPx(x, y));
+          if (hitsRing(x, y)) break;
+          const f = fieldAt(x, y);
+          const mag = f.mag;
+          if (!isFinite(mag) || mag < 0.01) break;
+          x += (f.ex / mag) * step;
+          y += (f.ey / mag) * step;
+        }
+        if (points.length < 4) continue;
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let p = 1; p < points.length; p++) ctx.lineTo(points[p].x, points[p].y);
+        ctx.strokeStyle = 'rgba(36, 86, 214, 0.44)';
+        ctx.lineWidth = 1.45;
+        ctx.stroke();
+        const arrowIndex = Math.floor(points.length * 0.62);
+        if (arrowIndex > 2 && arrowIndex < points.length - 2) {
+          const p1 = points[arrowIndex - 1];
+          const p2 = points[arrowIndex + 1];
+          drawArrowHead(p1.x, p1.y, p2.x, p2.y, 'rgba(36, 86, 214, 0.78)', 9);
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawDevice() {
+      ctx.save();
+      const base = cmToPx(-0.68, 0);
+      const tip = cmToPx(0, 0);
+      ctx.strokeStyle = '#c8332d';
+      ctx.fillStyle = '#c8332d';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(base.x, base.y);
+      ctx.lineTo(tip.x, tip.y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(tip.x, tip.y);
+      ctx.lineTo(tip.x - 18, tip.y - 8);
+      ctx.lineTo(tip.x - 18, tip.y + 8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.font = '700 14px "Noto Sans TC", system-ui, sans-serif';
+      ctx.fillText(`針尖 +${state.needleVoltage} kV`, tip.x - 58, tip.y - 22);
+
+      activeRings().forEach((ring, idx) => {
+        const c = cmToPx(ring.xCm, 0);
+        const rPx = Math.max(2, (ring.rCm) * layout.scale);
+
+        ctx.save();
+        ctx.setLineDash([6, 5]);
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.8)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(c.x, c.y - rPx);
+        ctx.lineTo(c.x, c.y + rPx);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.strokeStyle = '#b36b1f';
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        ctx.ellipse(c.x, c.y, Math.max(5, layout.scale * 0.06), rPx, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = 'rgba(75, 44, 15, 0.6)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(c.x, c.y, Math.max(10, layout.scale * 0.12), rPx + 3, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#78350f';
+        ctx.font = '700 13px "Noto Sans TC", system-ui, sans-serif';
+        ctx.fillText(`銅環 ${idx + 1}: 0 V`, c.x - 34, c.y - rPx - 16);
+        ctx.fillStyle = '#475569';
+        ctx.font = '12px system-ui, sans-serif';
+        ctx.fillText(`半徑 ${ring.rCm.toFixed(2)} cm`, c.x - 34, c.y + rPx + 24);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    function drawArrow(x1, y1, x2, y2, color, width) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      drawArrowHead(x1, y1, x2, y2, color, 6.5);
+      ctx.restore();
+    }
+
+    function drawArrowHead(x1, y1, x2, y2, color, size) {
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - size * Math.cos(angle - Math.PI / 6), y2 - size * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x2 - size * Math.cos(angle + Math.PI / 6), y2 - size * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function ringMetric(x, y, ring) {
+      const a = Math.max(0.02, ring.rCm);
+      const rx = Math.abs(x - ring.xCm);
+      const yr = Math.abs(y);
+      return Math.sqrt((rx / 0.08) * (rx / 0.08) + (yr / a) * (yr / a));
+    }
+
+    function nearElectrode(x, y) {
+      if (Math.hypot(x, y) < 0.24) return true;
+      return activeRings().some(r => ringMetric(x, y, r) < 1.18);
+    }
+
+    function hitsRing(x, y) {
+      return activeRings().some(r => ringMetric(x, y, r) < 1.04);
+    }
+
+    function buildRingControls() {
+      const title = ui.ringControls.querySelector('.group-title');
+      ui.ringControls.innerHTML = '';
+      ui.ringControls.appendChild(title);
+
+      for (let i = 0; i < state.ringCount; i++) {
+        const ring = state.rings[i];
+        const panel = document.createElement('div');
+        panel.className = 'ring-panel';
+        panel.innerHTML = `
+          <div class="ring-title"><span>銅環 ${i + 1}</span><span id="ring${i}Summary">${ring.rCm.toFixed(2)} cm</span></div>
+          <label>半徑 <span class="value" id="ring${i}RLabel">${ring.rCm.toFixed(2)} cm</span></label>
+          <input type="range" min="1" max="5" step="0.01" value="${ring.rCm}" data-ring="${i}" data-prop="rCm" />
+          <label>軸向 x 位置 <span class="value" id="ring${i}XLabel">${ring.xCm.toFixed(2)} cm</span></label>
+          <input type="range" min="1.2" max="9.6" step="0.05" value="${ring.xCm}" data-ring="${i}" data-prop="xCm" />
+        `;
+        ui.ringControls.appendChild(panel);
+      }
+      const p = document.createElement('p');
+      p.className = 'note';
+      p.textContent = '這裡的銅環是側視圖。因為已旋轉 90° 並與針尖同軸，所以不再提供 y 方向偏移；也可以在畫布上左右拖曳銅環中心點。現在每個銅環的半徑可由 1 cm 調到 5 cm。';
+      ui.ringControls.appendChild(p);
+
+      ui.ringControls.querySelectorAll('input[type="range"]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const i = Number(e.target.dataset.ring);
+          const prop = e.target.dataset.prop;
+          state.rings[i][prop] = Number(e.target.value);
+          syncLabels();
+          draw();
+        });
+      });
+      syncLabels();
+    }
+
+    function syncLabels() {
+      ui.needleVoltageLabel.textContent = `+${state.needleVoltage} kV`;
+      ui.lineCountLabel.textContent = `${state.lineCount}`;
+      const densityText = state.arrowDensity < 17 ? '低' : state.arrowDensity < 24 ? '中' : '高';
+      ui.arrowDensityLabel.textContent = densityText;
+
+      for (let i = 0; i < state.ringCount; i++) {
+        const ring = state.rings[i];
+        const r = document.getElementById(`ring${i}RLabel`);
+        const x = document.getElementById(`ring${i}XLabel`);
+        const s = document.getElementById(`ring${i}Summary`);
+        if (r) r.textContent = `${ring.rCm.toFixed(2)} cm`;
+        if (x) x.textContent = `${ring.xCm.toFixed(2)} cm`;
+        if (s) s.textContent = `${ring.rCm.toFixed(2)} cm`;
+      }
+    }
+
+    function updateReadouts() {
+      ui.readRingCount.textContent = `${state.ringCount}`;
+      const nearest = activeRings().reduce((best, ring) => Math.min(best, Math.hypot(ring.xCm, ring.rCm)), Infinity);
+      ui.readDistance.textContent = `${nearest.toFixed(2)} cm`;
+    }
+
+    function setupEvents() {
+      document.querySelectorAll('#ringCountButtons button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.ringCount = Number(btn.dataset.count);
+          document.querySelectorAll('#ringCountButtons button').forEach(b => b.classList.toggle('active', b === btn));
+          buildRingControls();
+          draw();
+        });
+      });
+
+      ui.needleVoltage.addEventListener('input', e => { state.needleVoltage = Number(e.target.value); syncLabels(); draw(); });
+      ui.arrowDensity.addEventListener('input', e => { state.arrowDensity = Number(e.target.value); syncLabels(); draw(); });
+      ui.lineCount.addEventListener('input', e => { state.lineCount = Number(e.target.value); syncLabels(); draw(); });
+      ui.showFieldLines.addEventListener('change', e => { state.showFieldLines = e.target.checked; draw(); });
+      ui.showArrows.addEventListener('change', e => { state.showArrows = e.target.checked; draw(); });
+      ui.showPotential.addEventListener('change', e => { state.showPotential = e.target.checked; draw(); });
+
+      canvas.addEventListener('pointerdown', (e) => {
+        layout = makeLayout();
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        let hit = null;
+        activeRings().forEach((ring, idx) => {
+          const c = cmToPx(ring.xCm, 0);
+          const rPx = Math.max(18, (ring.rCm) * layout.scale + 12);
+          if (Math.abs(x - c.x) <= 18 && Math.abs(y - c.y) <= rPx) hit = idx;
+        });
+        if (hit !== null) {
+          state.dragging = hit;
+          canvas.setPointerCapture(e.pointerId);
+        }
+      });
+
+      canvas.addEventListener('pointermove', (e) => {
+        if (state.dragging === null) return;
+        const rect = canvas.getBoundingClientRect();
+        const p = pxToCm(e.clientX - rect.left, e.clientY - rect.top);
+        const ring = state.rings[state.dragging];
+        ring.xCm = clamp(p.xCm, 1.2, 9.6);
+        syncRangeInputsFromState();
+        syncLabels();
+        draw();
+      });
+
+      canvas.addEventListener('pointerup', (e) => {
+        state.dragging = null;
+        try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+      });
+      canvas.addEventListener('pointercancel', () => { state.dragging = null; });
+      window.addEventListener('resize', resizeCanvas);
+    }
+
+    function syncRangeInputsFromState() {
+      ui.ringControls.querySelectorAll('input[type="range"]').forEach(input => {
+        const i = Number(input.dataset.ring);
+        const prop = input.dataset.prop;
+        input.value = state.rings[i][prop];
+      });
+    }
+
+    const originalAddPointCharge = addPointCharge;
+    addPointCharge = function(field, q, cx, cy, soften) {
+      const x = addPointCharge._x;
+      const y = addPointCharge._y;
+      const dx = x - cx;
+      const dy = y - cy;
+      const r2 = dx * dx + dy * dy + soften * soften;
+      const r = Math.sqrt(r2);
+      const f = q / (r2 * r);
+      field.ex += f * dx;
+      field.ey += f * dy;
+    };
+
+    const originalFieldAt = fieldAt;
+    fieldAt = function(x, y) {
+      addPointCharge._x = x;
+      addPointCharge._y = y;
+      const voltageScale = state.needleVoltage / 45;
+      let field = { ex: 0, ey: 0 };
+      addPointCharge(field, 1.85 * voltageScale, 0, 0, 0.035);
+      activeRings().forEach((ring) => {
+        const radius = Math.max(0.02, ring.rCm);
+        const ringWeight = Math.max(0.35, Math.sqrt(radius / 0.6));
+        addRingContribution(field, x, y, ring, -1.65 * voltageScale * ringWeight / Math.max(1, state.ringCount));
+      });
+      field.ex += 0.01 * voltageScale;
+      return { ex: field.ex, ey: field.ey, mag: Math.hypot(field.ex, field.ey) };
+    };
+
+    buildRingControls();
+    setupEvents();
+    resizeCanvas();
+  </script>
+</body>
+</html>
