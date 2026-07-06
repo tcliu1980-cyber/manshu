@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>屏東RC定翼無人機營隊｜內部預算試算（每人8,900元）</title>
+  <style>
+    :root {
+      --ink: #18212b;
+      --muted: #5a6573;
+      --line: #d7dde6;
+      --panel: #f7f9fc;
+      --panel2: #eef3f8;
+      --accent: #193b68;
+      --accent2: #0d766e;
+      --warn: #8a4a00;
+      --good: #0f6b3f;
+      --bad: #8a1f11;
+      --bg: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      color: var(--ink);
+      background: #eef2f7;
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 1080px;
+      margin: 24px auto;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 32px rgba(20, 35, 55, .12);
+    }
+    header {
+      padding: 34px 42px 24px;
+      border-bottom: 5px solid var(--accent);
+      background: linear-gradient(135deg, #ffffff 0%, #f4f8fd 100%);
+    }
+    .eyebrow {
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: var(--accent2);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.25;
+      color: var(--accent);
+    }
+    .subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    main { padding: 28px 42px 42px; }
+    h2 {
+      margin: 34px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--line);
+      font-size: 22px;
+      color: var(--accent);
+    }
+    h3 {
+      margin: 22px 0 8px;
+      font-size: 18px;
+      color: #22354d;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin: 20px 0 12px;
+    }
+    .card {
+      padding: 16px 16px 14px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 14px;
+      min-height: 106px;
+    }
+    .card .label {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .card .num {
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .card .note {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .good .num { color: var(--good); }
+    .warn .num { color: var(--warn); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 20px;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    th {
+      background: var(--panel2);
+      text-align: left;
+      font-weight: 700;
+      color: #25384f;
+    }
+    td.num, th.num { text-align: right; white-space: nowrap; }
+    tr.total td {
+      font-weight: 800;
+      background: #f9fbfd;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #e7f4ee;
+      color: var(--good);
+      border: 1px solid #bddfca;
+    }
+    .pill-muted {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #f3f4f6;
+      color: #5f6875;
+      border: 1px solid #d7dbe1;
+    }
+    .box {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 5px solid var(--accent2);
+      background: #f5fbf9;
+      border-radius: 8px;
+    }
+    .box.warn {
+      border-left-color: var(--warn);
+      background: #fff8ec;
+    }
+    .muted { color: var(--muted); }
+    .formula {
+      padding: 10px 12px;
+      background: #f6f7f9;
+      border: 1px dashed #c5ccd6;
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-x: auto;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    footer {
+      padding: 18px 42px 28px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      background: #fafbfc;
+      font-size: 13px;
+    }
+    .print-note {
+      float: right;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    @media (max-width: 900px) {
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .two-col { grid-template-columns: 1fr; }
+      header, main, footer { padding-left: 22px; padding-right: 22px; }
+      .page { margin: 0; border: none; box-shadow: none; }
+    }
+    @media print {
+      body { background: #fff; }
+      .page { margin: 0; border: none; box-shadow: none; max-width: none; }
+      header { padding-top: 18px; }
+      .cards { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .card { break-inside: avoid; }
+      h2 { break-after: avoid; }
+      table { break-inside: avoid; font-size: 13px; }
+      th, td { padding: 6px 7px; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="print-note">內部檢視版｜可列印 A4</div>
+      <div class="eyebrow">RC FIXED-WING UAV WORKSHOP BUDGET</div>
+      <h1>屏東RC定翼無人機三天工作坊<br>內部預算試算表</h1>
+      <div class="subtitle">試算版本：每人收費 <strong>8,900元</strong>｜24人滿班｜三天18小時｜材料已備妥不列入本次支出</div>
+    </header>
+
+    <main>
+      <h2>一、試算摘要</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="label">總收入</div>
+          <div class="num">213,600 元</div>
+          <div class="note">24人 × 8,900元</div>
+        </div>
+        <div class="card warn">
+          <div class="label">學校管理費</div>
+          <div class="num">42,720 元</div>
+          <div class="note">總收入20%</div>
+        </div>
+        <div class="card">
+          <div class="label">本次列入支出</div>
+          <div class="num">134,600 元</div>
+          <div class="note">含管理費、人事、餐費、講義與保險</div>
+        </div>
+        <div class="card good">
+          <div class="label">預估結餘</div>
+          <div class="num">79,000 元</div>
+          <div class="note">未扣已備材料成本</div>
+        </div>
+      </div>
+      <div class="box">
+        <strong>主計檢視重點：</strong>本表將10套RC定翼無人機材料列為「已準備資源」，照常列出單價與估算價值，但<strong>不列入本次活動現金支出</strong>。本次列入收支者僅包含學校管理費、人事費、餐費、講義/名牌/證書與保險。
+      </div>
+
+      <h2>二、活動基本條件</h2>
+      <table>
+        <tr><th>項目</th><th>設定</th><th>備註</th></tr>
+        <tr><td>課程天數</td><td>3天</td><td>每天6小時</td></tr>
+        <tr><td>總課程時數</td><td>18小時</td><td>3天 × 6小時</td></tr>
+        <tr><td>學生人數</td><td>24人</td><td>滿班估算</td></tr>
+        <tr><td>分組方式</td><td>3人一組，共8組</td><td>每組配置1台RC定翼無人機</td></tr>
+        <tr><td>材料配置</td><td>10套</td><td>8組上課用＋2組備品；已準備，不列入本次支出</td></tr>
+        <tr><td>助教配置</td><td>6人</td><td>可包含電控、機體製作、焊接、巡堂、安全/行政支援等角色</td></tr>
+        <tr><td>教師配置</td><td>1人</td><td>主講與統籌課程</td></tr>
+        <tr><td>餐費人數</td><td>33人</td><td>24學生＋6助教＋1教師＋2工作人員</td></tr>
+      </table>
+
+      <h2>三、收入與學校管理費</h2>
+      <table>
+        <tr><th>項目</th><th class="num">計算方式</th><th class="num">金額</th></tr>
+        <tr><td>學生報名收入</td><td class="num">24人 × 8,900元</td><td class="num">213,600 元</td></tr>
+        <tr><td>學校管理費</td><td class="num">213,600元 × 20%</td><td class="num">-42,720 元</td></tr>
+        <tr class="total"><td>扣除管理費後可用經費</td><td class="num">213,600 - 42,720</td><td class="num">170,880 元</td></tr>
+      </table>
+
+      <h2>四、列入本次支出的項目</h2>
+      <h3>1. 人事費</h3>
+      <table>
+        <tr><th>項目</th><th class="num">單價</th><th class="num">數量/時數</th><th class="num">金額</th></tr>
+        <tr><td>助教費</td><td class="num">500元/小時</td><td class="num">6人 × 18小時</td><td class="num">54,000 元</td></tr>
+        <tr><td>教師費</td><td class="num">1,000元/小時</td><td class="num">1人 × 18小時</td><td class="num">18,000 元</td></tr>
+        <tr class="total"><td>人事費小計</td><td></td><td></td><td class="num">72,000 元</td></tr>
+      </table>
+
+      <h3>2. 餐費</h3>
+      <table>
+        <tr><th>對象</th><th class="num">人數</th><th class="num">單價/天</th><th class="num">天數</th><th class="num">金額</th></tr>
+        <tr><td>學生、助教、教師與工作人員</td><td class="num">33人</td><td class="num">120元</td><td class="num">3天</td><td class="num">11,880 元</td></tr>
+        <tr class="total"><td>餐費小計</td><td></td><td></td><td></td><td class="num">11,880 元</td></tr>
+      </table>
+
+      <h3>3. 行政項目與保險</h3>
+      <table>
+        <tr><th>項目</th><th class="num">節省型估算</th><th>是否列入本次收支</th></tr>
+        <tr><td>講義、名牌、證書</td><td class="num">3,000 元</td><td><span class="pill">列入支出</span></td></tr>
+        <tr><td>保險</td><td class="num">5,000 元</td><td><span class="pill">列入支出</span></td></tr>
+        <tr class="total"><td>行政與保險小計</td><td class="num">8,000 元</td><td></td></tr>
+      </table>
+
+      <h2>五、已準備材料：照列單價，不列入本次支出</h2>
+      <table>
+        <tr><th>材料項目</th><th class="num">單價</th><th class="num">數量</th><th class="num">估算價值</th><th>本次收支處理</th></tr>
+        <tr><td>RC定翼無人機材料套件</td><td class="num">3,500 元/套</td><td class="num">10套</td><td class="num">35,000 元</td><td><span class="pill-muted">已準備，不列入支出</span></td></tr>
+      </table>
+      <p class="muted">材料套件包含8組上課用機與2組備品。因材料已準備，本頁收支結餘不扣除此35,000元；若需呈現「含既有材料成本回收」觀點，可參考第八節。</p>
+
+      <h2>六、僅列參考、不列入最後收支的項目</h2>
+      <table>
+        <tr><th>項目</th><th class="num">節省型估算</th><th>處理方式</th><th>備註</th></tr>
+        <tr><td>刀片、熱熔膠、膠帶、焊錫、砂紙</td><td class="num">6,000 元</td><td><span class="pill-muted">不列入支出</span></td><td>若已有庫存，可作為既有工具耗材使用</td></tr>
+        <tr><td>安全標示、醫藥箱、延長線、電池管理用品</td><td class="num">3,000 元</td><td><span class="pill-muted">不列入支出</span></td><td>列為安全與場務參考需求</td></tr>
+        <tr><td>額外維修零件</td><td class="num">5,000 元</td><td><span class="pill-muted">不列入支出</span></td><td>若10套備品足夠，可不另編列</td></tr>
+        <tr><td>其他現場雜支</td><td class="num">3,000–6,000 元</td><td><span class="pill-muted">不列入支出</span></td><td>視場地與行政支援狀況決定</td></tr>
+      </table>
+
+      <h2>七、節省型收支總表</h2>
+      <table>
+        <tr><th>類別</th><th>項目</th><th class="num">金額</th></tr>
+        <tr><td>收入</td><td>學生報名收入</td><td class="num">213,600 元</td></tr>
+        <tr><td>支出</td><td>學校管理費20%</td><td class="num">42,720 元</td></tr>
+        <tr><td>支出</td><td>助教費</td><td class="num">54,000 元</td></tr>
+        <tr><td>支出</td><td>教師費</td><td class="num">18,000 元</td></tr>
+        <tr><td>支出</td><td>餐費，33人 × 120元 × 3天</td><td class="num">11,880 元</td></tr>
+        <tr><td>支出</td><td>講義、名牌、證書</td><td class="num">3,000 元</td></tr>
+        <tr><td>支出</td><td>保險</td><td class="num">5,000 元</td></tr>
+        <tr><td>備註</td><td>10套RC定翼無人機材料，已準備</td><td class="num">0 元列支<br><span class="muted">估算價值 35,000 元</span></td></tr>
+        <tr class="total"><td colspan="2">本次列入支出合計</td><td class="num">134,600 元</td></tr>
+        <tr class="total"><td colspan="2">預估結餘</td><td class="num">79,000 元</td></tr>
+      </table>
+
+      <h2>八、補充觀點：若視為回收既有材料成本</h2>
+      <div class="two-col">
+        <div>
+          <table>
+            <tr><th>項目</th><th class="num">金額</th></tr>
+            <tr><td>預估結餘</td><td class="num">79,000 元</td></tr>
+            <tr><td>已準備材料估算價值</td><td class="num">-35,000 元</td></tr>
+            <tr class="total"><td>扣除材料價值後餘裕</td><td class="num">44,000 元</td></tr>
+          </table>
+        </div>
+        <div class="box warn">
+          <strong>說明：</strong>此段不是本次活動會計支出，只是協助內部評估「本次收費是否足以回收既有材料投入」。若主計採現金支出認列，應以第七節總表為主。
+        </div>
+      </div>
+
+      <h2>九、損益平衡參考</h2>
+      <table>
+        <tr><th>情境</th><th class="num">每人約需收費</th><th>說明</th></tr>
+        <tr><td>僅打平本次列入支出，不含材料回收</td><td class="num">4,785 元/人</td><td>因20%收入需繳學校，實際可用為收費的80%</td></tr>
+        <tr><td>若另希望回收已準備材料成本35,000元</td><td class="num">6,608 元/人</td><td>仍以材料不列支為前提，作為內部財務評估</td></tr>
+      </table>
+      <div class="formula">
+        本次收入 = 24 × 8,900 = 213,600 元<br>
+        學校管理費 = 213,600 × 20% = 42,720 元<br>
+        本次列入支出 = 134,600 元<br>
+        預估結餘 = 213,600 − 134,600 = 79,000 元
+      </div>
+
+      <h2>十、內部結論</h2>
+      <div class="box">
+        在每人收費 <strong>8,900元</strong>、滿班24人的情況下，本活動總收入為 <strong>213,600元</strong>。扣除學校20%管理費、人事費、餐費、講義/名牌/證書與保險後，本次活動預估結餘為 <strong>79,000元</strong>。若再以內部成本回收角度扣除已準備材料估算價值35,000元，仍有約 <strong>44,000元</strong> 餘裕，可作為臨時耗材、維修、行政處理或後續設備維護緩衝。
+      </div>
+    </main>
+
+    <footer>
+      文件用途：內部人員、主計人員與協辦單位預算檢視。金額為活動規劃試算，實際核銷仍依學校規定、採購憑證與活動執行狀況調整。<br>
+      產生日期：2026-07-06
+    </footer>
+  </div>
+</body>
+</html>
