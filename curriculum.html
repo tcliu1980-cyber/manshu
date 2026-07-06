@@ -1,21 +1,131 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>課程內容｜2026 無人定翼機三日工作坊</title>
-  <meta name="description" content="無人定翼機三日工作坊課程內容：飛行原理、機體製作、電控整合、試飛與調整，以及學習紀錄延伸。">
-  <link rel="stylesheet" href="assets/style.css">
+  <meta name="description" content="無人定翼機三日工作坊課程內容：飛行原理、ESP32-CAM電控、機體製作、三套機體藍圖、試飛與調整。">
+  <style>
+:root{
+  --bg:#eef3f8; --paper:#ffffff; --ink:#162033; --muted:#5d6b7c; --line:#d7e0eb;
+  --blue:#173b67; --blue2:#2f6fed; --cyan:#e9f3ff; --green:#0f766e; --gold:#b7791f;
+  --red:#8a1f11; --shadow:0 14px 38px rgba(19,35,58,.12); --r:20px;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#eaf1f8,#f7fafc 42%,#eef3f8);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;line-height:1.72}
+a{color:inherit}.container{max-width:1180px;margin:0 auto;padding:0 22px}.skip{position:absolute;left:-999px}.skip:focus{left:14px;top:14px;background:#fff;padding:10px;border:2px solid var(--blue);z-index:9999}
+.site-top{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 22px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;color:var(--blue);letter-spacing:.02em}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.04em}.brand-mark{display:grid;place-items:center;background:var(--blue);color:#fff;border-radius:12px;width:52px;height:42px;font-weight:900;letter-spacing:.06em}.navlinks{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.navlinks a,.navlinks span{padding:9px 13px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14px;color:#2c425c}.navlinks a:hover,.navlinks a.active{background:#173b67;color:#fff}.navlinks span.disabled{background:#eef2f7;color:#7a8796;border:1px solid var(--line)}
+.hero{padding:48px 0 34px}.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:28px;align-items:center}.hero-panel,.hero-card,.card,.notice,.table-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}.hero-panel{padding:34px}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:#e9f3ff;color:#205ea8;font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase}.hero h1{font-size:clamp(36px,6vw,66px);line-height:1.05;margin:16px 0 14px;color:#0e2b4e;letter-spacing:.04em}.en{display:block;font-size:.42em;text-transform:uppercase;letter-spacing:.12em;color:#3973b7;margin-bottom:8px}.lead{font-size:18px;color:#42526a;margin:0 0 18px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:12px;text-decoration:none;font-weight:900;border:1px solid var(--line);background:#fff}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn.subtle{background:#e9f3ff;color:#174a88;border-color:#cddff5}.btn.disabled{background:#eef2f7;color:#7b8795;cursor:not-allowed}.hero-card{padding:20px}.plane-svg{width:100%;height:auto;display:block}.hero-photo{width:100%;height:auto;display:block;border-radius:18px;border:1px solid var(--line);box-shadow:0 8px 20px rgba(19,35,58,.10)}.caption{color:var(--muted);font-size:14px;margin:12px 0 0}.spec-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.spec{background:#f6f9fd;border:1px solid var(--line);border-radius:14px;padding:12px}.spec b{display:block;color:var(--blue);font-size:20px}.spec span{display:block;color:var(--muted);font-size:12px}.section{padding:34px 0}.section.soft{background:rgba(255,255,255,.48);border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0}.section-head{display:flex;justify-content:space-between;gap:22px;align-items:end;margin-bottom:18px}.section-head p{max-width:660px;color:var(--muted);margin:0}.kicker{font-size:13px;text-transform:uppercase;color:var(--green);font-weight:900;letter-spacing:.08em}h2{font-size:32px;line-height:1.16;color:#102a4a;margin:4px 0 0}.grid{display:grid;gap:18px}.grid.three{grid-template-columns:repeat(3,1fr)}.grid.four{grid-template-columns:repeat(4,1fr)}.card{padding:20px}.card h3{margin:0 0 8px;font-size:20px;color:#172f50}.card p{margin:0;color:var(--muted)}.num{font-weight:900;font-size:26px;color:#2f6fed;margin-bottom:8px}.timeline{display:grid;gap:16px}.day{display:grid;grid-template-columns:190px 1fr;gap:18px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}.day-label{background:#f4f8fd;border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:6px;align-content:start}.day-label b{font-size:24px;color:var(--blue)}.day-label span{color:#526174;font-weight:700}.day h3{margin:0 0 8px;font-size:22px}.day ul{margin:0;padding-left:20px;color:#40536a}.notice{padding:20px;background:linear-gradient(135deg,#fff,#f6fbff)}
+.pill{display:inline-block;padding:4px 9px;border-radius:999px;background:#eef8f4;color:#0f6b3f;font-weight:900;font-size:12px}
+.blueprint-stack{display:grid;gap:22px}
+.blueprint-card{padding:0;overflow:hidden}
+.blueprint-card .bp-head{padding:22px 24px 14px;border-bottom:1px solid var(--line)}
+.bp-head p{margin:8px 0 0;color:var(--muted)}
+.bp-layout{display:grid;grid-template-columns:1fr;gap:0}
+.blueprint-card iframe{width:100%;height:520px;border:0;background:#fff;display:block}
+.bp-actions{padding:18px 24px 24px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)}
+.footer{padding:28px 0 50px;color:#687789}.mini{font-size:13px;color:var(--muted)}
+@media(max-width:980px){.hero-grid,.grid.three,.grid.four{grid-template-columns:1fr}.section-head{display:block}.day{grid-template-columns:1fr}.spec-row{grid-template-columns:1fr}.blueprint-card iframe{height:360px}}
+@media(max-width:640px){.nav{align-items:flex-start}.hero-panel{padding:24px}.hero h1{font-size:40px}.navlinks{width:100%}.navlinks a,.navlinks span{font-size:13px;padding:8px 10px}.blueprint-card iframe{height:280px}}
+@media print{.site-top,.actions,.bp-actions{display:none}.hero,.section{padding:12px 0}.hero-panel,.hero-card,.card,.notice,.table-card,.day{box-shadow:none}body{background:#fff}.page-break{break-before:page}}
+</style>
 </head>
 <body>
-<header class="site-top"><div class="container nav"><a class="brand" href="PlaneIndex.html"><span class="brand-mark">NPTU</span><span>無人定翼機三日工作坊<small>Fixed-Wing UAV Workshop</small></span></a><button class="menu" data-menu aria-expanded="false">選單</button><nav class="navlinks"><a href="PlaneIndex.html">首頁</a><a class="active" href="curriculum.html">課程內容</a><a href="donation.html">捐款與抵稅</a><a href="register.html">報名方式</a></nav></div></header>
-<main>
-<section class="hero"><div class="container hero-grid"><div><span class="eyebrow">Curriculum</span><h1><span class="en">3-Day Academic Workshop</span>課程內容</h1><p class="lead">課程採用「概念講授、工程製作、測試紀錄、修正討論」四個環節，讓學生從理論走到實作，再從試飛結果回到科學分析。</p><div class="actions"><a class="btn primary" href="register.html">報名方式</a><a class="btn subtle" href="PlaneIndex.html#student-value">學生學習價值</a></div></div><aside class="hero-card"><img src="assets/airfoil.svg" alt="機翼剖面與升力示意"><p class="caption">第一天以飛行原理建立基礎；第二天完成機體與電控整合；第三天以試飛觀察與修正作為工程驗證。</p></aside></div></section>
-<section class="section"><div class="container"><div class="section-head"><div><div class="kicker">Daily Modules</div><h2>三日課程安排</h2></div><p>每日皆包含可記錄的學習產出，方便學生整理實作照片、測試表、問題修正與成果說明。</p></div><div class="timeline">
-<article class="day"><div class="day-label"><b>Day 1</b><span>7月28日</span><span>飛行原理</span></div><div><h3>航空器基本原理與系統概念</h3><ul><li>飛機四力：升力、重力、推力、阻力。</li><li>翼型、迎角、機翼面積、升力與失速的基本關係。</li><li>重心、穩定性與尾翼的角色。</li><li>控制面：升降舵、方向舵與油門控制。</li><li>ESP32-CAM 手機遠端控制概念：Wi‑Fi AP、網頁介面、控制訊號。</li><li>學習產出：設計紀錄表、初步機體配置草圖、重心與控制面檢查清單。</li></ul></div></article>
-<article class="day"><div class="day-label"><b>Day 2</b><span>7月29日</span><span>機體製作</span></div><div><h3>90 cm 高翼定翼機製作與電控整合</h3><ul><li>KT 板機身、主翼、尾翼加工與固定方式。</li><li>機翼主樑、尾翼角度與結構強度討論。</li><li>無刷馬達、電子變速器 ESC、伺服馬達與連桿配置。</li><li>ESP32-CAM 微控制器、PWM 控制、電源供應與安全檢查。</li><li>手機控制網頁測試：油門、升降舵與基本通訊反應。</li><li>學習產出：機體組裝紀錄、電控接線圖、地面測試紀錄。</li></ul></div></article>
-<article class="day"><div class="day-label"><b>Day 3</b><span>7月30日</span><span>試飛與調整</span></div><div><h3>飛行測試、問題修正與成果整理</h3><ul><li>重心檢查、舵面方向、舵量大小與油門反應確認。</li><li>地面滑行、安全區域、試飛流程與風向判斷。</li><li>首飛觀察：爬升、偏航、俯仰、轉彎與降落狀況。</li><li>調整配重、舵量、機翼固定與操控策略。</li><li>成果討論：問題描述、可能原因、修正方式與後續延伸。</li><li>學習產出：試飛觀察表、修正紀錄、成果簡報素材。</li></ul></div></article>
-</div></div></section>
-<section class="section soft"><div class="container"><div class="section-head"><div><div class="kicker">Technical Themes</div><h2>課程技術主題</h2></div><p>以高中以上程度可理解的方式，串接物理、電子、程式與通訊。</p></div><div class="grid three"><article class="card"><h3>航空器與飛行物理</h3><p>由升力公式、翼型、迎角與重心位置出發，理解飛機「能飛」與「能穩定飛」的差異。</p></article><article class="card"><h3>微控制器與電控訊號</h3><p>以 ESP32-CAM 控制伺服與 ESC，認識 GPIO、PWM、供電、接地與訊號安全。</p></article><article class="card"><h3>網路通訊與遠端控制</h3><p>手機連線到 ESP32-CAM，透過網頁按鈕或滑桿送出控制指令，理解 AP、IP 與 HTTP 的基本概念。</p></article></div><div class="hero-card" style="margin-top:20px"><img src="assets/control.svg" alt="手機 ESP32 ESC 馬達控制流程示意"></div></div></section>
-<section class="section"><div class="container"><div class="section-head"><div><div class="kicker">Academic Outcomes</div><h2>可整理的學術成果</h2></div><p>下列項目可作為學生後續整理自主學習、探究紀錄、專題作品或科學展示的素材；課程本身不保證任何升學結果。</p></div><div class="grid four outcome-list"><article class="card outcome"><div><h3>問題定義</h3><p>飛機為何無法爬升？為何會偏航？重心與舵量如何影響結果？</p></div></article><article class="card outcome"><div><h3>設計與製作證據</h3><p>機體照片、尺寸圖、電控接線圖、材料選擇與加工過程。</p></div></article><article class="card outcome"><div><h3>測試資料</h3><p>重心、舵面角度、油門反應、試飛觀察與修正前後比較。</p></div></article><article class="card outcome"><div><h3>反思與延伸</h3><p>整理遇到的問題、判斷依據、修正策略，以及未來可改進的設計。</p></div></article></div></div></section>
-</main><footer class="footer"><div class="container"><div><b>屏東大學太空科技與教育中心｜屏東大學理學院</b><small>正式課程時間與細節以主辦單位公告為準。</small></div><div><a href="PlaneIndex.html">首頁</a>　<a href="register.html">報名方式</a></div></div></footer><script src="assets/site.js"></script>
-</body></html>
+<a class="skip" href="#main">跳至主要內容</a>
+<header class="site-top">
+  <div class="container nav">
+    <a class="brand" href="PlaneIndex.html"><span class="brand-mark">NPTU</span><span>無人定翼機三日工作坊<small>Fixed-Wing UAV Workshop</small></span></a>
+    <nav class="navlinks" aria-label="主選單">
+      <a href="PlaneIndex.html">首頁</a>
+      <a class="active" href="curriculum.html">課程內容</a>
+      <a href="planefunding.html">內部預算</a>
+      <span class="disabled">報名頁稍後處理</span>
+    </nav>
+  </div>
+</header>
+<main id="main">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-panel">
+        <span class="eyebrow">Curriculum · 3 Days · 18 Hours</span>
+        <h1><span class="en">Course & Blueprints</span>課程內容</h1>
+        <p class="lead">課程採用「概念講授、工程製作、測試紀錄、修正討論」四個環節，讓學生從理論走到實作，再從試飛結果回到科學分析。</p>
+        <div class="actions"><a class="btn primary" href="#daily">三日課程</a><a class="btn subtle" href="#blueprints">查看三份藍圖</a><a class="btn" href="PlaneIndex.html">回首頁</a></div>
+      </div>
+      <aside class="hero-card">
+        <img class="hero-photo" src="foam_rc_highwing_nptu.png" alt="以 foam / KT 板製作的 RC 高翼無人機實拍照片，白色機身，藍紅色條紋，高翼配置，前方無刷馬達與螺旋槳，側面可見 NPTU 字樣。">
+        <p class="caption">此處改為您提供的 foam／KT 板 RC 高翼無人機照片，更貼近實際工作坊完成品樣貌；下方藍圖區則維持由上往下依序呈現 Plane 1、Plane 2、Plane 3，方便教師、助教與學生逐份閱讀。</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" id="daily">
+    <div class="container">
+      <div class="section-head"><div><div class="kicker">Daily Modules</div><h2>三日課程安排</h2></div><p>每日皆包含可記錄的學習產出，方便學生整理實作照片、測試表、問題修正與成果說明。</p></div>
+      <div class="timeline">
+        <article class="day"><div class="day-label"><b>Day 1</b><span>7月28日</span><span>飛行原理＋ESP32概念</span></div><div><h3>航空器基本原理與控制系統概念</h3><ul><li>飛機四力：升力、重力、推力、阻力。</li><li>翼型、迎角、機翼面積、升力與失速的基本關係。</li><li>重心、穩定性與尾翼的角色。</li><li>控制面：升降舵、方向舵與油門控制。</li><li>ESP32-CAM 手機遠端控制概念：Wi‑Fi AP、網頁介面、PWM控制訊號。</li><li>學習產出：設計紀錄表、初步機體配置草圖、重心與控制面檢查清單。</li></ul></div></article>
+        <article class="day"><div class="day-label"><b>Day 2</b><span>7月29日</span><span>機體製作＋電控整合</span></div><div><h3>90 cm 高翼定翼機製作與系統整合</h3><ul><li>KT板機翼、機身、水平尾翼、垂直尾翼加工與固定方式。</li><li>機翼主樑、尾翼角度、方向舵缺口與結構強度討論。</li><li>無刷馬達、電子變速器 ESC、伺服馬達與連桿配置。</li><li>ESP32-CAM 微控制器、PWM 控制、電源供應與安全檢查。</li><li>手機控制網頁測試：油門、升降舵、方向舵與基本通訊反應。</li><li>學習產出：機體組裝紀錄、電控接線圖、地面測試紀錄。</li></ul></div></article>
+        <article class="day"><div class="day-label"><b>Day 3</b><span>7月30日</span><span>試飛＋調整</span></div><div><h3>飛行測試、問題修正與成果整理</h3><ul><li>重心檢查、舵面方向、舵量大小與油門反應確認。</li><li>地面滑行、安全區域、試飛流程與風向判斷。</li><li>首飛觀察：爬升、偏航、俯仰、轉彎與降落狀況。</li><li>調整配重、舵量、機翼固定與操控策略。</li><li>成果討論：問題描述、可能原因、修正方式與後續延伸。</li><li>學習產出：試飛觀察表、修正紀錄、成果簡報素材。</li></ul></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft" id="technical">
+    <div class="container">
+      <div class="section-head"><div><div class="kicker">Technical Themes</div><h2>課程技術主題</h2></div><p>以高中以上程度可理解的方式，串接物理、電子、程式與通訊。</p></div>
+      <div class="grid three">
+        <article class="card"><h3>航空器與飛行物理</h3><p>由升力公式、翼型、迎角與重心位置出發，理解飛機「能飛」與「能穩定飛」的差異。</p></article>
+        <article class="card"><h3>微控制器與電控訊號</h3><p>以 ESP32-CAM 控制伺服與 ESC，認識 GPIO、PWM、供電、接地與訊號安全。</p></article>
+        <article class="card"><h3>網路通訊與遠端控制</h3><p>手機連線到 ESP32-CAM，透過網頁滑桿或按鈕送出控制指令，理解 AP、IP 與 HTTP 基本概念。</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="blueprints">
+    <div class="container">
+      <div class="section-head"><div><div class="kicker">Integrated Blueprints</div><h2>機體藍圖與製作資料</h2></div><p>以下整合三份已確認的藍圖檔案；改為由上往下依序呈現，預覽區加大，方便教師、助教與學生逐份閱讀。</p></div>
+      <div class="blueprint-stack">
+        <article class="card blueprint-card">
+          <div class="bp-head"><div class="num">Plane 1</div><h3>機翼 KT板切割藍圖</h3><p>包含 900 mm 翼展、上下蒙皮、支撐條與折線說明。</p></div>
+          <div class="bp-layout"><iframe src="plane1.html" title="Plane 1 機翼藍圖預覽" loading="lazy"></iframe></div>
+          <div class="bp-actions"><a class="btn primary" href="plane1.html">開啟完整機翼藍圖</a></div>
+        </article>
+
+        <article class="card blueprint-card">
+          <div class="bp-head"><div class="num">Plane 2</div><h3>機身／機艙 KT板藍圖</h3><p>包含機身展開圖、側視圖、馬達座與設備配置說明。</p></div>
+          <div class="bp-layout"><iframe src="plane2.html" title="Plane 2 機身機艙藍圖預覽" loading="lazy"></iframe></div>
+          <div class="bp-actions"><a class="btn primary" href="plane2.html">開啟完整機身藍圖</a></div>
+        </article>
+
+        <article class="card blueprint-card">
+          <div class="bp-head"><div class="num">Plane 3</div><h3>尾翼 KT板切割藍圖</h3><p>包含水平尾翼、升降舵、垂直尾翼與方向舵缺口設計。</p></div>
+          <div class="bp-layout"><iframe src="plane3.html" title="Plane 3 尾翼藍圖預覽" loading="lazy"></iframe></div>
+          <div class="bp-actions"><a class="btn primary" href="plane3.html">開啟完整尾翼藍圖</a></div>
+        </article>
+      </div>
+      <div class="notice" style="margin-top:18px"><b>教學使用建議：</b>第二天機體製作時，可依序開啟 Plane 1 → Plane 2 → Plane 3；第三天試飛前則回到 Plane 2 與 Plane 3 檢查重心、尾翼角度、舵面方向與連桿干涉問題。</div>
+    </div>
+  </section>
+
+  <section class="section soft" id="outputs">
+    <div class="container">
+      <div class="section-head"><div><div class="kicker">Academic Outcomes</div><h2>可整理的學術成果</h2></div><p>下列項目可作為學生後續整理自主學習、探究紀錄、專題作品或科學展示的素材；課程本身不保證任何升學結果。</p></div>
+      <div class="grid four">
+        <article class="card"><h3>問題定義</h3><p>飛機為何無法爬升？為何會偏航？重心與舵量如何影響結果？</p></article>
+        <article class="card"><h3>設計與製作證據</h3><p>機體照片、尺寸圖、電控接線圖、材料選擇與加工過程。</p></article>
+        <article class="card"><h3>測試資料</h3><p>地面測試、試飛觀察、重心位置、舵面角度與修正紀錄。</p></article>
+        <article class="card"><h3>反思與改良</h3><p>用工程語言說明失敗原因、修正方式與下一版設計。</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="safety">
+    <div class="container">
+      <div class="notice"><h2 style="margin-top:0">安全提醒</h2><p>無刷馬達測試時必須先拆下螺旋槳；上電前確認油門歸零、GND共地、電池固定、舵面方向正確。試飛須在指定安全區域進行，人員不得站在螺旋槳前方或飛行路徑上。</p></div>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="container">© 2026 無人定翼機三日工作坊｜課程頁已整合 plane1.html、plane2.html、plane3.html。報名頁將另行製作。</div></footer>
+</body>
+</html>
