@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>天河王船追蹤系統｜SCION-X 未來兩小時地面軌跡</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.min.js"></script>
+
+  <style>
+    /* Leaflet 必要 CSS 備援：避免 leaflet.css 載入失敗時瓦片錯位 */
+    .leaflet-pane,
+    .leaflet-tile,
+    .leaflet-marker-icon,
+    .leaflet-marker-shadow,
+    .leaflet-tile-container,
+    .leaflet-pane > svg,
+    .leaflet-pane > canvas,
+    .leaflet-zoom-box,
+    .leaflet-image-layer,
+    .leaflet-layer {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .leaflet-container {
+      overflow: hidden;
+      position: relative;
+      outline-style: none;
+      background: #aad3df;
+      font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+      touch-action: pan-x pan-y;
+    }
+
+    .leaflet-tile,
+    .leaflet-marker-icon,
+    .leaflet-marker-shadow {
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .leaflet-tile {
+      filter: inherit;
+      visibility: hidden;
+      border: 0;
+    }
+
+    .leaflet-tile-loaded {
+      visibility: inherit;
+    }
+
+    .leaflet-zoom-animated {
+      transform-origin: 0 0;
+    }
+
+    .leaflet-map-pane canvas { z-index: 100; }
+    .leaflet-map-pane svg { z-index: 200; }
+    .leaflet-tile-pane { z-index: 200; }
+    .leaflet-overlay-pane { z-index: 400; }
+    .leaflet-shadow-pane { z-index: 500; }
+    .leaflet-marker-pane { z-index: 600; }
+    .leaflet-tooltip-pane { z-index: 650; }
+    .leaflet-popup-pane { z-index: 700; }
+
+    .leaflet-control {
+      position: relative;
+      z-index: 800;
+      pointer-events: auto;
+      float: left;
+      clear: both;
+    }
+
+    .leaflet-top,
+    .leaflet-bottom {
+      position: absolute;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .leaflet-top { top: 0; }
+    .leaflet-right { right: 0; }
+    .leaflet-bottom { bottom: 0; }
+    .leaflet-left { left: 0; }
+
+    .leaflet-control-zoom {
+      border: 2px solid rgba(0,0,0,0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      background: #fff;
+      margin-left: 10px;
+      margin-top: 10px;
+    }
+
+    .leaflet-control-zoom a {
+      display: block;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      text-decoration: none;
+      color: #000;
+      background: #fff;
+      border-bottom: 1px solid #ccc;
+      font: bold 18px Arial, sans-serif;
+    }
+
+    .leaflet-control-zoom a:last-child { border-bottom: none; }
+
+    .leaflet-control-layers {
+      background: #fff;
+      border: 2px solid rgba(0,0,0,0.2);
+      border-radius: 4px;
+      padding: 8px 10px;
+      margin-right: 10px;
+      margin-top: 10px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.25);
+      line-height: 1.35;
+    }
+
+    .leaflet-control-attribution {
+      background: rgba(255,255,255,0.8);
+      padding: 0 5px;
+      margin: 0;
+      font-size: 11px;
+    }
+
+    .leaflet-bottom.leaflet-right .leaflet-control {
+      margin-bottom: 0;
+      margin-right: 0;
+    }
+
+    .leaflet-tooltip {
+      position: absolute;
+      padding: 6px 8px;
+      background: rgba(255, 255, 255, 0.94);
+      color: #111827;
+      border: 1px solid rgba(0,0,0,0.2);
+      border-radius: 6px;
+      white-space: nowrap;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    #map {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #aad3df;
+    }
+
+    .panel {
+      position: absolute;
+      z-index: 1200;
+      top: 12px;
+      left: 52px;
+      max-width: 560px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.94);
+      color: #111827;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .panel strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .panel button {
+      margin-top: 8px;
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: #facc15;
+      color: #111827;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .panel button:hover {
+      background: #fde047;
+    }
+
+    .satellite-icon {
+      width: 64px;
+      height: 64px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.95));
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <div class="panel">
+    <strong>天河王船追蹤系統｜SCION-X 未來兩小時地面軌跡</strong>
+    <div id="status">準備載入地圖...</div>
+    <button id="refreshBtn">重新計算</button>
+  </div>
+
+  <script>
+    var SCIONX_TLE_URL = "https://celestrak.org/NORAD/elements/gp.php?CATNR=98266&FORMAT=TLE";
+    var FUTURE_HOURS = 2;
+    var STEP_SECONDS = 60;
+    var COVERAGE_RADIUS_KM = 1000;
+    var UPDATE_INTERVAL_MS = 15000;
+
+    var statusEl = document.getElementById("status");
+    var refreshBtn = document.getElementById("refreshBtn");
+
+    var map = null;
+    var satrec = null;
+    var satelliteMarker = null;
+    var coverageCircle = null;
+    var trackLayers = [];
+    var updateTimer = null;
+
+    // SCION-X 目前使用 SatNOGS 暫時編號 98266 的早期 TLE。
+    // 發射後前幾天正式 NORAD/COSPAR 物件對應可能更新，請定期更新 line1 / line2。
+    var fallbackTle = {
+      name: "SCION-X fallback TLE",
+      line1: "1 98266U 26001A   26188.34186184  .00000000  00000-0  20819-6 0  9996",
+      line2: "2 98266  97.7473  88.7946 0015982  99.5762 260.7915 14.90763950    09"
+    };
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function initMapOnly() {
+      if (typeof L === "undefined") {
+        setStatus("Leaflet 沒有載入，無法顯示地圖。請檢查 CDN 或網路連線。");
+        return false;
+      }
+
+      var worldBounds = L.latLngBounds(
+        L.latLng(-85.0511, -180),
+        L.latLng(85.0511, 180)
+      );
+
+      map = L.map("map", {
+        center: [23.5, 121.0],
+        zoom: 2.5,
+        minZoom: 2.5,
+        maxZoom: 6,
+        zoomControl: true,
+        attributionControl: true,
+        worldCopyJump: false,
+        maxBounds: worldBounds,
+        maxBoundsViscosity: 1.0
+      });
+
+      var commonTileOptions = {
+        minZoom: 2,
+        maxZoom: 6,
+        noWrap: true,
+        bounds: worldBounds,
+        tileSize: 256,
+        zoomOffset: 0
+      };
+
+      var cartoLight = L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        Object.assign({}, commonTileOptions, {
+          subdomains: "abcd",
+          attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
+        })
+      );
+
+      var osmStandard = L.tileLayer(
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        Object.assign({}, commonTileOptions, {
+          attribution: "&copy; OpenStreetMap contributors"
+        })
+      );
+
+      var esriImagery = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        Object.assign({}, commonTileOptions, {
+          attribution: "Tiles &copy; Esri"
+        })
+      );
+
+      esriImagery.addTo(map);
+
+      L.control.layers(
+        {
+          "Esri 衛星影像（預設）": esriImagery,
+          "CartoDB Positron": cartoLight,
+          "OpenStreetMap": osmStandard
+        },
+        {},
+        {
+          collapsed: false,
+          position: "topright"
+        }
+      ).addTo(map);
+
+      setTimeout(function () {
+        map.invalidateSize(true);
+      }, 150);
+
+      window.addEventListener("resize", function () {
+        map.invalidateSize(true);
+      });
+
+      setStatus("地圖已載入，準備載入東港東隆宮王船軌道資料...");
+      return true;
+    }
+
+    function parseTleText(tleText) {
+      var clean = tleText.split(String.fromCharCode(13)).join("");
+      var rawLines = clean.split(String.fromCharCode(10));
+      var lines = [];
+
+      for (var i = 0; i < rawLines.length; i++) {
+        var line = rawLines[i].trim();
+        if (line.length > 0) {
+          lines.push(line);
+        }
+      }
+
+      if (lines.length < 3) {
+        throw new Error("TLE 格式不完整");
+      }
+
+      return {
+        name: lines[0],
+        line1: lines[1],
+        line2: lines[2]
+      };
+    }
+
+    function loadFallbackTle() {
+      satrec = satellite.twoline2satrec(fallbackTle.line1, fallbackTle.line2);
+      setStatus("改用內建 SCION-X 暫時 TLE，正在計算軌跡...");
+      updateDisplay();
+    }
+
+    function loadScionxTle() {
+      if (typeof satellite === "undefined") {
+        setStatus("地圖已顯示，但 satellite.js 沒有載入，暫時無法畫 SCION-X 軌跡。");
+        return;
+      }
+
+      setStatus("正在從 CelesTrak 載入 SCION-X TLE...");
+
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function () {
+        controller.abort();
+      }, 5000);
+
+      fetch(SCIONX_TLE_URL, {
+        cache: "no-store",
+        signal: controller.signal
+      })
+        .then(function (response) {
+          clearTimeout(timeoutId);
+          if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+          }
+          return response.text();
+        })
+        .then(function (tleText) {
+          var tle = parseTleText(tleText);
+          satrec = satellite.twoline2satrec(tle.line1, tle.line2);
+          setStatus("已載入 " + tle.name + "，正在計算軌跡...");
+          updateDisplay();
+        })
+        .catch(function (err) {
+          clearTimeout(timeoutId);
+          console.warn("CelesTrak 載入失敗，改用內建 SCION-X 暫時 TLE", err);
+          loadFallbackTle();
+        });
+    }
+
+    function getSatelliteLatLngAlt(date) {
+      if (!satrec || typeof satellite === "undefined") {
+        return null;
+      }
+
+      var positionAndVelocity = satellite.propagate(satrec, date);
+      var positionEci = positionAndVelocity.position;
+
+      if (!positionEci) {
+        return null;
+      }
+
+      var gmst = satellite.gstime(date);
+      var geodetic = satellite.eciToGeodetic(positionEci, gmst);
+
+      return {
+        lat: satellite.degreesLat(geodetic.latitude),
+        lng: satellite.degreesLong(geodetic.longitude),
+        altKm: geodetic.height
+      };
+    }
+
+    function generateFutureTrack() {
+      var now = new Date();
+      var points = [];
+      var totalSeconds = FUTURE_HOURS * 3600;
+
+      for (var t = 0; t <= totalSeconds; t += STEP_SECONDS) {
+        var date = new Date(now.getTime() + t * 1000);
+        var pos = getSatelliteLatLngAlt(date);
+
+        if (pos && Math.abs(pos.lat) <= 85.0511) {
+          points.push({
+            lat: pos.lat,
+            lng: pos.lng,
+            altKm: pos.altKm,
+            date: date,
+            minutesFromNow: Math.round(t / 60)
+          });
+        }
+      }
+
+      return points;
+    }
+
+    function splitTrackAtDateline(points) {
+      var segments = [];
+      var current = [];
+
+      for (var i = 0; i < points.length; i++) {
+        var p = points[i];
+
+        if (i > 0) {
+          var prev = points[i - 1];
+          if (Math.abs(p.lng - prev.lng) > 180) {
+            if (current.length > 1) {
+              segments.push(current);
+            }
+            current = [];
+          }
+        }
+
+        current.push([p.lat, p.lng]);
+      }
+
+      if (current.length > 1) {
+        segments.push(current);
+      }
+
+      return segments;
+    }
+
+    function clearTrackLayers() {
+      for (var i = 0; i < trackLayers.length; i++) {
+        map.removeLayer(trackLayers[i]);
+      }
+      trackLayers = [];
+    }
+
+    function drawTrack(points) {
+      var segments = splitTrackAtDateline(points);
+
+      for (var i = 0; i < segments.length; i++) {
+        var polyline = L.polyline(segments[i], {
+          color: "#facc15",
+          weight: 4,
+          opacity: 0.95
+        }).addTo(map);
+        trackLayers.push(polyline);
+      }
+
+      for (var j = 0; j < points.length; j++) {
+        var p = points[j];
+        if (p.minutesFromNow % 10 === 0) {
+          var marker = L.circleMarker([p.lat, p.lng], {
+            radius: 4,
+            color: "#ef4444",
+            fillColor: "#ef4444",
+            fillOpacity: 0.9,
+            weight: 1
+          }).addTo(map);
+
+          marker.bindTooltip(
+            "+" + p.minutesFromNow + " 分鐘<br>" +
+            p.date.toLocaleTimeString() + "<br>高度 " +
+            p.altKm.toFixed(0) + " km",
+            { direction: "top", opacity: 0.95 }
+          );
+
+          trackLayers.push(marker);
+        }
+      }
+    }
+
+    function drawCurrentSatellite(pos) {
+      var latlng = [pos.lat, pos.lng];
+
+      var icon = L.divIcon({
+        className: "",
+        html: "<img class=\"satellite-icon\" src=\"images/god.png\" alt=\"SCION-X\">",
+        iconSize: [64, 64],
+        iconAnchor: [32, 32]
+      });
+
+      if (!satelliteMarker) {
+        satelliteMarker = L.marker(latlng, { icon: icon }).addTo(map);
+      } else {
+        satelliteMarker.setLatLng(latlng);
+        satelliteMarker.setIcon(icon);
+      }
+
+      satelliteMarker.bindTooltip(
+        "SCION-X 現在位置<br>緯度 " + pos.lat.toFixed(2) +
+        "°<br>經度 " + pos.lng.toFixed(2) +
+        "°<br>高度約 " + pos.altKm.toFixed(0) + " km",
+        { direction: "top", opacity: 0.95 }
+      );
+
+      if (!coverageCircle) {
+        coverageCircle = L.circle(latlng, {
+          radius: COVERAGE_RADIUS_KM * 1000,
+          color: "#facc15",
+          weight: 2,
+          opacity: 0.9,
+          fillColor: "#facc15",
+          fillOpacity: 0.22
+        }).addTo(map);
+      } else {
+        coverageCircle.setLatLng(latlng);
+        coverageCircle.setRadius(COVERAGE_RADIUS_KM * 1000);
+      }
+    }
+
+    function updateDisplay() {
+      if (!map || !satrec || typeof satellite === "undefined") {
+        return;
+      }
+
+      var nowPos = getSatelliteLatLngAlt(new Date());
+      var trackPoints = generateFutureTrack();
+
+      if (!nowPos || trackPoints.length === 0) {
+        setStatus("無法計算 SCION-X 位置。");
+        return;
+      }
+
+      clearTrackLayers();
+      drawTrack(trackPoints);
+      drawCurrentSatellite(nowPos);
+
+      setStatus(
+        "SCION-X 王船現在位置：緯度 " + nowPos.lat.toFixed(2) +
+        "°，經度 " + nowPos.lng.toFixed(2) +
+        "°，高度約 " + nowPos.altKm.toFixed(0) +
+        " km。黃線為未來 " + FUTURE_HOURS +
+        " 小時軌跡，黃圈庇佑半徑 " + COVERAGE_RADIUS_KM + " km。每 15 秒自動更新一次。"
+      );
+    }
+
+    function startApp() {
+      var mapOk = initMapOnly();
+      if (!mapOk) {
+        return;
+      }
+
+      loadScionxTle();
+
+      if (updateTimer) {
+        clearInterval(updateTimer);
+      }
+      updateTimer = setInterval(updateDisplay, UPDATE_INTERVAL_MS);
+    }
+
+    refreshBtn.addEventListener("click", function () {
+      if (satrec) {
+        updateDisplay();
+      } else {
+        loadScionxTle();
+      }
+    });
+
+    window.addEventListener("load", startApp);
+  </script>
+</body>
+</html>
