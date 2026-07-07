@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>東港東隆宮王船未來兩小時地面軌跡</title>
+  <title>天河王船追蹤系統｜SCION-X 未來兩小時地面軌跡</title>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -197,7 +197,7 @@
       background: #fde047;
     }
 
-    .iss-icon {
+    .satellite-icon {
       width: 64px;
       height: 64px;
       image-rendering: pixelated;
@@ -210,13 +210,13 @@
   <div id="map"></div>
 
   <div class="panel">
-    <strong>東港東隆宮王船未來兩小時地面軌跡</strong>
+    <strong>天河王船追蹤系統｜SCION-X 未來兩小時地面軌跡</strong>
     <div id="status">準備載入地圖...</div>
     <button id="refreshBtn">重新計算</button>
   </div>
 
   <script>
-    var ISS_TLE_URL = "https://celestrak.org/NORAD/elements/gp.php?CATNR=25544&FORMAT=TLE";
+    var SCIONX_TLE_URL = "https://celestrak.org/NORAD/elements/gp.php?CATNR=98266&FORMAT=TLE";
     var FUTURE_HOURS = 2;
     var STEP_SECONDS = 60;
     var COVERAGE_RADIUS_KM = 1000;
@@ -227,15 +227,17 @@
 
     var map = null;
     var satrec = null;
-    var issMarker = null;
+    var satelliteMarker = null;
     var coverageCircle = null;
     var trackLayers = [];
     var updateTimer = null;
 
+    // SCION-X 目前使用 SatNOGS 暫時編號 98266 的早期 TLE。
+    // 發射後前幾天正式 NORAD/COSPAR 物件對應可能更新，請定期更新 line1 / line2。
     var fallbackTle = {
-      name: "ISS (ZARYA) fallback TLE",
-      line1: "1 25544U 98067A   24146.50000000  .00016717  00000+0  30692-3 0  9993",
-      line2: "2 25544  51.6400  45.0000 0005000 120.0000 300.0000 15.50000000450000"
+      name: "SCION-X fallback TLE",
+      line1: "1 98266U 26001A   26188.34186184  .00000000  00000-0  20819-6 0  9996",
+      line2: "2 98266  97.7473  88.7946 0015982  99.5762 260.7915 14.90763950    09"
     };
 
     function setStatus(text) {
@@ -348,24 +350,24 @@
 
     function loadFallbackTle() {
       satrec = satellite.twoline2satrec(fallbackTle.line1, fallbackTle.line2);
-      setStatus("改用內建 ISS TLE，正在計算軌跡...");
+      setStatus("改用內建 SCION-X 暫時 TLE，正在計算軌跡...");
       updateDisplay();
     }
 
-    function loadIssTle() {
+    function loadScionxTle() {
       if (typeof satellite === "undefined") {
-        setStatus("地圖已顯示，但 satellite.js 沒有載入，暫時無法畫 ISS 軌跡。");
+        setStatus("地圖已顯示，但 satellite.js 沒有載入，暫時無法畫 SCION-X 軌跡。");
         return;
       }
 
-      setStatus("正在從 CelesTrak 載入 ISS TLE...");
+      setStatus("正在從 CelesTrak 載入 SCION-X TLE...");
 
       var controller = new AbortController();
       var timeoutId = setTimeout(function () {
         controller.abort();
       }, 5000);
 
-      fetch(ISS_TLE_URL, {
+      fetch(SCIONX_TLE_URL, {
         cache: "no-store",
         signal: controller.signal
       })
@@ -384,7 +386,7 @@
         })
         .catch(function (err) {
           clearTimeout(timeoutId);
-          console.warn("CelesTrak 載入失敗，改用內建 TLE", err);
+          console.warn("CelesTrak 載入失敗，改用內建 SCION-X 暫時 TLE", err);
           loadFallbackTle();
         });
     }
@@ -503,25 +505,25 @@
       }
     }
 
-    function drawCurrentIss(pos) {
+    function drawCurrentSatellite(pos) {
       var latlng = [pos.lat, pos.lng];
 
       var icon = L.divIcon({
         className: "",
-        html: "<img class=\"iss-icon\" src=\"images/god.png\" alt=\"ISS\">",
+        html: "<img class=\"satellite-icon\" src=\"images/god.png\" alt=\"SCION-X\">",
         iconSize: [64, 64],
         iconAnchor: [32, 32]
       });
 
-      if (!issMarker) {
-        issMarker = L.marker(latlng, { icon: icon }).addTo(map);
+      if (!satelliteMarker) {
+        satelliteMarker = L.marker(latlng, { icon: icon }).addTo(map);
       } else {
-        issMarker.setLatLng(latlng);
-        issMarker.setIcon(icon);
+        satelliteMarker.setLatLng(latlng);
+        satelliteMarker.setIcon(icon);
       }
 
-      issMarker.bindTooltip(
-        "ISS 現在位置<br>緯度 " + pos.lat.toFixed(2) +
+      satelliteMarker.bindTooltip(
+        "SCION-X 現在位置<br>緯度 " + pos.lat.toFixed(2) +
         "°<br>經度 " + pos.lng.toFixed(2) +
         "°<br>高度約 " + pos.altKm.toFixed(0) + " km",
         { direction: "top", opacity: 0.95 }
@@ -551,20 +553,20 @@
       var trackPoints = generateFutureTrack();
 
       if (!nowPos || trackPoints.length === 0) {
-        setStatus("無法計算 ISS 位置。");
+        setStatus("無法計算 SCION-X 位置。");
         return;
       }
 
       clearTrackLayers();
       drawTrack(trackPoints);
-      drawCurrentIss(nowPos);
+      drawCurrentSatellite(nowPos);
 
       setStatus(
-        "東隆宮王船現在位置：緯度 " + nowPos.lat.toFixed(2) +
+        "SCION-X 王船現在位置：緯度 " + nowPos.lat.toFixed(2) +
         "°，經度 " + nowPos.lng.toFixed(2) +
         "°，高度約 " + nowPos.altKm.toFixed(0) +
         " km。黃線為未來 " + FUTURE_HOURS +
-        " 小時軌跡，黃圈神力半徑 " + COVERAGE_RADIUS_KM + " km。每 20 秒自動更新一次。"
+        " 小時軌跡，黃圈庇佑半徑 " + COVERAGE_RADIUS_KM + " km。每 15 秒自動更新一次。"
       );
     }
 
@@ -574,7 +576,7 @@
         return;
       }
 
-      loadIssTle();
+      loadScionxTle();
 
       if (updateTimer) {
         clearInterval(updateTimer);
@@ -586,7 +588,7 @@
       if (satrec) {
         updateDisplay();
       } else {
-        loadIssTle();
+        loadScionxTle();
       }
     });
 
