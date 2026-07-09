@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026 大學生跨校太空科技暑期專題計畫｜8/25 學生成果交流議程</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --paper: #ffffff;
+      --ink: #172033;
+      --muted: #5f6b7a;
+      --line: #dbe2ee;
+      --blue: #0b4f8a;
+      --blue-2: #1d75bd;
+      --gold: #c89d35;
+      --soft-blue: #eaf3fb;
+      --soft-gold: #fff6dc;
+      --shadow: 0 18px 45px rgba(23, 32, 51, 0.10);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(29,117,189,0.16), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(200,157,53,0.16), transparent 24%),
+        var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 72px 24px 56px;
+      color: white;
+      background:
+        linear-gradient(135deg, rgba(6,35,70,0.95), rgba(11,79,138,0.92)),
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.20), transparent 18%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.45) 1px, transparent 1.5px),
+        linear-gradient(135deg, rgba(255,255,255,0.08), transparent 38%);
+      background-size: 42px 42px, 100% 100%;
+      opacity: 0.28;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 1160px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.4fr 0.6fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      color: #f8e8b0;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin: 20px 0 14px;
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      line-height: 1.15;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      max-width: 820px;
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      color: rgba(255,255,255,0.86);
+      margin: 0;
+    }
+
+    .hero-card {
+      padding: 24px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-card h2 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+      color: #fff6dc;
+    }
+
+    .hero-card p {
+      margin: 8px 0;
+      color: rgba(255,255,255,0.90);
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .meta-item {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .meta-value {
+      display: block;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255,255,255,0.86);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-inner a {
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .nav-inner a:hover {
+      background: var(--soft-blue);
+      color: var(--blue);
+    }
+
+    main {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 48px 20px 72px;
+    }
+
+    section {
+      margin: 0 0 42px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      color: var(--blue);
+      line-height: 1.25;
+    }
+
+    .section-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .content-pad {
+      padding: 28px;
+    }
+
+    .lead {
+      font-size: 1.08rem;
+      color: var(--ink);
+      margin: 0 0 16px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .reason-card {
+      position: relative;
+      min-height: 180px;
+      padding: 24px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #f9fbfe);
+    }
+
+    .reason-card strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      color: var(--blue);
+    }
+
+    .reason-card .tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--soft-gold);
+      color: #7f5a00;
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .schedule-table, .session-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+    }
+
+    .schedule-table th,
+    .schedule-table td,
+    .session-table th,
+    .session-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    .schedule-table th,
+    .session-table th {
+      background: #f0f5fb;
+      color: var(--blue);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .schedule-table tr:last-child td,
+    .session-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .time {
+      font-weight: 900;
+      color: var(--blue);
+      white-space: nowrap;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--soft-blue);
+      color: var(--blue);
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .session {
+      margin-bottom: 24px;
+    }
+
+    .session-header {
+      padding: 22px 26px;
+      background: linear-gradient(135deg, var(--blue), #08365d);
+      color: white;
+      display: flex;
+      gap: 18px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .session-header h3 {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    .session-header p {
+      margin: 4px 0 0;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .session-label {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff6dc;
+      font-weight: 900;
+    }
+
+    .rule-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .rule {
+      padding: 18px;
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+    }
+
+    .rule h3 {
+      margin: 0 0 8px;
+      color: var(--blue);
+      font-size: 1.1rem;
+    }
+
+    .rule p { margin: 0; color: var(--muted); }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .flow-step {
+      position: relative;
+      padding: 18px;
+      min-height: 132px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      border: 1px solid var(--line);
+    }
+
+    .flow-step span {
+      display: inline-flex;
+      width: 30px;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: white;
+      background: var(--gold);
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .flow-step strong {
+      display: block;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+
+    .flow-step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .footer {
+      padding: 34px 24px;
+      background: #0a223a;
+      color: rgba(255,255,255,0.78);
+      text-align: center;
+    }
+
+    .footer strong {
+      color: #fff6dc;
+    }
+
+    .mobile-cards { display: none; }
+
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .two-col, .rule-grid, .flow { grid-template-columns: 1fr; }
+      .section-title { display: block; }
+      .hero { padding-top: 52px; }
+    }
+
+    @media (max-width: 720px) {
+      main { padding-inline: 14px; }
+      .content-pad { padding: 20px; }
+      .schedule-table, .session-table { display: none; }
+      .mobile-cards { display: grid; gap: 12px; padding: 16px; }
+      .mobile-card {
+        padding: 16px;
+        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid var(--line);
+      }
+      .mobile-card .time { display: block; margin-bottom: 6px; }
+      .mobile-card strong { color: var(--blue); }
+      .session-header { padding: 18px; }
+      .nav-inner { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
+      .nav-inner a { white-space: nowrap; }
+    }
+
+    @media print {
+      nav { display: none; }
+      body { background: white; }
+      .hero { color: #000; background: white; border-bottom: 2px solid #000; padding: 24px; }
+      .hero::before { display: none; }
+      .hero-inner { display: block; }
+      .hero-card { color: #000; border: 1px solid #000; box-shadow: none; background: white; }
+      .hero-card h2, .hero-card p, .meta-label, .meta-value, .eyebrow, .subtitle { color: #000; }
+      .panel, .reason-card, .rule, .flow-step { box-shadow: none; border-color: #000; }
+      .session-header { background: #eee; color: #000; border-bottom: 1px solid #000; }
+      .session-header p, .session-label { color: #000; }
+      .footer { background: white; color: #000; border-top: 1px solid #000; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow">2026 Summer Research Program</div>
+        <h1>大學生跨校太空科技暑期專題計畫</h1>
+        <p class="subtitle">8 月 25 日學生成果交流議程：以 Oral 方式報告專題總覽，Poster Session 則供細節討論與跨校交流。</p>
+      </div>
+      <aside class="hero-card" aria-label="活動資訊">
+        <h2>8/25 學生成果交流日</h2>
+        <p>本日活動包含開場、學生口頭報告、午餐餐聚、海報交流與綜合討論。</p>
+        <div class="hero-meta">
+          <div class="meta-item"><span class="meta-label">Oral Presentation</span><span class="meta-value">每位學生 15 分鐘</span></div>
+          <div class="meta-item"><span class="meta-label">Poster Session</span><span class="meta-value">15:45–17:45</span></div>
+          <div class="meta-item"><span class="meta-label">海報張貼</span><span class="meta-value">報到時交由工作人員統一張貼</span></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <nav aria-label="頁面導覽">
+    <div class="nav-inner">
+      <a href="#purpose">安排理念</a>
+      <a href="#overview">總議程</a>
+      <a href="#sessions">Oral 場次</a>
+      <a href="#poster">海報交流</a>
+      <a href="#rules">報告規則</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="purpose">
+      <div class="section-title">
+        <div>
+          <h2>為什麼同時安排 Oral 與 Poster？</h2>
+          <p>兩種發表形式對學生訓練與交流有不同功能，因此同時保留。</p>
+        </div>
+      </div>
+      <div class="panel content-pad">
+        <p class="lead">本計畫安排每位學生進行 <strong>Oral 口頭報告</strong>，讓所有學生都有機會站上舞台，以 Oral 方式向大眾報告專題總覽，清楚說明自己的專題背景、研究方法與成果重點。這不只是成果展示，也是一種科學溝通與公開表達能力的訓練。</p>
+        <p class="lead">同時安排 <strong>Poster Session 海報交流</strong>，則是為了讓學生能在較彈性的交流情境中，針對研究細節、實作過程、遇到的問題與未來延伸方向進行更深入的說明。海報時段也能促進不同學校、不同實驗室與不同專題領域之間的互相認識與討論。</p>
+        <div class="two-col" style="margin-top: 22px;">
+          <div class="reason-card">
+            <span class="tag">Oral Presentation</span>
+            <strong>建立全場共同理解</strong>
+            <p>每位學生以 15 分鐘向所有與會者介紹專題，讓大家快速掌握各研究主題的核心問題、方法與成果，也訓練學生面向大眾表達科學內容的能力。</p>
+          </div>
+          <div class="reason-card">
+            <span class="tag">Poster Session</span>
+            <strong>細節討論與自由交流</strong>
+            <p>海報時段提供更充裕的互動空間，學生可針對儀器設計、資料分析、程式流程、實驗困難與後續方向進行一對一或小組討論。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="overview">
+      <div class="section-title">
+        <div>
+          <h2>8 月 25 日總議程</h2>
+          <p>海報於報到時繳交，由工作人員依主題與交流動線統一安排張貼。</p>
+        </div>
+      </div>
+      <div class="panel">
+        <table class="schedule-table" aria-label="8月25日總議程">
+          <thead>
+            <tr><th>時間</th><th>活動內容</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="time">09:00–09:30</td><td>報到、海報繳交 <span class="pill">工作人員統一張貼</span></td></tr>
+            <tr><td class="time">09:30–09:50</td><td>開場致詞與計畫介紹</td></tr>
+            <tr><td class="time">09:50–10:00</td><td>合照、議程與報告規則說明</td></tr>
+            <tr><td class="time">10:00–11:00</td><td>Oral Session I：太空科學、天文與光電儀器</td></tr>
+            <tr><td class="time">11:00–11:10</td><td>休息</td></tr>
+            <tr><td class="time">11:10–12:10</td><td>Oral Session II：遙測、雷達、高光譜與任務資料</td></tr>
+            <tr><td class="time">12:10–13:20</td><td>午餐餐聚</td></tr>
+            <tr><td class="time">13:20–14:20</td><td>Oral Session III：航太系統、導航與飛行載具</td></tr>
+            <tr><td class="time">14:20–14:30</td><td>休息</td></tr>
+            <tr><td class="time">14:30–15:30</td><td>Oral Session IV：太空教育、科學傳播與生命／資料科學</td></tr>
+            <tr><td class="time">15:30–15:45</td><td>茶敘與海報場地移動</td></tr>
+            <tr><td class="time">15:45–17:45</td><td>Poster Session：學生海報展示與跨校交流</td></tr>
+            <tr><td class="time">17:45–18:00</td><td>綜合討論、結語與賦歸</td></tr>
+          </tbody>
+        </table>
+        <div class="mobile-cards" aria-label="手機版總議程">
+          <div class="mobile-card"><span class="time">09:00–09:30</span><strong>報到、海報繳交</strong><br><span class="note">工作人員統一張貼</span></div>
+          <div class="mobile-card"><span class="time">09:30–09:50</span><strong>開場致詞與計畫介紹</strong></div>
+          <div class="mobile-card"><span class="time">09:50–10:00</span><strong>合照、議程與報告規則說明</strong></div>
+          <div class="mobile-card"><span class="time">10:00–11:00</span><strong>Oral Session I</strong><br>太空科學、天文與光電儀器</div>
+          <div class="mobile-card"><span class="time">11:10–12:10</span><strong>Oral Session II</strong><br>遙測、雷達、高光譜與任務資料</div>
+          <div class="mobile-card"><span class="time">12:10–13:20</span><strong>午餐餐聚</strong></div>
+          <div class="mobile-card"><span class="time">13:20–14:20</span><strong>Oral Session III</strong><br>航太系統、導航與飛行載具</div>
+          <div class="mobile-card"><span class="time">14:30–15:30</span><strong>Oral Session IV</strong><br>太空教育、科學傳播與生命／資料科學</div>
+          <div class="mobile-card"><span class="time">15:45–17:45</span><strong>Poster Session</strong><br>學生海報展示與跨校交流</div>
+          <div class="mobile-card"><span class="time">17:45–18:00</span><strong>綜合討論、結語與賦歸</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sessions">
+      <div class="section-title">
+        <div>
+          <h2>Oral Presentation 場次安排</h2>
+          <p>場次以主題相近者優先安排；若主題相近度不足，則依專題單位所在地大致由南向北排列。</p>
+        </div>
+      </div>
+
+      <article class="panel session">
+        <div class="session-header">
+          <div>
+            <h3>Oral Session I：太空科學、天文與光電儀器</h3>
+            <p>從太空科學、天文觀測到光電與輻射相關技術。</p>
+          </div>
+          <span class="session-label">10:00–11:00</span>
+        </div>
+        <table class="session-table">
+          <thead><tr><th>時間</th><th>學生</th><th>原就讀學校</th><th>專題單位／實驗室</th></tr></thead>
+          <tbody>
+            <tr><td class="time">10:00–10:15</td><td>王○嵐</td><td>臺灣大學</td><td>國立屏東大學｜應用物理系｜天文粒子實驗室</td></tr>
+            <tr><td class="time">10:15–10:30</td><td>簡○宇</td><td>國立臺灣師範大學</td><td>國立清華大學｜天文所及太空所｜太空天文儀器實驗室</td></tr>
+            <tr><td class="time">10:30–10:45</td><td>胡○瑜</td><td>元智大學</td><td>國立中央大學｜光電系｜光通訊實驗室</td></tr>
+            <tr><td class="time">10:45–11:00</td><td>陳○霖</td><td>國立臺灣大學</td><td>國立臺灣大學｜臺大輻射應用及抗輻射技術研究中心｜奈米光子與奈米電子實驗室</td></tr>
+          </tbody>
+        </table>
+        <div class="mobile-cards">
+          <div class="mobile-card"><span class="time">10:00–10:15</span><strong>王○嵐</strong><br>臺灣大學<br><span class="note">國立屏東大學｜應用物理系｜天文粒子實驗室</span></div>
+          <div class="mobile-card"><span class="time">10:15–10:30</span><strong>簡○宇</strong><br>國立臺灣師範大學<br><span class="note">國立清華大學｜天文所及太空所｜太空天文儀器實驗室</span></div>
+          <div class="mobile-card"><span class="time">10:30–10:45</span><strong>胡○瑜</strong><br>元智大學<br><span class="note">國立中央大學｜光電系｜光通訊實驗室</span></div>
+          <div class="mobile-card"><span class="time">10:45–11:00</span><strong>陳○霖</strong><br>國立臺灣大學<br><span class="note">國立臺灣大學｜臺大輻射應用及抗輻射技術研究中心｜奈米光子與奈米電子實驗室</span></div>
+        </div>
+      </article>
+
+      <article class="panel session">
+        <div class="session-header">
+          <div>
+            <h3>Oral Session II：遙測、雷達、高光譜與任務資料</h3>
+            <p>聚焦於衛星資料、地球觀測、雷達與高光譜任務應用。</p>
+          </div>
+          <span class="session-label">11:10–12:10</span>
+        </div>
+        <table class="session-table">
+          <thead><tr><th>時間</th><th>學生</th><th>原就讀學校</th><th>專題單位／實驗室</th></tr></thead>
+          <tbody>
+            <tr><td class="time">11:10–11:25</td><td>陸○政</td><td>國立中央大學</td><td>國立成功大學｜電機工程學系｜高光譜智慧運算實驗室</td></tr>
+            <tr><td class="time">11:25–11:40</td><td>陳○妤</td><td>國立臺灣海洋大學</td><td>國立中央大學｜太空及遙測研究中心｜環境遙測研究室</td></tr>
+            <tr><td class="time">11:40–11:55</td><td>王○名</td><td>臺灣大學</td><td>中央研究院｜地球科學研究所｜合成孔徑雷達實驗室</td></tr>
+            <tr><td class="time">11:55–12:10</td><td>李○倫</td><td>中央大學</td><td>捷揚航電股份有限公司｜R&amp;D Department｜Liscotech Lab</td></tr>
+          </tbody>
+        </table>
+        <div class="mobile-cards">
+          <div class="mobile-card"><span class="time">11:10–11:25</span><strong>陸○政</strong><br>國立中央大學<br><span class="note">國立成功大學｜電機工程學系｜高光譜智慧運算實驗室</span></div>
+          <div class="mobile-card"><span class="time">11:25–11:40</span><strong>陳○妤</strong><br>國立臺灣海洋大學<br><span class="note">國立中央大學｜太空及遙測研究中心｜環境遙測研究室</span></div>
+          <div class="mobile-card"><span class="time">11:40–11:55</span><strong>王○名</strong><br>臺灣大學<br><span class="note">中央研究院｜地球科學研究所｜合成孔徑雷達實驗室</span></div>
+          <div class="mobile-card"><span class="time">11:55–12:10</span><strong>李○倫</strong><br>中央大學<br><span class="note">捷揚航電股份有限公司｜R&amp;D Department｜Liscotech Lab</span></div>
+        </div>
+      </article>
+
+      <article class="panel session">
+        <div class="session-header">
+          <div>
+            <h3>Oral Session III：航太系統、導航與飛行載具</h3>
+            <p>涵蓋航太系統、導航實驗、火箭系統與無人飛行載具。</p>
+          </div>
+          <span class="session-label">13:20–14:20</span>
+        </div>
+        <table class="session-table">
+          <thead><tr><th>時間</th><th>學生</th><th>原就讀學校</th><th>專題單位／實驗室</th></tr></thead>
+          <tbody>
+            <tr><td class="time">13:20–13:35</td><td>洪○善</td><td>國立成功大學</td><td>國立成功大學｜航空太空系｜ZAP Lab</td></tr>
+            <tr><td class="time">13:35–13:50</td><td>廖○儀</td><td>逢甲大學</td><td>國立虎尾科技大學｜飛機工程系｜太空系統實驗室（導航實驗室）</td></tr>
+            <tr><td class="time">13:50–14:05</td><td>李○涵</td><td>淡江大學</td><td>國立陽明交通大學｜前瞻火箭研究中心｜太空系統實驗室</td></tr>
+            <tr><td class="time">14:05–14:20</td><td>劉○富</td><td>成功大學</td><td>淡江大學｜航空太空工程學系｜無人飛行載具實驗室</td></tr>
+          </tbody>
+        </table>
+        <div class="mobile-cards">
+          <div class="mobile-card"><span class="time">13:20–13:35</span><strong>洪○善</strong><br>國立成功大學<br><span class="note">國立成功大學｜航空太空系｜ZAP Lab</span></div>
+          <div class="mobile-card"><span class="time">13:35–13:50</span><strong>廖○儀</strong><br>逢甲大學<br><span class="note">國立虎尾科技大學｜飛機工程系｜太空系統實驗室（導航實驗室）</span></div>
+          <div class="mobile-card"><span class="time">13:50–14:05</span><strong>李○涵</strong><br>淡江大學<br><span class="note">國立陽明交通大學｜前瞻火箭研究中心｜太空系統實驗室</span></div>
+          <div class="mobile-card"><span class="time">14:05–14:20</span><strong>劉○富</strong><br>成功大學<br><span class="note">淡江大學｜航空太空工程學系｜無人飛行載具實驗室</span></div>
+        </div>
+      </article>
+
+      <article class="panel session">
+        <div class="session-header">
+          <div>
+            <h3>Oral Session IV：太空教育、科學傳播與生命／資料科學</h3>
+            <p>呈現太空科技教育推廣與跨領域資料科學、生命科學專題。</p>
+          </div>
+          <span class="session-label">14:30–15:30</span>
+        </div>
+        <table class="session-table">
+          <thead><tr><th>時間</th><th>學生</th><th>原就讀學校</th><th>專題單位／實驗室</th></tr></thead>
+          <tbody>
+            <tr><td class="time">14:30–14:45</td><td>陳○樺</td><td>文藻外語大學</td><td>國立屏東大學｜科學傳播學系｜太空科技教育中心</td></tr>
+            <tr><td class="time">14:45–15:00</td><td>謝○霖</td><td>屏東大學</td><td>國立屏東大學｜STEM 教育國際碩士學位學程｜太空科技教育中心</td></tr>
+            <tr><td class="time">15:00–15:15</td><td>冉○安</td><td>逢甲大學</td><td>中國醫藥大學｜中西醫結合研究所｜合成生物學實驗室</td></tr>
+            <tr><td class="time">15:15–15:30</td><td>姜○賢</td><td>國立中央大學</td><td>國立中央大學｜基因體暨生物資訊研究所｜自然計算與生物資訊學實驗室</td></tr>
+          </tbody>
+        </table>
+        <div class="mobile-cards">
+          <div class="mobile-card"><span class="time">14:30–14:45</span><strong>陳○樺</strong><br>文藻外語大學<br><span class="note">國立屏東大學｜科學傳播學系｜太空科技教育中心</span></div>
+          <div class="mobile-card"><span class="time">14:45–15:00</span><strong>謝○霖</strong><br>屏東大學<br><span class="note">國立屏東大學｜STEM 教育國際碩士學位學程｜太空科技教育中心</span></div>
+          <div class="mobile-card"><span class="time">15:00–15:15</span><strong>冉○安</strong><br>逢甲大學<br><span class="note">中國醫藥大學｜中西醫結合研究所｜合成生物學實驗室</span></div>
+          <div class="mobile-card"><span class="time">15:15–15:30</span><strong>姜○賢</strong><br>國立中央大學<br><span class="note">國立中央大學｜基因體暨生物資訊研究所｜自然計算與生物資訊學實驗室</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="poster">
+      <div class="section-title">
+        <div>
+          <h2>Poster Session 海報交流安排</h2>
+          <p>以工作人員統一張貼減少學生準備壓力，並確保展示動線一致。</p>
+        </div>
+      </div>
+      <div class="panel content-pad">
+        <div class="flow">
+          <div class="flow-step"><span>1</span><strong>報到繳交</strong><p>學生於 09:00–09:30 報到時繳交海報。</p></div>
+          <div class="flow-step"><span>2</span><strong>統一張貼</strong><p>工作人員依主題分區與交流動線安排海報位置。</p></div>
+          <div class="flow-step"><span>3</span><strong>指定位置</strong><p>Poster Session 前由工作人員告知學生海報位置。</p></div>
+          <div class="flow-step"><span>4</span><strong>現場交流</strong><p>15:45–17:45 學生於海報旁進行說明與討論。</p></div>
+        </div>
+        <p class="lead" style="margin-top: 22px;">海報交流時段採自由交流形式，鼓勵學生主動介紹專題，也鼓勵與會者針對研究設計、儀器架構、資料處理、實驗困難與未來延伸方向進行深入提問。</p>
+      </div>
+    </section>
+
+    <section id="rules">
+      <div class="section-title">
+        <div>
+          <h2>報告規則與場次說明</h2>
+          <p>建議放在網站頁面下方，方便學生事前確認。</p>
+        </div>
+      </div>
+      <div class="rule-grid">
+        <div class="rule">
+          <h3>Oral 時間</h3>
+          <p>每位學生 15 分鐘，建議為 12 分鐘簡報、3 分鐘提問與轉場。</p>
+        </div>
+        <div class="rule">
+          <h3>場次排序</h3>
+          <p>以專題性質相近者優先安排；若性質不易歸類，依專題單位所在地由南向北排列。</p>
+        </div>
+        <div class="rule">
+          <h3>海報展示</h3>
+          <p>學生報到時繳交海報，由工作人員統一張貼；學生於海報時段在指定位置進行交流。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <strong>2026 大學生跨校太空科技暑期專題計畫</strong><br />
+    8 月 25 日學生成果交流議程｜Oral Presentation × Poster Session
+  </footer>
+</body>
+</html>
