@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="屏東 RC 定翼無人機三天工作坊報名說明、收費規則與退費標準。" />
+  <title>屏東 RC 定翼無人機三天工作坊｜報名說明</title>
+  <style>
+    :root {
+      --navy: #102a43;
+      --blue: #1769aa;
+      --sky: #eaf6ff;
+      --orange: #f28c28;
+      --orange-dark: #c96508;
+      --ink: #243b53;
+      --muted: #627d98;
+      --line: #d9e2ec;
+      --paper: #ffffff;
+      --soft: #f5f8fb;
+      --success: #1f7a4d;
+      --warning: #9a5b00;
+      --shadow: 0 14px 40px rgba(16, 42, 67, 0.12);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(23, 105, 170, 0.10), transparent 28rem),
+        linear-gradient(180deg, #f8fbfe 0%, #eef5fa 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+
+    a { color: var(--blue); }
+    a:focus-visible, button:focus-visible {
+      outline: 3px solid rgba(242, 140, 40, 0.45);
+      outline-offset: 3px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(217, 226, 236, 0.9);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    .topbar-inner {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      color: var(--navy);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--blue), #43a6d9);
+      border-radius: 12px;
+      box-shadow: 0 7px 18px rgba(23, 105, 170, 0.25);
+    }
+
+    .navlinks {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.94rem;
+      white-space: nowrap;
+    }
+
+    .navlinks a {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .navlinks .nav-cta {
+      padding: 8px 15px;
+      color: white;
+      background: var(--orange);
+      border-radius: 999px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 82px 0 64px;
+      color: white;
+      background:
+        linear-gradient(125deg, rgba(16, 42, 67, 0.98), rgba(23, 105, 170, 0.93)),
+        #102a43;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .hero::before { width: 420px; height: 420px; right: -140px; top: -170px; }
+    .hero::after { width: 260px; height: 260px; right: 60px; bottom: -200px; }
+
+    .hero-inner {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+      gap: 54px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.15rem, 5vw, 4.45rem);
+      line-height: 1.13;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-lead {
+      max-width: 720px;
+      margin: 22px 0 0;
+      font-size: clamp(1.05rem, 2vw, 1.24rem);
+      color: rgba(255,255,255,0.88);
+    }
+
+    .hero-actions {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .button {
+      min-height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: 0;
+      border-radius: 12px;
+      font-weight: 900;
+      text-decoration: none;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+    .button-primary {
+      color: #2c210e;
+      background: #ffb24c;
+      box-shadow: 0 10px 28px rgba(242, 140, 40, 0.3);
+    }
+    .button-secondary {
+      color: white;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .plane-card {
+      position: relative;
+      min-height: 300px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+      border-radius: 26px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+    }
+
+    .plane-card img {
+      width: 100%;
+      height: 100%;
+      min-height: 300px;
+      object-fit: cover;
+      border-radius: 26px;
+      display: block;
+    }
+    .plane-caption {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: rgba(255,255,255,0.88);
+      font-size: 0.9rem;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: -30px auto 70px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .quick-card {
+      min-height: 132px;
+      padding: 22px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .quick-label {
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .quick-value {
+      color: var(--navy);
+      font-size: 1.62rem;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .section {
+      margin-top: 34px;
+      padding: clamp(24px, 5vw, 48px);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 12px 36px rgba(16, 42, 67, 0.07);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 26px;
+    }
+
+    .section-kicker {
+      margin: 0 0 5px;
+      color: var(--orange-dark);
+      font-size: 0.86rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(1.55rem, 3vw, 2.15rem);
+      line-height: 1.3;
+    }
+
+    h3 { color: var(--navy); }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 0.91rem; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .feature-list, .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .feature-list li, .check-list li {
+      position: relative;
+      padding-left: 30px;
+      margin: 11px 0;
+    }
+
+    .feature-list li::before, .check-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 1px;
+      width: 21px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--success);
+      border-radius: 50%;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .notice {
+      padding: 18px 20px;
+      border-left: 5px solid var(--orange);
+      background: #fff7ea;
+      border-radius: 10px;
+    }
+
+    .notice strong { color: #6f3d00; }
+
+    .fee-box {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .fee-number {
+      padding: 30px;
+      text-align: center;
+      border-radius: 18px;
+      color: white;
+      background: linear-gradient(145deg, var(--blue), #1f87c9);
+    }
+
+    .fee-number .currency { font-size: 1.1rem; font-weight: 800; opacity: .9; }
+    .fee-number .amount { display: block; font-size: clamp(3rem, 7vw, 5rem); line-height: 1; font-weight: 950; letter-spacing: -0.05em; }
+    .fee-number .per { font-size: 0.95rem; opacity: .85; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      counter-increment: step;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      border-radius: 16px;
+    }
+
+    .step::before {
+      content: counter(step);
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      color: white;
+      background: var(--navy);
+      border-radius: 10px;
+      font-weight: 900;
+    }
+
+    .step h3 { margin: 0 0 7px; font-size: 1.02rem; }
+    .step p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+
+    .refund-table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th, td {
+      padding: 16px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      color: var(--navy);
+      background: var(--sky);
+      font-size: 0.92rem;
+    }
+
+    tbody tr:hover { background: #fbfdff; }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .tag-green { color: #155b38; background: #dff5e9; }
+    .tag-yellow { color: #704400; background: #fff0c7; }
+    .tag-red { color: #8a2631; background: #ffe4e7; }
+
+    .law-box {
+      margin-top: 22px;
+      padding: 20px;
+      border: 1px dashed #aac3d7;
+      background: #f7fbff;
+      border-radius: 14px;
+    }
+
+    .law-box p { margin: 8px 0; }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .form-frame {
+      width: 100%;
+      min-height: 1120px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--soft);
+    }
+
+    details {
+      border-top: 1px solid var(--line);
+      padding: 14px 0;
+    }
+    details:last-child { border-bottom: 1px solid var(--line); }
+    summary { cursor: pointer; font-weight: 850; color: var(--navy); }
+    details p { color: var(--muted); }
+
+    .final-cta {
+      margin-top: 34px;
+      padding: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+      color: white;
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .final-cta h2 { color: white; }
+    .final-cta p { margin: 8px 0 0; color: rgba(255,255,255,.82); }
+
+    footer {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 0 0 42px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero-inner, .fee-box, .two-col { grid-template-columns: 1fr; }
+      .plane-card { min-height: 250px; }
+      .quick-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .navlinks a:not(.nav-cta) { display: none; }
+      .form-frame { min-height: 1280px; }
+    }
+
+    @media (max-width: 560px) {
+      .topbar-inner { width: min(100% - 20px, 1120px); }
+      .brand span:last-child { font-size: .92rem; }
+      .hero { padding-top: 58px; }
+      .hero-inner, main, footer { width: min(100% - 20px, 1120px); }
+      .quick-grid, .steps { grid-template-columns: 1fr; }
+      .quick-card { min-height: auto; }
+      .section { padding: 23px 18px; border-radius: 18px; }
+      .section-heading, .final-cta { flex-direction: column; align-items: flex-start; }
+      .hero-actions, .hero-actions .button, .final-cta .button { width: 100%; }
+      .form-frame { min-height: 1450px; }
+    }
+
+    @media print {
+      .topbar, .hero-actions, #registration, .final-cta { display: none !important; }
+      body { background: white; }
+      .hero { padding: 30px 0; background: white; color: black; }
+      .hero-lead { color: #333; }
+      .plane-card { display: none; }
+      .hero-inner { display: block; }
+      main { margin-top: 0; }
+      .quick-card, .section { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <!--
+    編輯提醒：
+    1. 活動日期、地點、主辦單位目前以「另行公告」呈現，可直接在下方搜尋並替換。
+    2. 報名表連結已設定為：https://forms.gle/TaLxJTfHnrRedhsdA
+    3. 退費規定依「專科以上學校推廣教育實施辦法」第17條撰寫。
+  -->
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="回到頁首">
+        <span class="brand-mark" aria-hidden="true">✈</span>
+        <span>RC 定翼無人機工作坊</span>
+      </a>
+      <nav class="navlinks" aria-label="頁面導覽">
+        <a href="#overview">活動說明</a>
+        <a href="#fees">收費規則</a>
+        <a href="#refund">退費標準</a>
+        <a class="nav-cta" href="https://forms.gle/TaLxJTfHnrRedhsdA" target="_blank" rel="noopener">填寫報名表</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow">三天實作課程 · 共 18 小時</div>
+        <h1>屏東 RC 定翼無人機<br />三天工作坊</h1>
+        <p class="hero-lead">
+          從機體製作、基礎電控到飛行安全，透過三人一組的實作方式，完成一套完整的定翼無人機學習歷程。
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://forms.gle/TaLxJTfHnrRedhsdA" target="_blank" rel="noopener">立即填寫 Google 報名表 ↗</a>
+          <a class="button button-secondary" href="#refund">先閱讀退費規定</a>
+        </div>
+      </div>
+
+      <div class="plane-card" aria-label="RC 定翼無人機示意圖">
+        <img src="assets/hero-plane-nptu.png" alt="學生團隊進行 RC 定翼無人機實作" />
+        <div class="plane-caption">
+          <span>團隊實作</span>
+          <span>機體 × 電控 × 安全飛行</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section class="quick-grid" aria-label="活動重點">
+      <div class="quick-card">
+        <div class="quick-label">課程時數</div>
+        <div class="quick-value">3 天／18 小時</div>
+      </div>
+      <div class="quick-card">
+        <div class="quick-label">招生名額</div>
+        <div class="quick-value">24 人</div>
+      </div>
+      <div class="quick-card">
+        <div class="quick-label">分組方式</div>
+        <div class="quick-value">3 人一組</div>
+      </div>
+      <div class="quick-card">
+        <div class="quick-label">報名費</div>
+        <div class="quick-value" style="font-size:1.28rem;">單人 NT$ 11,000<br />三人團報每人 NT$ 9,900</div>
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Workshop overview</p>
+          <h2>活動內容與報名資格</h2>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h3>課程特色</h3>
+          <ul class="feature-list">
+            <li>三天共 18 小時，以實作與問題解決為主。</li>
+            <li>三人一組，共規劃八組，培養分工與系統整合能力。</li>
+            <li>由教師統籌授課，並配置助教支援機體、電控、焊接與安全操作。</li>
+            <li>課程期間使用 RC 定翼無人機材料、工具與相關設備。</li>
+            <li>完成規定課程與學習任務者，依主辦單位規定核發研習或參與證明。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>活動資訊</h3>
+          <ul class="check-list">
+            <li><strong>活動日期：</strong>另行公告</li>
+            <li><strong>活動地點：</strong>另行公告</li>
+            <li><strong>招生對象：</strong>對 RC 航空、無人機製作與工程實作有興趣之學生。</li>
+            <li><strong>主辦單位：</strong>依正式招生公告填列。</li>
+            <li><strong>錄取方式：</strong>以主辦單位寄發之錄取及繳費通知為準。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="notice" style="margin-top: 24px;">
+        <strong>提醒：</strong>送出 Google 表單只代表完成報名資料登記，並不等同正式錄取。名額、繳費方式與繳費期限，以主辦單位後續通知為準。
+      </div>
+    </section>
+
+    <section class="section" id="fees">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Fees</p>
+          <h2>收費、補助與加購項目</h2>
+        </div>
+      </div>
+
+      <div class="fee-box">
+        <div>
+          <div class="fee-number" style="margin-bottom:14px;">
+            <span class="currency">單人報名｜每人新臺幣</span>
+            <span class="amount">11,000</span>
+            <span class="per">元／三天完整課程</span>
+          </div>
+          <div class="fee-number" style="background:linear-gradient(145deg,#0f6f5d,#27a287);">
+            <span class="currency">三人團報｜每人新臺幣</span>
+            <span class="amount">9,900</span>
+            <span class="per">元；三人須共同報名</span>
+          </div>
+        </div>
+        <div>
+          <h3>補助資格</h3>
+          <ul class="feature-list">
+            <li><strong>在地補助：</strong>屏東地區在學學生或子弟，以及屏南科普教育中心補助對象，每人減免 1,000 元。</li>
+            <li><strong>低收入或清寒學生：</strong>經主辦單位審核通過者可免費參加，全班至多三名。</li>
+            <li>補助資格、應備證明文件與核定結果，以主辦單位通知為準。</li>
+          </ul>
+          <div class="notice" style="margin-top:18px;">
+            <strong>費用試算：</strong><br />
+            屏東在學學生單人報名為 10,000 元；符合在地補助的三人團報者，每人為 8,900 元。
+          </div>
+        </div>
+      </div>
+
+      <div class="refund-table-wrap" style="margin-top:28px;">
+        <table>
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>說明</th>
+              <th>費用</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>單人報名</strong></td>
+              <td>個別報名，由主辦單位協助分組。</td>
+              <td><strong>每人 11,000 元</strong></td>
+            </tr>
+            <tr>
+              <td><strong>三人團報</strong></td>
+              <td>三人一組共同報名。</td>
+              <td><strong>每人 9,900 元</strong></td>
+            </tr>
+            <tr>
+              <td><strong>在地補助</strong></td>
+              <td>屏東地區在學學生或子弟、屏南科普教育中心補助對象。</td>
+              <td><strong>每人減免 1,000 元</strong></td>
+            </tr>
+            <tr>
+              <td><strong>低收入或清寒學生</strong></td>
+              <td>經主辦單位審核後免費參加。</td>
+              <td><strong>免費（至多三名）</strong></td>
+            </tr>
+            <tr>
+              <td><strong>未組裝機體套件</strong></td>
+              <td>含無刷馬達、伺服馬達、電子變速器、90 × 60 cm KT 板及 ESP32 微控制器。</td>
+              <td><strong>加購 2,000 元</strong></td>
+            </tr>
+            <tr>
+              <td><strong>2S 鋰聚合物電池與充電器</strong></td>
+              <td>供返家後延伸測試使用；須遵守鋰電池安全規範。</td>
+              <td><strong>加購 1,000 元</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="law-box">
+        <strong>機體、加購與名額確認</strong>
+        <p>課程使用的完成機體原則上無法直接帶回。需要返家後延伸練習者，可另行加購未組裝機體套件，以及 2S 鋰聚合物電池與充電器。</p>
+        <p>完成報名表後，主辦單位將依團報資料、補助資格與招生狀況通知錄取及實際應繳金額。未於指定期限完成繳費者，得視為放棄名額，由候補者依序遞補。</p>
+        <p>如課程未達開班人數、因場地或其他主辦因素無法開課，主辦單位得延期、合併或取消，並依下方退費規定辦理。</p>
+      </div>
+    </section>
+
+    <section class="section" id="process">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Registration</p>
+          <h2>報名流程</h2>
+        </div>
+      </div>
+      <div class="steps">
+        <article class="step">
+          <h3>閱讀活動說明</h3>
+          <p>確認課程內容、費用、分組方式與退費規定。</p>
+        </article>
+        <article class="step">
+          <h3>填寫 Google 表單</h3>
+          <p>正確填寫學生、聯絡及必要的活動資料。</p>
+        </article>
+        <article class="step">
+          <h3>等候錄取通知</h3>
+          <p>主辦單位將依名額與資格寄發後續通知。</p>
+        </article>
+        <article class="step">
+          <h3>完成繳費</h3>
+          <p>於期限內完成繳費，才算正式保留名額。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="refund">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Refund policy</p>
+          <h2>退費標準與法規依據</h2>
+        </div>
+      </div>
+
+      <div class="refund-table-wrap" style="margin-top: 24px;">
+        <table>
+          <thead>
+            <tr>
+              <th>提出退費時間</th>
+              <th>學分費、學費或雜費等課程費用</th>
+              <th>材料費／代辦費處理</th>
+              <th>本課程 18 小時換算</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tag tag-green">開課前</span><br />自完成繳費後至實際開課日前</td>
+              <td>退還已繳課程費用的 <strong>90%</strong>。</td>
+              <td>原則上全額退還；如已購置、製作或交付成品，則發給該成品，該部分不重複退費。</td>
+              <td>尚未開始上課。</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-yellow">開課後未逾 1/3</span><br />自開課日起，尚未超過全期三分之一</td>
+              <td>退還已繳課程費用的 <strong>50%</strong>。</td>
+              <td>依是否已購置、製作或交付材料／成品據實處理。</td>
+              <td>本課程三分之一為 <strong>6 小時</strong>；申請時尚未逾 6 小時者適用。</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-red">已逾 1/3</span><br />上課時間已超過全期三分之一</td>
+              <td>課程費用 <strong>不予退還</strong>。</td>
+              <td>已購置或完成之材料／成品，依主辦單位通知領取或處理。</td>
+              <td>本課程累計上課已超過 <strong>6 小時</strong>。</td>
+            </tr>
+            <tr>
+              <td><strong>主辦單位因故未能開班</strong></td>
+              <td colspan="2">已繳費用原則上全額退還。</td>
+              <td>不受上述比例限制。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="law-box">
+        <h3 style="margin-top:0;">退費申請方式</h3>
+        <p>退費申請應以電子郵件、書面表單或主辦單位指定方式提出，申請時間以主辦單位實際收到完整申請資料的時間為準。</p>
+        <p>退費比例以學員扣除核定補助後的實際已繳課程費用為計算基準；另購機體套件、電池與充電器，則依是否已採購、製作或交付據實處理。</p>
+        <p>如遇颱風、豪雨、天然災害、政府停班停課或其他不可歸責於雙方的原因，原則上優先辦理延期或補課；若主辦單位最終無法完成課程，未履行部分之費用依校方核定程序及相關法規辦理。</p>
+        <p>
+          法規來源：
+          <a href="https://edu.law.moe.gov.tw/LawContent.aspx?id=FL008639" target="_blank" rel="noopener">教育部「專科以上學校推廣教育實施辦法」第 17 條</a>。
+          若本活動經校方核定為其他性質之專案，則以該專案核定公文、正式簡章及適用法規中較明確或較有利於學員之規定辦理。
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="privacy">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Personal data</p>
+          <h2>個人資料與未成年學生</h2>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <h3>資料使用範圍</h3>
+          <p>Google 表單所蒐集的姓名、學校、聯絡方式、緊急聯絡人、餐食、保險及其他必要資料，僅供本活動報名審核、聯繫、保險、餐食、證明文件與行政作業使用。</p>
+        </div>
+        <div>
+          <h3>未成年報名者</h3>
+          <p>未成年學生應取得法定代理人同意。主辦單位得要求補交家長同意書、健康與緊急聯絡資料；未完成必要文件者，得暫緩錄取或參與。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="registration">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Google Form</p>
+          <h2>填寫報名表</h2>
+          <p class="muted">若下方表單未正常顯示，請使用按鈕另開 Google 表單。</p>
+        </div>
+      </div>
+      <div class="form-actions">
+        <a class="button button-primary" href="https://forms.gle/TaLxJTfHnrRedhsdA" target="_blank" rel="noopener">另開 Google 報名表 ↗</a>
+        <span class="small muted">表單網址：forms.gle/TaLxJTfHnrRedhsdA</span>
+      </div>
+      <iframe
+        class="form-frame"
+        src="https://docs.google.com/forms/d/e/1FAIpQLSeO2qd1bYFNLvQ_4C8Rk9corehLQMSPNQPFEJZDLJ95RNgT0Q/viewform?embedded=true"
+        title="屏東 RC 定翼無人機工作坊 Google 報名表"
+        loading="lazy"
+        referrerpolicy="strict-origin-when-cross-origin">
+        載入中…
+      </iframe>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">FAQ</p>
+          <h2>常見問題</h2>
+        </div>
+      </div>
+      <details>
+        <summary>填完表單就一定錄取嗎？</summary>
+        <p>不一定。填表僅完成資料登記，正式錄取以主辦單位寄發的錄取與繳費通知為準。</p>
+      </details>
+      <details>
+        <summary>可以單獨報名嗎？團報費用如何計算？</summary>
+        <p>可以。單人報名費為每人 11,000 元，由主辦單位協助分組；三人共同報名者適用團報價，每人 9,900 元。</p>
+      </details>
+      <details>
+        <summary>屏東學生與清寒學生如何申請補助？</summary>
+        <p>屏東地區在學學生或子弟、屏南科普教育中心補助對象，每人可減免 1,000 元；低收入或清寒學生經審核通過可免費參加，至多三名。應備文件與審核方式以主辦單位通知為準。</p>
+      </details>
+      <details>
+        <summary>完成的飛機可以帶回家嗎？</summary>
+        <p>課程使用的完成機體原則上無法直接帶回。需要延伸練習者，可另購 2,000 元未組裝機體套件，並可另購 1,000 元的 2S 鋰聚合物電池與充電器。</p>
+      </details>
+      <details>
+        <summary>臨時無法參加，能把名額轉給別人嗎？</summary>
+        <p>不得自行轉讓。因保險、名冊與未成年同意文件等因素，應先聯絡主辦單位，由主辦單位確認是否能辦理更名或候補遞補。</p>
+      </details>
+      <details>
+        <summary>遇到停班停課怎麼處理？</summary>
+        <p>原則上依活動所在地政府公告及校方規定辦理，並優先安排延期或補課。最新通知以主辦單位公告為準。</p>
+      </details>
+    </section>
+
+    <section class="final-cta">
+      <div>
+        <h2>準備好開始製作你的定翼無人機了嗎？</h2>
+        <p>請先確認收費與退費規定，再完成 Google 表單登記。</p>
+      </div>
+      <a class="button button-primary" href="https://forms.gle/TaLxJTfHnrRedhsdA" target="_blank" rel="noopener">前往報名表 ↗</a>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>文件性質：</strong>本頁為學生報名說明草案；活動日期、地點、主辦單位、繳費帳戶、補助審核文件及聯絡窗口，仍應依校方正式核定後補充。</p>
+    <p>最後更新：2026 年 7 月 17 日</p>
+  </footer>
+</body>
+</html>
