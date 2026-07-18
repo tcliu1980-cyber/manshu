@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RC 定翼無人機三人小組分工任務：微控制器程式、電機系統與機體製作整合。" />
+  <title>RC 定翼無人機｜三人小組分工任務</title>
+  <style>
+    :root {
+      --navy: #12375d;
+      --blue: #1f5f99;
+      --sky: #eaf3fb;
+      --ink: #263442;
+      --muted: #607080;
+      --line: #d8e1e8;
+      --paper: #ffffff;
+      --warm: #f7f5ef;
+      --accent: #e58a2b;
+      --shadow: 0 14px 36px rgba(18, 55, 93, 0.10);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family:
+        "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
+        system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.75;
+      background:
+        radial-gradient(circle at top right, rgba(31, 95, 153, 0.08), transparent 34rem),
+        #f4f7f9;
+    }
+
+    a { color: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem clamp(1rem, 4vw, 4rem);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid rgba(18, 55, 93, 0.10);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      color: var(--navy);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+    }
+
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--navy);
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .home-btn:hover,
+    .home-btn:focus-visible {
+      background: var(--blue);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      min-height: 430px;
+      display: grid;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background:
+        linear-gradient(90deg, rgba(8, 34, 61, 0.94) 0%, rgba(18, 55, 93, 0.78) 50%, rgba(18, 55, 93, 0.30) 100%),
+        url("assets/hero-plane-nptu.png") center / cover no-repeat;
+    }
+
+    .hero-inner {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 5rem 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.8rem;
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #bfe0ff;
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(2.2rem, 6vw, 4.5rem);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: 1.25rem 0 0;
+      font-size: clamp(1rem, 2.2vw, 1.25rem);
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    main {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 4.5rem 0 5rem;
+    }
+
+    .section-heading {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      line-height: 1.25;
+    }
+
+    .section-heading p {
+      max-width: 830px;
+      margin: 0.75rem 0 0;
+      color: var(--muted);
+    }
+
+    .principle {
+      margin: 0 0 3rem;
+      padding: 1.3rem 1.5rem;
+      border-left: 5px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      background: var(--warm);
+      box-shadow: var(--shadow);
+    }
+
+    .principle strong { color: var(--navy); }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.4rem;
+    }
+
+    .role-card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .role-head {
+      padding: 1.6rem 1.6rem 1.25rem;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+    }
+
+    .role-number {
+      display: inline-grid;
+      place-items: center;
+      width: 2.35rem;
+      height: 2.35rem;
+      margin-bottom: 0.85rem;
+      border: 1px solid rgba(255,255,255,.45);
+      border-radius: 50%;
+      font-weight: 900;
+      background: rgba(255,255,255,.12);
+    }
+
+    .role-head h3 {
+      margin: 0;
+      font-size: 1.45rem;
+      line-height: 1.35;
+    }
+
+    .role-subtitle {
+      margin: 0.55rem 0 0;
+      color: rgba(255,255,255,.78);
+      font-size: 0.95rem;
+    }
+
+    .role-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 1.5rem 1.6rem 1.7rem;
+    }
+
+    .role-body h4 {
+      margin: 0 0 0.65rem;
+      color: var(--navy);
+      font-size: 1rem;
+    }
+
+    .task-list {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    .task-list li + li { margin-top: 0.55rem; }
+
+    .deliverable {
+      margin: 1.35rem 0 0;
+      padding: 1rem;
+      border-radius: 14px;
+      background: var(--sky);
+    }
+
+    .deliverable strong {
+      color: var(--navy);
+    }
+
+    .resource-links {
+      display: grid;
+      gap: 0.7rem;
+      margin-top: auto;
+      padding-top: 1.4rem;
+    }
+
+    .resource-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      padding: 0.85rem 0.95rem;
+      border: 1px solid #cbdbea;
+      border-radius: 14px;
+      color: var(--blue);
+      background: #f8fbfe;
+      text-decoration: none;
+      font-weight: 700;
+      line-height: 1.45;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .resource-link::before {
+      content: "↗";
+      flex: 0 0 auto;
+      font-size: 1.05rem;
+    }
+
+    .resource-link:hover,
+    .resource-link:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--blue);
+      background: #eef7ff;
+    }
+
+    .workflow {
+      margin-top: 4.5rem;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      counter-reset: steps;
+    }
+
+    .step {
+      position: relative;
+      padding: 1.35rem;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--paper);
+    }
+
+    .step::before {
+      counter-increment: steps;
+      content: counter(steps);
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      margin-bottom: 0.8rem;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--accent);
+      font-weight: 900;
+    }
+
+    .step h3 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 1.05rem;
+    }
+
+    .step p {
+      margin: 0.5rem 0 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .team-rules {
+      margin-top: 4rem;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 1.4rem;
+      align-items: stretch;
+    }
+
+    .team-rules .panel {
+      padding: 1.7rem;
+      border-radius: var(--radius);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .team-rules h2,
+    .team-rules h3 {
+      margin-top: 0;
+      color: var(--navy);
+    }
+
+    .checklist {
+      margin: 0;
+      padding-left: 1.3rem;
+    }
+
+    .checklist li + li { margin-top: 0.55rem; }
+
+    .callout {
+      color: #fff;
+      background: linear-gradient(145deg, var(--navy), #0d2945) !important;
+      border: none !important;
+    }
+
+    .callout h2 { color: #fff; }
+    .callout p { color: rgba(255,255,255,.84); }
+
+    .bottom-home {
+      margin-top: 4rem;
+      text-align: center;
+    }
+
+    .bottom-home .home-btn {
+      padding: 0.85rem 1.35rem;
+    }
+
+    footer {
+      padding: 1.5rem 1rem 2.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 950px) {
+      .role-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .team-rules { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .topbar { padding-inline: 0.8rem; }
+      .brand { font-size: 0.88rem; }
+      .home-btn { padding: 0.55rem 0.8rem; font-size: 0.9rem; }
+      .hero { min-height: 390px; }
+      .hero-inner { padding: 4rem 0; }
+      main { padding-top: 3.3rem; }
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .topbar,
+      .bottom-home,
+      footer { display: none; }
+
+      body { background: #fff; }
+      .hero {
+        min-height: auto;
+        color: #111;
+        background: #fff;
+        border-bottom: 2px solid #111;
+      }
+      .hero p, .eyebrow { color: #333; }
+      main { width: 100%; padding: 2rem 0; }
+      .role-card, .panel, .principle { box-shadow: none; break-inside: avoid; }
+      .resource-link { color: #111; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="PlaneIndex.html">RC 定翼無人機工作坊</a>
+    <a class="home-btn" href="PlaneIndex.html" aria-label="回到課程首頁">← 回到首頁</a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">TEAMWORK &amp; SYSTEM INTEGRATION</p>
+      <h1>三人小組分工任務</h1>
+      <p>
+        每組共同完成一架 RC 定翼無人機。三位組員分別負責程式控制、
+        電機動力與機體整合，最後再共同完成全機測試。
+      </p>
+    </div>
+  </section>
+
+  <main>
+    <section aria-labelledby="roles-title">
+      <div class="section-heading">
+        <h2 id="roles-title">三項主要工作</h2>
+        <p>
+          每位組員各自擔任一項主要角色，但仍須了解其他兩項工作的基本原理。
+          實際製作時可互相協助或輪替，避免全組只有一人能處理特定系統。
+        </p>
+      </div>
+
+      <div class="principle">
+        <strong>分工原則：</strong>
+        一人主責、一人協作、一人檢查。任何接線、馬達測試與飛行前設定，
+        都應由至少兩位組員交叉確認。
+      </div>
+
+      <div class="role-grid">
+        <article class="role-card">
+          <div class="role-head">
+            <div class="role-number">1</div>
+            <h3>微控制器與程式控制</h3>
+            <p class="role-subtitle">負責 ESP32、控制邏輯與網頁操作介面</p>
+          </div>
+          <div class="role-body">
+            <h4>主要任務</h4>
+            <ul class="task-list">
+              <li>完成 Arduino IDE 與 ESP32 開發環境設定。</li>
+              <li>確認 ESP32-CAM 可正常開機、連線與上傳程式。</li>
+              <li>編寫或修改舵機、電子變速器與馬達控制程式。</li>
+              <li>設定 Wi-Fi 熱點、網頁控制介面與控制指令。</li>
+              <li>測試操縱桿輸入、舵面方向與控制範圍。</li>
+              <li>記錄程式版本、腳位配置與測試參數。</li>
+            </ul>
+
+            <div class="deliverable">
+              <strong>完成標準：</strong>
+              手機可連線至控制頁面，並能正確控制油門與各舵面。
+            </div>
+
+            <div class="resource-links" aria-label="微控制器相關教材">
+              <a class="resource-link" href="ESP32_CAM.html">ESP32-CAM 與微控制器介紹</a>
+              <a class="resource-link" href="esp32_install.html">Arduino IDE 安裝與 ESP32-CAM 開發環境設定指南</a>
+              <a class="resource-link" href="esp32_cam_rc_web_control.html">如何利用 ESP32 控制馬達</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="role-card">
+          <div class="role-head">
+            <div class="role-number">2</div>
+            <h3>電機與動力系統測試</h3>
+            <p class="role-subtitle">負責馬達、電子變速器、舵機與電池系統</p>
+          </div>
+          <div class="role-body">
+            <h4>主要任務</h4>
+            <ul class="task-list">
+              <li>辨識無刷馬達、電子變速器、電池與螺旋槳規格。</li>
+              <li>檢查電源正負極、接頭與焊點是否牢固。</li>
+              <li>進行無螺旋槳的低功率啟動測試。</li>
+              <li>確認馬達轉向，必要時調換任兩條相線。</li>
+              <li>測試各舵機行程、抖動、卡死與過載情形。</li>
+              <li>檢查電池電壓、固定方式與測試區域安全。</li>
+            </ul>
+
+            <div class="deliverable">
+              <strong>完成標準：</strong>
+              馬達能平順啟動與調速，舵機動作正常，接線無過熱或鬆脫。
+            </div>
+
+            <div class="resource-links" aria-label="電機系統相關教材">
+              <a class="resource-link" href="brushless.html">無刷馬達簡介</a>
+              <a class="resource-link" href="esp32_cam_rc_web_control.html">ESP32-CAM 馬達與 RC 網頁控制</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="role-card">
+          <div class="role-head">
+            <div class="role-number">3</div>
+            <h3>機體製作與整合測試</h3>
+            <p class="role-subtitle">負責機翼、機身、尾翼、重心與全機整合</p>
+          </div>
+          <div class="role-body">
+            <h4>主要任務</h4>
+            <ul class="task-list">
+              <li>依圖面裁切、組裝並補強機翼、機身與尾翼。</li>
+              <li>確保左右機翼對稱，水平尾翼與垂直尾翼保持正確角度。</li>
+              <li>安裝舵機、連桿、馬達座、控制板與其他電子元件。</li>
+              <li>確認升降舵、方向舵等舵面活動順暢且無干涉。</li>
+              <li>調整設備位置，使整機重心落在指定範圍。</li>
+              <li>完成手機控制、舵面反應與動力系統的整合測試。</li>
+            </ul>
+
+            <div class="deliverable">
+              <strong>完成標準：</strong>
+              機體結構牢固、左右對稱、重心正確，各系統固定可靠並可共同運作。
+            </div>
+
+            <div class="resource-links" aria-label="機體整合相關教材">
+              <a class="resource-link" href="esp32_cam_joystick_web_control_guide.html">手機網頁操縱桿控制指南</a>
+              <a class="resource-link" href="esp32_cam_rc_web_control.html">全機 RC 網頁控制與測試</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="workflow" aria-labelledby="workflow-title">
+      <div class="section-heading">
+        <h2 id="workflow-title">小組共同作業流程</h2>
+        <p>三項工作並非彼此獨立，應依下列順序逐步整合，避免完成機體後才發現接線或控制方向錯誤。</p>
+      </div>
+
+      <div class="steps">
+        <article class="step">
+          <h3>個別系統準備</h3>
+          <p>分別完成程式環境、電機零件檢查與機體零件加工。</p>
+        </article>
+        <article class="step">
+          <h3>桌面功能測試</h3>
+          <p>尚未裝入機體前，先測試 ESP32、舵機、馬達與控制介面。</p>
+        </article>
+        <article class="step">
+          <h3>安裝與整合</h3>
+          <p>將電子系統固定於機體內，整理配線並保留維修空間。</p>
+        </article>
+        <article class="step">
+          <h3>飛行前檢查</h3>
+          <p>共同確認重心、舵面方向、馬達轉向、結構與通訊狀態。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="team-rules" aria-labelledby="team-title">
+      <div class="panel callout">
+        <h2 id="team-title">每位組員都要會操作</h2>
+        <p>
+          分工是為了提高製作效率，不代表只需要理解自己負責的部分。
+          完成後，每位組員都應能說明整架飛機的控制流程、動力來源、
+          重心位置與安全操作方式。
+        </p>
+      </div>
+
+      <div class="panel">
+        <h3>飛行前共同確認清單</h3>
+        <ul class="checklist">
+          <li>電池固定牢靠，線材不會接觸螺旋槳或活動舵面。</li>
+          <li>升降舵、方向舵與其他控制面方向正確。</li>
+          <li>馬達轉向與螺旋槳安裝方向正確。</li>
+          <li>左右機翼、尾翼與機身連接處無鬆動或裂痕。</li>
+          <li>重心位於規定範圍，機身左右配重合理。</li>
+          <li>手機與 ESP32-CAM 連線穩定，失去連線時能安全停止。</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="bottom-home">
+      <a class="home-btn" href="PlaneIndex.html">← 回到課程首頁</a>
+    </div>
+  </main>
+
+  <footer>
+    RC 定翼無人機課程｜三人小組分工任務
+  </footer>
+</body>
+</html>
