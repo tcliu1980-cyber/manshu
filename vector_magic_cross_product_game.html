@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vector Magic Test</title>
+<style>
+:root{
+  --bg:#0b1020;--panel:rgba(15,19,42,.9);--text:#fff9eb;--muted:#c9c6da;
+  --gold:#ffd66f;--good:#6ce3a6;--bad:#ff6b76;--purple:#7354d9;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
+  color:var(--text);
+  background:radial-gradient(circle at 50% 8%,#442978 0,#17162e 34%,#090c18 100%);
+}
+button{font:inherit}
+.game{width:min(100%,1180px);min-height:100vh;margin:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.topbar,.controls{
+  background:var(--panel);border:1px solid rgba(255,255,255,.15);
+  border-radius:22px;padding:14px 16px;backdrop-filter:blur(10px)
+}
+.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.title{font-size:clamp(23px,4vw,34px);font-weight:900}
+.subtitle{color:var(--muted);font-size:14px;margin-top:4px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.chip{
+  min-width:106px;text-align:center;padding:8px 12px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.055)
+}
+.chip b{display:block;color:var(--gold);font-size:22px;transition:.2s}
+.chip b.danger{color:var(--bad);font-size:28px;animation:pulse .75s infinite alternate}
+.chip span{font-size:12px;color:var(--muted)}
+@keyframes pulse{to{transform:scale(1.14)}}
+
+.arena{
+  position:relative;min-height:620px;overflow:hidden;border-radius:28px;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(180deg,#2a2153,#11162e 70%,#0a0e1e)
+}
+.moon{position:absolute;right:6%;top:7%;width:100px;height:100px;border-radius:50%;background:#f3e2ae;opacity:.65}
+.moon:after{content:"";position:absolute;left:28px;top:-3px;width:100px;height:100px;border-radius:50%;background:#2a2153}
+.ground{position:absolute;left:-10%;right:-10%;bottom:-45px;height:160px;border-radius:50% 50% 0 0;background:#11182b}
+
+.hp-wrap{position:absolute;left:50%;top:18px;transform:translateX(-50%);width:min(88%,680px);z-index:8}
+.hp-label{display:flex;justify-content:space-between;font-weight:800;margin-bottom:7px}
+.hp-track{height:18px;border-radius:999px;padding:3px;background:#25101a;border:1px solid rgba(255,255,255,.18)}
+.hp-bar{height:100%;width:100%;border-radius:999px;background:linear-gradient(90deg,#ff354e,#ff9d4d);transition:width .3s}
+.type-badge{
+  position:absolute;left:62%;top:68px;transform:translateX(-50%);z-index:9;
+  padding:7px 14px;border-radius:999px;background:rgba(255,211,106,.15);
+  border:1px solid rgba(255,211,106,.35);font-weight:800;color:#ffe9ae
+}
+
+.wizard{position:absolute;left:18%;bottom:76px;width:190px;height:275px;transform:translateX(-50%);z-index:3}
+.hat{position:absolute;left:35px;top:0;width:120px;height:112px;background:linear-gradient(135deg,#7354d9,#28176f);clip-path:polygon(53% 0,100% 86%,66% 72%,0 100%,34% 40%)}
+.brim{position:absolute;left:22px;top:89px;width:146px;height:30px;border-radius:50%;background:#43258e}
+.head{position:absolute;left:55px;top:90px;width:82px;height:85px;border-radius:45%;background:#f2c6a3;border:4px solid #1d153d}
+.eye{position:absolute;top:33px;width:8px;height:10px;border-radius:50%;background:#171325}
+.eye.left{left:21px}.eye.right{right:21px}
+.beard{position:absolute;left:47px;top:137px;width:97px;height:80px;background:linear-gradient(#eee8ff,#9aa3d2);clip-path:polygon(0 0,100% 0,85% 56%,65% 45%,51% 100%,38% 48%,14% 68%)}
+.body{position:absolute;left:35px;top:171px;width:120px;height:93px;border-radius:55% 55% 18% 18%;background:linear-gradient(90deg,#31206e,#704fd2,#31206e);border:4px solid #1c153d}
+.body:after{content:"✦";position:absolute;left:47px;top:25px;color:#ffe889;font-size:27px}
+.staff{position:absolute;right:-17px;top:126px;width:8px;height:150px;border-radius:8px;background:#754826;transform:rotate(8deg)}
+.staff:before{content:"";position:absolute;left:-15px;top:-29px;width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#63d7ff 30%,#5847ff 70%);box-shadow:0 0 20px #4bbcff}
+
+.question-dialog{
+  position:absolute;left:62%;top:47%;transform:translate(-50%,-50%);
+  width:min(68%,720px);min-height:310px;z-index:6;display:flex;align-items:center;justify-content:center
+}
+.question-inner{
+  width:100%;min-height:310px;display:flex;align-items:center;justify-content:center;
+  padding:36px 46px;text-align:center;color:#241308;
+  font-size:clamp(28px,4vw,45px);font-weight:1000;line-height:1.42;
+  border-radius:30px;background:linear-gradient(180deg,#fff5cc,#ffd66f 68%,#f4a13b);
+  border:6px solid rgba(255,241,174,.95);
+  box-shadow:0 0 36px rgba(255,174,55,.4),0 18px 45px rgba(0,0,0,.36)
+}
+#questionContent{display:block;width:100%;overflow-wrap:anywhere}
+
+.timer{position:absolute;left:5%;right:5%;bottom:14px;height:10px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);z-index:7}
+.timer-fill{height:100%;width:100%;background:linear-gradient(90deg,#6ce6af,#ffd451,#ff5d62);transform-origin:left}
+.timer-fill.running{animation:countdown var(--duration,20s) linear forwards}
+@keyframes countdown{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
+.feedback{
+  position:absolute;left:50%;top:22%;transform:translate(-50%,-50%);
+  z-index:10;font-size:clamp(28px,6vw,46px);font-weight:1000;opacity:0;text-shadow:0 4px 12px #000
+}
+.feedback.show{animation:pop .8s ease}.feedback.good{color:var(--good)}.feedback.bad{color:var(--bad)}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}25%,70%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}100%{opacity:0}}
+
+.instruction{text-align:center;color:var(--muted);margin:0 0 12px}
+.buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.answer{
+  min-height:96px;border:1px solid rgba(255,255,255,.22);border-radius:18px;color:#fff;
+  background:linear-gradient(180deg,#7958d7,#3c278d);box-shadow:0 6px 0 #291b67;cursor:pointer;padding:10px
+}
+.answer:hover{filter:brightness(1.12)}.answer:active{transform:translateY(4px);box-shadow:0 2px 0 #291b67}
+.answer:disabled{opacity:.45;cursor:not-allowed}
+.choice-label{display:block;font-size:13px;color:#e6ddff}
+.choice-value{display:block;font-size:clamp(18px,2.5vw,29px);line-height:1.22;margin:5px 0;overflow-wrap:anywhere}
+.key{display:block;font-size:11px;color:#ddd6ff}
+
+.overlay{
+  position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+  padding:22px;background:rgba(5,7,18,.84);backdrop-filter:blur(8px)
+}
+.overlay.hidden{display:none}
+.dialog{
+  width:min(100%,560px);padding:28px;text-align:center;border:1px solid rgba(255,255,255,.16);
+  border-radius:26px;background:linear-gradient(180deg,#26204d,#12152d)
+}
+.dialog .icon{font-size:64px}.dialog h2{font-size:30px;margin:6px 0}.dialog p{color:var(--muted);line-height:1.7}
+.result-box{
+  margin-top:12px;padding:18px;border:1px solid rgba(255,255,255,.16);
+  border-radius:18px;background:rgba(255,255,255,.05);font-family:Consolas,monospace;line-height:1.7
+}
+.result-pass{color:var(--good);font-weight:1000;font-size:24px}
+.result-fail{color:var(--bad);font-weight:1000;font-size:28px}
+.start{
+  width:100%;border:0;border-radius:16px;padding:14px 18px;margin-top:14px;
+  background:linear-gradient(180deg,#ffd66f,#f5a933);color:#321b00;font-weight:1000;font-size:20px;cursor:pointer
+}
+
+@media(max-width:760px){
+  .game{padding:10px}.arena{min-height:590px}.wizard{left:15%;transform:translateX(-50%) scale(.7)}
+  .question-dialog{left:64%;width:66%}.question-inner{padding:28px 24px;font-size:clamp(22px,4vw,34px)}
+}
+@media(max-width:560px){
+  .arena{min-height:570px}.wizard{left:12%;bottom:58px;transform:translateX(-50%) scale(.56)}
+  .question-dialog{left:62%;top:46%;width:72%}.question-inner{min-height:265px;padding:22px 16px;font-size:clamp(18px,5vw,27px)}
+  .buttons{gap:7px}.answer{min-height:90px;padding:8px}.choice-value{font-size:16px}
+}
+</style>
+</head>
+<body>
+<main class="game">
+<section class="topbar">
+  <div><div class="title">🧙 Vector Magic Test</div><div class="subtitle">五種題型，共 10 題</div></div>
+  <div class="stats">
+    <div class="chip"><b id="score">0</b><span>答對題數</span></div>
+    <div class="chip"><b id="timeText">20 秒</b><span>剩餘時間</span></div>
+    <div class="chip"><b id="progressText">0 / 10</b><span>作答進度</span></div>
+  </div>
+</section>
+
+<section class="arena">
+  <div class="moon"></div><div class="ground"></div>
+  <div class="hp-wrap">
+    <div class="hp-label"><span>剩餘題數</span><span id="questionText">10 / 10</span></div>
+    <div class="hp-track"><div class="hp-bar" id="hpBar"></div></div>
+  </div>
+  <div class="type-badge" id="typeBadge">三維向量加法</div>
+  <div class="feedback" id="feedback" aria-live="polite"></div>
+
+  <div class="wizard">
+    <div class="hat"></div><div class="brim"></div>
+    <div class="head"><i class="eye left"></i><i class="eye right"></i></div>
+    <div class="beard"></div><div class="body"></div><div class="staff"></div>
+  </div>
+
+  <div class="question-dialog">
+    <div class="question-inner"><span id="questionContent">準備開始</span></div>
+  </div>
+
+  <div class="timer"><div class="timer-fill" id="timerFill"></div></div>
+
+  <div class="overlay" id="overlay">
+    <div class="dialog">
+      <div class="icon" id="dialogIcon">🧙‍♂️</div>
+      <h2 id="dialogTitle">準備迎戰！</h2>
+      <p id="dialogText">
+        共 10 題：三維向量加法 3 題、三維向量長度 1 題、三維單位向量 1 題、
+        二維向量內積 3 題、三維向量外積 2 題。
+      </p>
+      <button class="start" id="startBtn" type="button">開始遊戲</button>
+    </div>
+  </div>
+</section>
+
+<section class="controls">
+  <p class="instruction">請選出正確答案。</p>
+  <div class="buttons">
+    <button class="answer" data-choice="0" type="button" disabled>
+      <span class="choice-label">答案 1</span><strong class="choice-value" id="choice0">—</strong><span class="key">鍵盤：1</span>
+    </button>
+    <button class="answer" data-choice="1" type="button" disabled>
+      <span class="choice-label">答案 2</span><strong class="choice-value" id="choice1">—</strong><span class="key">鍵盤：2</span>
+    </button>
+    <button class="answer" data-choice="2" type="button" disabled>
+      <span class="choice-label">答案 3</span><strong class="choice-value" id="choice2">—</strong><span class="key">鍵盤：3</span>
+    </button>
+  </div>
+</section>
+</main>
+
+<script>
+(() => {
+const schedule=[
+  {type:'add3',label:'第一種：三維向量加法',time:20},
+  {type:'add3',label:'第一種：三維向量加法',time:20},
+  {type:'add3',label:'第一種：三維向量加法',time:20},
+  {type:'length3',label:'第二種：三維向量長度',time:20},
+  {type:'unit3',label:'第三種：三維單位向量',time:25},
+  {type:'dot2',label:'第四種：二維向量內積',time:25},
+  {type:'dot2',label:'第四種：二維向量內積',time:25},
+  {type:'dot2',label:'第四種：二維向量內積',time:25},
+  {type:'cross3',label:'第五種：三維向量外積',time:55},
+  {type:'cross3',label:'第五種：三維向量外積',time:55}
+];
+
+const TOTAL=schedule.length;
+const timerFill=document.getElementById('timerFill');
+const questionContent=document.getElementById('questionContent');
+const scoreEl=document.getElementById('score');
+const timeText=document.getElementById('timeText');
+const progressText=document.getElementById('progressText');
+const questionText=document.getElementById('questionText');
+const hpBar=document.getElementById('hpBar');
+const typeBadge=document.getElementById('typeBadge');
+const feedback=document.getElementById('feedback');
+const overlay=document.getElementById('overlay');
+const dialogIcon=document.getElementById('dialogIcon');
+const dialogTitle=document.getElementById('dialogTitle');
+const dialogText=document.getElementById('dialogText');
+const startBtn=document.getElementById('startBtn');
+const buttons=[...document.querySelectorAll('.answer')];
+const choiceEls=[document.getElementById('choice0'),document.getElementById('choice1'),document.getElementById('choice2')];
+
+let score=0,index=0,correctIndex=0,active=false,game=false;
+let timeoutId=null,intervalId=null,currentAnswer='',audioCtx=null,lastTickSecond=null;
+
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+
+function vec2(v){return `(${v[0]}i, ${v[1]}j)`}
+function vec3(v){return `(${v[0]}i, ${v[1]}j, ${v[2]}k)`}
+function squareFree(n){
+  let outside=1,inside=n;
+  for(let p=2;p*p<=inside;p++){
+    while(inside%(p*p)===0){outside*=p;inside/=p*p}
+  }
+  return {outside,inside};
+}
+function radical(n){
+  const s=squareFree(n);
+  if(s.inside===1)return String(s.outside);
+  return s.outside===1?`√${s.inside}`:`${s.outside}√${s.inside}`;
+}
+function nonzeroVec3(range){
+  let v;
+  do{v=[rnd(-range,range),rnd(-range,range),rnd(-range,range)]}while(v.every(x=>x===0));
+  return v;
+}
+function makeNumericChoices(ans){
+  const s=new Set([String(ans)]);
+  while(s.size<3){let d=rnd(-12,12);if(d===0)d=1;s.add(String(ans+d))}
+  return shuffle([...s]);
+}
+function makeVectorChoices(correct,generator){
+  const s=new Set([correct]);let guard=0;
+  while(s.size<3&&guard<60){s.add(generator());guard++}
+  return shuffle([...s]);
+}
+function cross(a,b){
+  return [
+    a[1]*b[2]-a[2]*b[1],
+    a[2]*b[0]-a[0]*b[2],
+    a[0]*b[1]-a[1]*b[0]
+  ];
+}
+function buildQuestion(type){
+  if(type==='add3'){
+    const a=[rnd(-9,9),rnd(-9,9),rnd(-9,9)];
+    const b=[rnd(-9,9),rnd(-9,9),rnd(-9,9)];
+    const c=a.map((x,i)=>x+b[i]);
+    const correct=vec3(c);
+    const choices=makeVectorChoices(correct,()=>{
+      const wrong=c.map(x=>x+rnd(-3,3));
+      if(wrong.every((x,i)=>x===c[i]))wrong[0]+=1;
+      return vec3(wrong);
+    });
+    return {question:`a = ${vec3(a)}<br>b = ${vec3(b)}<br>a + b = ?`,choices,correct};
+  }
+
+  if(type==='length3'){
+    const v=nonzeroVec3(3);
+    const n=v.reduce((s,x)=>s+x*x,0);
+    const correct=radical(n);
+    const set=new Set([correct]);
+    while(set.size<3){
+      let candidate=Math.max(1,n+(rnd(-8,8)||1));
+      set.add(radical(candidate));
+    }
+    return {question:`v = ${vec3(v)}<br>|v| = ?`,choices:shuffle([...set]),correct};
+  }
+
+  if(type==='unit3'){
+    const v=nonzeroVec3(3);
+    const n=v.reduce((s,x)=>s+x*x,0);
+    const den=radical(n);
+    const correct=`1/${den} ${vec3(v)}`;
+    const choices=makeVectorChoices(correct,()=>{
+      const mode=rnd(0,2);
+      if(mode===0)return `${den} ${vec3(v)}`;
+      if(mode===1)return `1/${den} ${vec3(v.map(x=>-x))}`;
+      return `1/${den} ${vec3([v[1],v[0],v[2]])}`;
+    });
+    return {question:`v = ${vec3(v)}<br>請選擇 v 的單位向量`,choices,correct};
+  }
+
+  if(type==='dot2'){
+    const a=[rnd(-9,9),rnd(-9,9)];
+    const b=[rnd(-9,9),rnd(-9,9)];
+    const ans=a[0]*b[0]+a[1]*b[1];
+    const correct=String(ans);
+    return {question:`a = ${vec2(a)}<br>b = ${vec2(b)}<br>a · b = ?`,choices:makeNumericChoices(ans),correct};
+  }
+
+  const a=[rnd(-3,3),rnd(-3,3),rnd(-3,3)];
+  const b=[rnd(-3,3),rnd(-3,3),rnd(-3,3)];
+  const c=cross(a,b);
+  const correct=vec3(c);
+  const reverse=vec3(c.map(x=>-x));
+  const wrongJ=vec3([c[0],-c[1],c[2]]);
+  const swapped=vec3([c[1],c[0],c[2]]);
+  const choices=shuffle([...new Set([correct,reverse,wrongJ,swapped])].slice(0,3));
+  if(!choices.includes(correct)){
+    choices[0]=correct;
+    shuffle(choices);
+  }
+  return {question:`a = ${vec3(a)}<br>b = ${vec3(b)}<br>a × b = ?`,choices,correct};
+}
+
+function setButtons(on){buttons.forEach(b=>b.disabled=!on)}
+function playTick(){
+  try{
+    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+    const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+    osc.type='square';osc.frequency.setValueAtTime(900,audioCtx.currentTime);
+    gain.gain.setValueAtTime(.0001,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.13,audioCtx.currentTime+.005);
+    gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.08);
+    osc.connect(gain);gain.connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+.09);
+  }catch(e){}
+}
+function updateHUD(sec){
+  scoreEl.textContent=score;
+  timeText.textContent=`${sec} 秒`;
+  timeText.classList.toggle('danger',sec<=5&&sec>0&&active);
+  progressText.textContent=`${index} / ${TOTAL}`;
+  const remain=Math.max(0,TOTAL-index);
+  questionText.textContent=`${remain} / ${TOTAL}`;
+  hpBar.style.width=`${remain/TOTAL*100}%`;
+}
+function show(text,good){
+  feedback.textContent=text;
+  feedback.className=`feedback ${good?'good':'bad'}`;
+  void feedback.offsetWidth;
+  feedback.classList.add('show');
+}
+function nextQuestion(){
+  if(!game||index>=TOTAL)return;
+  const spec=schedule[index];
+  const q=buildQuestion(spec.type);
+  currentAnswer=q.correct;
+  correctIndex=q.choices.indexOf(q.correct);
+  questionContent.innerHTML=q.question;
+  q.choices.forEach((v,i)=>choiceEls[i].textContent=v);
+  typeBadge.textContent=spec.label;
+  index++;
+  active=true;
+  setButtons(true);
+
+  timerFill.style.setProperty('--duration',`${spec.time}s`);
+  timerFill.classList.remove('running');
+  void timerFill.offsetWidth;
+  timerFill.classList.add('running');
+
+  let sec=spec.time;
+  lastTickSecond=null;
+  updateHUD(sec);
+
+  intervalId=setInterval(()=>{
+    sec--;
+    const shown=Math.max(0,sec);
+    updateHUD(shown);
+    if(shown<=5&&shown>=1&&lastTickSecond!==shown){
+      lastTickSecond=shown;
+      playTick();
+    }
+  },1000);
+
+  timeoutId=setTimeout(()=>finish(null,true),spec.time*1000);
+}
+function finish(choice,timedOut=false){
+  if(!active)return;
+  active=false;
+  setButtons(false);
+  clearTimeout(timeoutId);
+  clearInterval(intervalId);
+  timerFill.classList.remove('running');
+  timeText.classList.remove('danger');
+
+  if(timedOut)show(`時間到！答案：${currentAnswer}`,false);
+  else if(choice===correctIndex){score++;show('答對了！',true)}
+  else show(`答錯了！答案：${currentAnswer}`,false);
+
+  if(index>=TOTAL)setTimeout(endGame,950);
+  else setTimeout(nextQuestion,950);
+}
+function startGame(){
+  try{
+    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+  }catch(e){}
+  score=0;index=0;game=true;active=false;
+  clearTimeout(timeoutId);clearInterval(intervalId);
+  overlay.classList.add('hidden');
+  updateHUD(schedule[0].time);
+  nextQuestion();
+}
+function endGame(){
+  game=false;active=false;setButtons(false);timeText.classList.remove('danger');
+  const rate=Math.round(score/TOTAL*100);
+  const pass=rate>=60;
+  dialogIcon.textContent=pass?'🏆':'☠️';
+  dialogTitle.textContent='Vector Magic Test';
+  dialogText.innerHTML=`
+    <div class="result-box">
+      =====================<br>
+      Score : ${score} / ${TOTAL}<br>
+      Correct rate : ${rate} %<br><br>
+      <span class="${pass?'result-pass':'result-fail'}">${pass?'CONGRATULATIONS !!!':'YOU CANNOT PASS !!!'}</span><br>
+      ${pass?'You Pass.':'Please Try Again.'}<br>
+      =====================
+    </div>`;
+  startBtn.textContent='再玩一次';
+  overlay.classList.remove('hidden');
+}
+
+buttons.forEach(b=>b.addEventListener('click',()=>finish(Number(b.dataset.choice),false)));
+document.addEventListener('keydown',e=>{
+  if(!game&&(e.key==='Enter'||e.key===' ')){startGame();return}
+  if(e.key==='1')finish(0,false);
+  if(e.key==='2')finish(1,false);
+  if(e.key==='3')finish(2,false);
+});
+startBtn.addEventListener('click',startGame);
+updateHUD(20);
+})();
+</script>
+</body>
+</html>
