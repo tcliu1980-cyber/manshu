@@ -1,0 +1,2195 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>魔法算式火球對決</title>
+  <style>
+    :root {
+      --bg-deep: #090b20;
+      --panel: rgba(13, 17, 46, 0.88);
+      --gold: #ffd166;
+      --orange: #ff8c32;
+      --red: #ff3b30;
+      --blue: #6ed7ff;
+      --green: #72f1b8;
+      --text: #f8f7ff;
+      --muted: #c9c7dc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(75, 57, 174, 0.28), transparent 34%),
+        linear-gradient(180deg, #10163b 0%, var(--bg-deep) 58%, #050611 100%);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .game-shell {
+      width: min(1500px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) auto minmax(280px, 1fr);
+      align-items: center;
+      gap: 18px;
+      padding: 14px 18px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 20px;
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 55px rgba(0,0,0,0.24);
+    }
+
+    .health-panel {
+      min-width: 0;
+    }
+
+    .health-panel.enemy {
+      text-align: right;
+    }
+
+    .health-label {
+      margin-bottom: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .hearts {
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .enemy .hearts {
+      justify-content: flex-end;
+    }
+
+    .heart {
+      font-size: 27px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.4));
+      transition: transform 180ms ease, opacity 180ms ease, filter 180ms ease;
+    }
+
+    .heart.lost {
+      opacity: 0.17;
+      filter: grayscale(1);
+      transform: scale(0.82);
+    }
+
+    .title-block {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      color: var(--gold);
+      font-size: clamp(26px, 3vw, 42px);
+      text-shadow: 0 2px 12px rgba(255, 177, 66, 0.35);
+    }
+
+    .title-block p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 570px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 26px;
+      isolation: isolate;
+      background:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+        radial-gradient(circle at 28% 44%, rgba(126, 85, 255, 0.20), transparent 25%),
+        linear-gradient(180deg, rgba(21,26,66,0.95) 0%, rgba(8,10,29,0.96) 68%, #050611 100%);
+      background-size: 42px 42px, 42px 42px, auto, auto;
+      box-shadow: inset 0 0 80px rgba(0,0,0,0.4), 0 20px 55px rgba(0,0,0,0.25);
+    }
+
+    .stars,
+    .stars::before,
+    .stars::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.85) 0 1px, transparent 1.8px),
+        radial-gradient(circle, rgba(132,218,255,0.68) 0 1px, transparent 1.8px);
+      background-position: 18px 24px, 80px 95px;
+      background-size: 125px 115px, 183px 170px;
+      opacity: 0.48;
+    }
+
+    .stars::before {
+      transform: translate(37px, 19px);
+      opacity: 0.28;
+    }
+
+    .stars::after {
+      transform: translate(71px, 57px);
+      opacity: 0.2;
+    }
+
+    .castle {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 145px;
+      opacity: 0.62;
+      background:
+        linear-gradient(135deg, transparent 50%, #11142f 51%) 0 0 / 100px 70px repeat-x,
+        linear-gradient(#11142f, #070916);
+      clip-path: polygon(
+        0 40%, 6% 40%, 6% 15%, 11% 15%, 11% 40%,
+        18% 40%, 18% 25%, 23% 25%, 23% 40%,
+        31% 40%, 31% 5%, 37% 5%, 37% 40%,
+        47% 40%, 47% 19%, 53% 19%, 53% 40%,
+        64% 40%, 64% 10%, 71% 10%, 71% 40%,
+        81% 40%, 81% 25%, 87% 25%, 87% 40%,
+        94% 40%, 94% 12%, 100% 12%, 100% 100%, 0 100%
+      );
+    }
+
+    .wizard-wrap {
+      position: absolute;
+      left: 28%;
+      bottom: 92px;
+      width: 220px;
+      height: 340px;
+      transform: translateX(-50%);
+      z-index: 4;
+      transform-origin: 50% 85%;
+    }
+
+    .wizard-wrap.hit {
+      animation: wizardHit 620ms ease;
+    }
+
+    @keyframes wizardHit {
+      0%, 100% { transform: translateX(-50%) rotate(0); }
+      20% { transform: translateX(-50%) rotate(-8deg) scale(0.98); }
+      40% { transform: translateX(-50%) rotate(7deg) scale(1.03); }
+      65% { transform: translateX(-50%) rotate(-4deg); }
+    }
+
+    .wizard-svg,
+    .villager-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 18px 16px rgba(0,0,0,0.48));
+    }
+
+    .wizard-label,
+    .villager-label {
+      position: absolute;
+      left: 50%;
+      bottom: -32px;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 800;
+      background: rgba(5,7,20,0.82);
+      border: 1px solid rgba(255,255,255,0.17);
+    }
+
+    .villager-wrap {
+      position: absolute;
+      right: 2.5%;
+      bottom: 83px;
+      width: 150px;
+      height: 255px;
+      z-index: 4;
+      transform-origin: 50% 90%;
+    }
+
+    .villager-wrap.hit {
+      animation: villagerHit 620ms ease;
+    }
+
+    @keyframes villagerHit {
+      0%, 100% { transform: rotate(0) translateX(0); }
+      20% { transform: rotate(8deg) translateX(10px); }
+      45% { transform: rotate(-7deg) translateX(-8px); }
+      70% { transform: rotate(4deg) translateX(4px); }
+    }
+
+    .speech {
+      position: absolute;
+      right: 2.5%;
+      top: 32px;
+      z-index: 3;
+      max-width: 250px;
+      padding: 12px 16px;
+      color: #191627;
+      font-weight: 900;
+      text-align: center;
+      border-radius: 18px;
+      background: #fff8dc;
+      box-shadow: 0 8px 26px rgba(0,0,0,0.25);
+    }
+
+    .speech::after {
+      content: "";
+      position: absolute;
+      right: 40px;
+      bottom: -16px;
+      border-width: 16px 6px 0 18px;
+      border-style: solid;
+      border-color: #fff8dc transparent transparent transparent;
+      transform: rotate(-9deg);
+    }
+
+    .fireball {
+      position: absolute;
+      right: 190px;
+      top: 43%;
+      width: clamp(650px, 56vw, 820px);
+      height: 230px;
+      z-index: 6;
+      display: grid;
+      place-items: center;
+      transform: translate(0, -50%);
+      transform-origin: 84% 50%;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    /* 火球先由巫師方向飛來，抵達村民面前後停住。 */
+    .fireball.approaching {
+      opacity: 1;
+      animation: approachVillager 1.6s cubic-bezier(.18,.7,.22,1) forwards;
+    }
+
+    .fireball.waiting {
+      opacity: 1;
+      transform: translate(0, -50%);
+      animation: waitingPulse 850ms ease-in-out infinite alternate;
+    }
+
+    @keyframes approachVillager {
+      0% {
+        opacity: 0;
+        transform: translate(-42%, -50%) scale(.66);
+      }
+      18% { opacity: 1; }
+      78% { transform: translate(2%, -50%) scale(1.025); }
+      100% {
+        opacity: 1;
+        transform: translate(0, -50%) scale(1);
+      }
+    }
+
+    @keyframes waitingPulse {
+      from { transform: translate(0, -50%) scale(.992); }
+      to { transform: translate(0, -50%) scale(1.008); }
+    }
+
+    /* 答對：出現防護結界，火球被擋下並消散。 */
+    .fireball.blocked {
+      opacity: 1;
+      animation: fireballBlocked 760ms ease-out forwards;
+    }
+
+    .fireball.blocked::after {
+      content: "";
+      position: absolute;
+      right: -25px;
+      top: 50%;
+      width: 210px;
+      height: 260px;
+      border: 12px solid rgba(122, 235, 255, .95);
+      border-radius: 50%;
+      box-shadow:
+        0 0 20px rgba(122, 235, 255, .95),
+        0 0 60px rgba(92, 157, 255, .75),
+        inset 0 0 36px rgba(190, 252, 255, .6);
+      transform: translateY(-50%) scale(.25);
+      animation: shieldFlash 760ms ease-out forwards;
+    }
+
+    @keyframes shieldFlash {
+      0% { opacity: 0; transform: translateY(-50%) scale(.2); }
+      34% { opacity: 1; transform: translateY(-50%) scale(1); }
+      100% { opacity: 0; transform: translateY(-50%) scale(1.28); }
+    }
+
+    @keyframes fireballBlocked {
+      0%, 32% {
+        opacity: 1;
+        transform: translate(0, -50%) scale(1);
+        filter: brightness(1);
+      }
+      58% {
+        opacity: .92;
+        transform: translate(-4%, -50%) scale(.82);
+        filter: brightness(1.8) saturate(.55);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-12%, -50%) scale(.08);
+        filter: brightness(2.2) saturate(0);
+      }
+    }
+
+    /* 答錯或超時：火球在村民面前爆炸。 */
+    .fireball.exploding {
+      opacity: 1;
+      animation: fireballExplosion 820ms ease-out forwards;
+    }
+
+    .fireball.exploding .equation {
+      animation: equationVanish 180ms linear forwards;
+    }
+
+    .fireball.exploding::after {
+      content: "💥";
+      position: absolute;
+      right: -38px;
+      top: 50%;
+      font-size: 210px;
+      line-height: 1;
+      transform: translateY(-50%) scale(.15) rotate(-12deg);
+      filter: drop-shadow(0 0 24px #fff3a0) drop-shadow(0 0 55px #ff472e);
+      animation: explosionBurst 820ms ease-out forwards;
+    }
+
+    @keyframes equationVanish { to { opacity: 0; } }
+
+    @keyframes explosionBurst {
+      0% { opacity: 0; transform: translateY(-50%) scale(.12) rotate(-18deg); }
+      22% { opacity: 1; transform: translateY(-50%) scale(1.12) rotate(5deg); }
+      62% { opacity: 1; transform: translateY(-50%) scale(.94) rotate(-3deg); }
+      100% { opacity: 0; transform: translateY(-50%) scale(1.45) rotate(8deg); }
+    }
+
+    @keyframes fireballExplosion {
+      0% {
+        opacity: 1;
+        transform: translate(0, -50%) scale(1);
+        filter: brightness(1);
+      }
+      20% {
+        transform: translate(3%, -50%) scale(1.18);
+        filter: brightness(2.5);
+      }
+      48% {
+        opacity: 1;
+        transform: translate(7%, -50%) scale(.88);
+        filter: brightness(1.6);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(12%, -50%) scale(1.35);
+        filter: blur(8px) brightness(.8);
+      }
+    }
+
+    .stage.explosion-shake {
+      animation: stageExplosionShake 560ms ease-out;
+    }
+
+    @keyframes stageExplosionShake {
+      0%, 100% { transform: translate(0, 0); }
+      12% { transform: translate(-8px, 4px); }
+      24% { transform: translate(8px, -5px); }
+      38% { transform: translate(-6px, -3px); }
+      52% { transform: translate(6px, 3px); }
+      70% { transform: translate(-3px, 2px); }
+    }
+
+    .flame-tail {
+      position: absolute;
+      right: 73%;
+      width: 55%;
+      height: 78%;
+      border-radius: 60% 0 0 60%;
+      background:
+        radial-gradient(ellipse at 95% 50%, rgba(255,248,146,0.95) 0 11%, transparent 12%),
+        linear-gradient(90deg, transparent 0%, rgba(255,59,48,0.55) 22%, rgba(255,140,50,0.94) 70%, #ffd166 100%);
+      filter: blur(2px);
+      clip-path: polygon(0 50%, 20% 34%, 5% 18%, 39% 27%, 26% 5%, 62% 24%, 86% 14%, 100% 50%, 85% 86%, 57% 74%, 26% 96%, 37% 69%, 3% 82%, 21% 63%);
+      animation: flameWobble 220ms ease-in-out infinite alternate;
+    }
+
+    @keyframes flameWobble {
+      from { transform: scaleX(0.92) scaleY(0.96); }
+      to { transform: scaleX(1.05) scaleY(1.04); }
+    }
+
+    .fire-core {
+      position: relative;
+      width: 76%;
+      min-width: 580px;
+      height: 88%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 60% 42%, #fffde2 0 8%, #ffe88a 20%, #ff9c35 56%, #f33b1e 78%, rgba(151,16,13,0.6) 100%);
+      border: 5px solid rgba(255,238,128,0.8);
+      box-shadow:
+        0 0 25px rgba(255,183,66,0.95),
+        0 0 65px rgba(255,70,35,0.75),
+        inset 0 -18px 32px rgba(147,11,4,0.34);
+    }
+
+    .fire-core::before,
+    .fire-core::after {
+      content: "";
+      position: absolute;
+      inset: 9%;
+      border: 3px solid rgba(255,255,255,0.38);
+      border-radius: 50%;
+      transform: rotate(-7deg);
+    }
+
+    .fire-core::after {
+      inset: 18% 10%;
+      border-color: rgba(120,15,5,0.24);
+      transform: rotate(9deg);
+    }
+
+    .equation {
+      position: relative;
+      z-index: 2;
+      width: 94%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #20120c;
+      text-align: center;
+      font-family: "Arial Black", "Noto Sans TC", sans-serif;
+      font-size: clamp(48px, 5vw, 78px);
+      font-weight: 1000;
+      letter-spacing: -0.035em;
+      line-height: 1.08;
+      text-shadow:
+        0 2px 0 rgba(255,255,255,0.75),
+        0 4px 10px rgba(255,255,255,0.45);
+      white-space: nowrap;
+    }
+
+    .timer-wrap {
+      position: absolute;
+      left: 50%;
+      top: 22px;
+      width: min(600px, 66%);
+      transform: translateX(-50%);
+      z-index: 8;
+    }
+
+    .timer-label {
+      margin-bottom: 7px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .timer-track {
+      height: 18px;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.32);
+      border-radius: 999px;
+      background: rgba(0,0,0,0.42);
+    }
+
+    .timer-fill {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ff463a, #ffd166, #72f1b8);
+      transform-origin: left center;
+    }
+
+    .timer-fill.running {
+      animation: timerDrain 10s linear forwards;
+    }
+
+    @keyframes timerDrain {
+      from { transform: scaleX(1); }
+      to { transform: scaleX(0); }
+    }
+
+    .feedback {
+      position: absolute;
+      left: 50%;
+      top: 84px;
+      z-index: 10;
+      min-width: 260px;
+      transform: translateX(-50%) translateY(-6px);
+      padding: 12px 20px;
+      border-radius: 999px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 1000;
+      opacity: 0;
+      transition: opacity 160ms ease, transform 160ms ease;
+      pointer-events: none;
+    }
+
+    .feedback.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .feedback.correct {
+      color: #05291b;
+      background: #8df7c6;
+      border: 2px solid #d8ffeb;
+    }
+
+    .feedback.wrong {
+      color: #3a0603;
+      background: #ff978f;
+      border: 2px solid #ffd3cf;
+    }
+
+    .controls {
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 22px;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+    }
+
+    .instruction {
+      margin: 0 0 12px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .calculator {
+      width: min(460px, 100%);
+      margin: 0 auto;
+    }
+
+    .answer-display-wrap {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .answer-label {
+      color: var(--gold);
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .answer-display {
+      min-height: 68px;
+      width: 100%;
+      padding: 7px 18px;
+      border: 3px solid rgba(255,255,255,.32);
+      border-radius: 16px;
+      color: #f7fbff;
+      background: rgba(1, 4, 18, .88);
+      font-family: "Arial Black", monospace;
+      font-size: 40px;
+      font-weight: 1000;
+      text-align: right;
+      letter-spacing: .04em;
+      box-shadow: inset 0 0 18px rgba(84,213,255,.16);
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .key-btn {
+      min-height: 62px;
+      cursor: pointer;
+      border: 2px solid rgba(255,255,255,0.32);
+      border-radius: 15px;
+      color: #171124;
+      font-size: 29px;
+      font-weight: 1000;
+      background: linear-gradient(180deg, #fff7cf, #ffc857);
+      box-shadow: 0 6px 0 #9c571d, 0 9px 18px rgba(0,0,0,0.28);
+      transition: transform 90ms ease, box-shadow 90ms ease, filter 100ms ease;
+    }
+
+    .key-btn:hover:not(:disabled) {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 #9c571d, 0 12px 20px rgba(0,0,0,0.3);
+    }
+
+    .key-btn:active:not(:disabled) {
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #9c571d, 0 5px 12px rgba(0,0,0,0.28);
+    }
+
+    .key-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.42;
+      filter: grayscale(.6);
+    }
+
+    .key-btn.function {
+      color: #eefcff;
+      background: linear-gradient(180deg, #4d8fba, #275879);
+      box-shadow: 0 6px 0 #15364d, 0 9px 18px rgba(0,0,0,.28);
+    }
+
+    .key-btn.submit {
+      grid-column: span 2;
+      color: #06251a;
+      background: linear-gradient(180deg, #9effd5, #4bd396);
+      box-shadow: 0 6px 0 #20704d, 0 9px 18px rgba(0,0,0,.28);
+    }
+
+    .key-btn.zero {
+      grid-column: span 2;
+    }
+
+    .end-screen {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      place-items: center;
+      padding: 22px;
+      background: rgba(3,4,14,0.87);
+      backdrop-filter: blur(9px);
+    }
+
+    .end-screen.show {
+      display: grid;
+    }
+
+    .end-card {
+      width: min(650px, 94%);
+      padding: 34px;
+      text-align: center;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,209,102,0.18), transparent 38%),
+        #11142f;
+      box-shadow: 0 25px 90px rgba(0,0,0,0.55);
+    }
+
+    .end-icon {
+      margin-bottom: 8px;
+      font-size: 78px;
+    }
+
+    .end-title {
+      margin: 0;
+      color: var(--gold);
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1.25;
+    }
+
+    .end-message {
+      margin: 16px 0 26px;
+      color: #ece9ff;
+      font-size: 22px;
+      line-height: 1.65;
+    }
+
+    .restart-btn {
+      cursor: pointer;
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 28px;
+      color: #1c1222;
+      font-size: 22px;
+      font-weight: 1000;
+      background: linear-gradient(180deg, #a8ffd7, #53d99e);
+      box-shadow: 0 7px 0 #23714e;
+    }
+
+    .restart-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #23714e;
+    }
+
+    @media (max-width: 900px) {
+      .game-shell {
+        padding: 10px;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .title-block {
+        grid-column: 1 / -1;
+        grid-row: 1;
+      }
+
+      .stage {
+        min-height: 620px;
+      }
+
+      .wizard-wrap {
+        left: 20%;
+        width: 180px;
+        height: 290px;
+      }
+
+      .villager-wrap {
+        right: 1%;
+        width: 120px;
+        height: 220px;
+      }
+
+      .speech {
+        right: 1%;
+        max-width: 190px;
+        font-size: 14px;
+      }
+
+      .fireball {
+        right: 140px;
+        width: 700px;
+      }
+
+      .fire-core {
+        min-width: 590px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .health-label {
+        font-size: 14px;
+      }
+
+      .heart {
+        font-size: 21px;
+      }
+
+      .stage {
+        min-height: 610px;
+      }
+
+      .timer-wrap {
+        width: 86%;
+      }
+
+      .wizard-wrap {
+        left: 23%;
+        bottom: 78px;
+        width: 145px;
+        height: 245px;
+      }
+
+      .villager-wrap {
+        right: -8px;
+        bottom: 73px;
+        width: 95px;
+        height: 190px;
+      }
+
+      .wizard-label,
+      .villager-label {
+        font-size: 12px;
+      }
+
+      .speech {
+        display: none;
+      }
+
+      .fireball {
+        right: 100px;
+        top: 43%;
+        width: 660px;
+        height: 210px;
+      }
+
+      .fireball.exploding::after {
+        right: -15px;
+        font-size: 155px;
+      }
+
+      .fire-core {
+        min-width: 570px;
+      }
+
+      .equation {
+        font-size: 48px;
+        gap: 12px;
+      }
+
+      .answer-display-wrap {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .answer-label {
+        text-align: center;
+        font-size: 16px;
+      }
+
+      .answer-display {
+        min-height: 58px;
+        font-size: 34px;
+      }
+
+      .keypad {
+        gap: 7px;
+      }
+
+      .key-btn {
+        min-height: 56px;
+        font-size: 25px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .flame-tail,
+    }
+  
+    /* ===== v4：單畫面橫向配置 ===== */
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      min-height: 100svh;
+    }
+
+    .game-shell {
+      width: min(1600px, 100%);
+      height: 100svh;
+      min-height: 0;
+      padding: 10px;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .topbar {
+      min-height: 70px;
+      padding: 8px 14px;
+      gap: 12px;
+      border-radius: 16px;
+      grid-template-columns: minmax(230px, 1fr) auto minmax(230px, 1fr);
+    }
+
+    .health-label {
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .hearts {
+      min-height: 26px;
+      gap: 3px;
+    }
+
+    .heart {
+      font-size: 22px;
+    }
+
+    .title-block h1 {
+      font-size: clamp(24px, 2.5vw, 34px);
+    }
+
+    .title-block p {
+      margin-top: 1px;
+      font-size: 13px;
+    }
+
+    .stage {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      border-radius: 20px;
+    }
+
+    /* 法師與村民整體往左移，右側保留計算機區域。 */
+    .wizard-wrap {
+      left: 10.5%;
+      bottom: 48px;
+      width: 175px;
+      height: 275px;
+    }
+
+    .villager-wrap {
+      left: 61%;
+      right: auto;
+      bottom: 48px;
+      width: 125px;
+      height: 215px;
+      transform: translateX(-50%);
+    }
+
+    @keyframes villagerHit {
+      0%, 100% { transform: translateX(-50%) rotate(0); }
+      20% { transform: translateX(-50%) rotate(8deg) translateX(10px); }
+      45% { transform: translateX(-50%) rotate(-7deg) translateX(-8px); }
+      70% { transform: translateX(-50%) rotate(4deg) translateX(4px); }
+    }
+
+    .wizard-label,
+    .villager-label {
+      bottom: -25px;
+      padding: 4px 9px;
+      font-size: 13px;
+    }
+
+    .speech {
+      left: 50.5%;
+      right: auto;
+      top: 74px;
+      max-width: 205px;
+      padding: 9px 12px;
+      font-size: 13px;
+    }
+
+    /* 火球停在村民正前方，避免遮住右側數字鍵盤。 */
+    .fireball {
+      right: 39%;
+      top: 43%;
+      width: min(610px, 46vw);
+      height: 190px;
+    }
+
+    .fire-core {
+      width: 78%;
+      min-width: 450px;
+      height: 88%;
+    }
+
+    .equation {
+      width: 94%;
+      font-size: clamp(48px, 4vw, 62px);
+      letter-spacing: -0.055em;
+    }
+
+    .fireball.blocked::after {
+      right: -20px;
+      width: 165px;
+      height: 215px;
+    }
+
+    .fireball.exploding::after {
+      right: -24px;
+      font-size: 165px;
+    }
+
+    .timer-wrap {
+      left: 44%;
+      top: 12px;
+      width: min(520px, 42%);
+    }
+
+    .timer-label {
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .timer-track {
+      height: 14px;
+    }
+
+    .feedback {
+      left: 44%;
+      top: 57px;
+      min-width: 250px;
+      padding: 9px 16px;
+      font-size: 19px;
+    }
+
+    /* 計算機固定在村民右方，成為場景的一部分。 */
+    .controls {
+      position: absolute;
+      top: 80px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 22;
+      width: 300px;
+      margin: 0;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 18px;
+      background: rgba(13, 17, 46, 0.93);
+      box-shadow: 0 14px 35px rgba(0,0,0,0.34);
+    }
+
+    .instruction {
+      margin: 0 0 8px;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .calculator {
+      width: 100%;
+      margin: 0;
+    }
+
+    .answer-display-wrap {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .answer-label {
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .answer-display {
+      min-height: 52px;
+      padding: 4px 12px;
+      border-width: 2px;
+      border-radius: 12px;
+      font-size: 32px;
+    }
+
+    .keypad {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+    }
+
+    .key-btn {
+      min-height: 50px;
+      border-radius: 11px;
+      font-size: 23px;
+      box-shadow: 0 4px 0 #9c571d, 0 7px 14px rgba(0,0,0,0.25);
+    }
+
+    .key-btn.function {
+      box-shadow: 0 4px 0 #15364d, 0 7px 14px rgba(0,0,0,.25);
+    }
+
+    .key-btn.submit {
+      box-shadow: 0 4px 0 #20704d, 0 7px 14px rgba(0,0,0,.25);
+    }
+
+    .key-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 0 #9c571d, 0 8px 15px rgba(0,0,0,0.28);
+    }
+
+    .key-btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #9c571d, 0 4px 9px rgba(0,0,0,0.25);
+    }
+
+    @media (max-width: 1150px) {
+      .topbar {
+        grid-template-columns: minmax(190px, 1fr) auto minmax(190px, 1fr);
+      }
+
+      .controls {
+        width: 255px;
+        right: 10px;
+      }
+
+      .wizard-wrap {
+        left: 9%;
+        width: 150px;
+        height: 245px;
+      }
+
+      .villager-wrap {
+        left: 59%;
+        width: 110px;
+        height: 195px;
+      }
+
+      .fireball {
+        right: 41%;
+        width: min(535px, 50vw);
+        height: 175px;
+      }
+
+      .fire-core {
+        min-width: 390px;
+      }
+
+      .equation {
+        font-size: clamp(48px, 4.3vw, 56px);
+      }
+
+      .speech {
+        display: none;
+      }
+
+      .key-btn {
+        min-height: 46px;
+        font-size: 21px;
+      }
+    }
+
+    @media (max-width: 850px) {
+      .topbar {
+        grid-template-columns: 1fr 1fr;
+        padding: 6px 9px;
+      }
+
+      .title-block {
+        position: absolute;
+        left: 50%;
+        top: 13px;
+        z-index: 3;
+        transform: translateX(-50%);
+      }
+
+      .title-block p {
+        display: none;
+      }
+
+      .health-panel.player {
+        padding-right: 70px;
+      }
+
+      .health-panel.enemy {
+        padding-left: 70px;
+      }
+
+      .controls {
+        width: 220px;
+        top: 68px;
+        bottom: 8px;
+        right: 7px;
+        padding: 8px;
+      }
+
+      .instruction {
+        font-size: 11px;
+      }
+
+      .answer-display {
+        min-height: 44px;
+        font-size: 27px;
+      }
+
+      .key-btn {
+        min-height: 42px;
+        font-size: 19px;
+      }
+
+      .wizard-wrap {
+        left: 8%;
+        bottom: 35px;
+        width: 120px;
+        height: 205px;
+      }
+
+      .villager-wrap {
+        left: 56%;
+        bottom: 35px;
+        width: 92px;
+        height: 170px;
+      }
+
+      .fireball {
+        right: 44%;
+        width: 480px;
+        height: 155px;
+      }
+
+      .fire-core {
+        min-width: 350px;
+      }
+
+      .equation {
+        font-size: 48px;
+      }
+
+      .timer-wrap,
+      .feedback {
+        left: 39%;
+      }
+    }
+
+    @media (max-height: 700px) {
+      .game-shell {
+        padding: 6px;
+        gap: 5px;
+      }
+
+      .topbar {
+        min-height: 58px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+
+      .health-label {
+        font-size: 13px;
+      }
+
+      .heart {
+        font-size: 19px;
+      }
+
+      .title-block h1 {
+        font-size: 25px;
+      }
+
+      .controls {
+        top: 66px;
+        bottom: 8px;
+        width: 275px;
+        padding: 8px;
+      }
+
+      .instruction {
+        margin-bottom: 5px;
+        font-size: 11px;
+      }
+
+      .answer-display-wrap {
+        margin-bottom: 5px;
+      }
+
+      .answer-display {
+        min-height: 42px;
+        font-size: 27px;
+      }
+
+      .keypad {
+        gap: 5px;
+      }
+
+      .key-btn {
+        min-height: 39px;
+        font-size: 19px;
+      }
+
+      .wizard-wrap {
+        bottom: 30px;
+        width: 145px;
+        height: 225px;
+      }
+
+      .villager-wrap {
+        bottom: 31px;
+        width: 105px;
+        height: 180px;
+      }
+
+      .fireball {
+        top: 44%;
+        height: 155px;
+      }
+
+      .timer-wrap {
+        top: 7px;
+      }
+    }
+
+  
+    /* ===== v5：遊戲音效開關 ===== */
+    .title-block {
+      position: relative;
+    }
+
+    .sound-toggle {
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 5px);
+      z-index: 30;
+      min-width: 104px;
+      cursor: pointer;
+      transform: translateX(-50%);
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 999px;
+      padding: 4px 10px;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      background: rgba(3, 5, 18, .72);
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    }
+
+    .sound-toggle:hover {
+      background: rgba(39, 47, 96, .92);
+    }
+
+    .sound-toggle:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    @media (max-height: 700px) {
+      .sound-toggle {
+        top: calc(100% + 1px);
+        padding: 2px 8px;
+        font-size: 11px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <main class="game-shell" aria-label="魔法算式火球計算遊戲">
+    <header class="topbar">
+      <section class="health-panel player" aria-label="數學村民血量">
+        <div class="health-label">🧑 數學村民生命</div>
+        <div id="playerHearts" class="hearts"></div>
+      </section>
+
+      <section class="title-block">
+        <h1>魔法算式火球對決</h1>
+        <p>算出火球中的加減算式，輸入正確答案</p>
+        <button id="soundToggle" class="sound-toggle" type="button"
+                aria-pressed="false" aria-label="關閉遊戲音效">
+          🔊 音效開啟
+        </button>
+      </section>
+
+      <section class="health-panel enemy" aria-label="邪惡數學巫師血量">
+        <div class="health-label">🧙 邪惡數學巫師生命</div>
+        <div id="enemyHearts" class="hearts"></div>
+      </section>
+    </header>
+
+    <section id="stage" class="stage">
+      <div class="stars"></div>
+      <div class="castle"></div>
+
+      <div class="timer-wrap" aria-label="剩餘時間">
+        <div class="timer-label">火球抵達倒數：<span id="seconds">10.0</span> 秒</div>
+        <div class="timer-track">
+          <div id="timerFill" class="timer-fill"></div>
+        </div>
+      </div>
+
+      <div id="feedback" class="feedback" aria-live="assertive"></div>
+
+      <div id="wizard" class="wizard-wrap" aria-label="邪惡數學巫師">
+        <svg class="wizard-svg" viewBox="0 0 220 340" role="img" aria-label="邪惡數學巫師">
+          <defs>
+            <linearGradient id="robe" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#672ec7"/>
+              <stop offset="1" stop-color="#25105f"/>
+            </linearGradient>
+            <linearGradient id="hat" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#8754ed"/>
+              <stop offset="1" stop-color="#2d145f"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="111" cy="317" rx="78" ry="16" fill="rgba(0,0,0,.35)"/>
+          <path d="M66 147 Q109 115 153 147 L185 312 H36 Z" fill="url(#robe)" stroke="#b690ff" stroke-width="4"/>
+          <path d="M62 161 L22 241 Q16 255 29 262 Q42 268 51 253 L84 196 Z" fill="#4b2197"/>
+          <path d="M155 158 L197 220 Q205 234 194 242 Q181 250 171 235 L142 194 Z" fill="#4b2197"/>
+          <circle cx="107" cy="126" r="47" fill="#d8b28e" stroke="#5b352a" stroke-width="4"/>
+          <path d="M68 129 Q107 171 147 128 Q140 180 108 190 Q76 180 68 129Z" fill="#e8e8f6"/>
+          <path d="M83 118 Q92 108 101 118" fill="none" stroke="#251218" stroke-width="6" stroke-linecap="round"/>
+          <path d="M116 118 Q126 108 136 118" fill="none" stroke="#251218" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="92" cy="125" r="4" fill="#ff3838"/>
+          <circle cx="127" cy="125" r="4" fill="#ff3838"/>
+          <path d="M101 143 Q110 149 120 143" fill="none" stroke="#6b2b24" stroke-width="4" stroke-linecap="round"/>
+          <path d="M48 102 Q80 50 95 9 Q141 47 174 105 Q112 80 48 102Z" fill="url(#hat)" stroke="#b690ff" stroke-width="4"/>
+          <path d="M60 96 Q110 75 164 98" fill="none" stroke="#ffd166" stroke-width="8"/>
+          <circle cx="124" cy="51" r="5" fill="#ffd166"/>
+          <path d="M107 233 L107 309" stroke="#301167" stroke-width="8"/>
+          <path d="M80 309 L60 333 M137 309 L160 333" stroke="#1c113d" stroke-width="12" stroke-linecap="round"/>
+          <path d="M190 229 L203 315" stroke="#9a6632" stroke-width="8" stroke-linecap="round"/>
+          <circle cx="204" cy="218" r="16" fill="#6ed7ff" stroke="#d9f7ff" stroke-width="4"/>
+          <path d="M197 211 L211 225 M211 211 L197 225" stroke="#fff" stroke-width="3"/>
+        </svg>
+        <div class="wizard-label">邪惡數學巫師</div>
+      </div>
+
+      <div class="speech">快算出答案，幫我擋住火球！</div>
+
+      <div id="villager" class="villager-wrap" aria-label="數學村民">
+        <svg class="villager-svg" viewBox="0 0 150 255" role="img" aria-label="數學村民">
+          <ellipse cx="75" cy="242" rx="54" ry="10" fill="rgba(0,0,0,.38)"/>
+          <path d="M43 103 Q75 84 107 103 L119 226 H31 Z" fill="#2f78b7" stroke="#8fd9ff" stroke-width="4"/>
+          <circle cx="75" cy="72" r="38" fill="#e0b590" stroke="#65402f" stroke-width="4"/>
+          <path d="M38 66 Q47 27 75 27 Q109 28 114 66 Q90 50 38 66Z" fill="#72401f"/>
+          <circle cx="61" cy="73" r="4" fill="#251610"/>
+          <circle cx="89" cy="73" r="4" fill="#251610"/>
+          <path d="M62 89 Q75 101 89 89" fill="none" stroke="#743b33" stroke-width="4" stroke-linecap="round"/>
+          <path d="M41 120 L13 177 M108 120 L137 177" stroke="#e0b590" stroke-width="13" stroke-linecap="round"/>
+          <path d="M55 222 L47 247 M95 222 L103 247" stroke="#30241f" stroke-width="12" stroke-linecap="round"/>
+          <rect x="48" y="122" width="54" height="55" rx="7" fill="#fff8dc" transform="rotate(-5 75 150)"/>
+          <text x="75" y="157" text-anchor="middle" font-size="27" font-weight="900" fill="#372b24">?</text>
+        </svg>
+        <div class="villager-label">數學村民</div>
+      </div>
+
+      <div id="fireball" class="fireball" aria-live="polite">
+        <div class="flame-tail"></div>
+        <div class="fire-core">
+          <div class="equation">
+            <span id="expression">-3 - (-5) = ?</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="controls" aria-label="計算機答案輸入區">
+            <p class="instruction">可按畫面鍵盤，也可直接使用實體鍵盤輸入。按 Enter 送出答案。</p>
+            <div class="calculator">
+              <div class="answer-display-wrap">
+                <label class="answer-label" for="answerDisplay">你的答案</label>
+                <output id="answerDisplay" class="answer-display" aria-live="polite" tabindex="0">0</output>
+              </div>
+              <div class="keypad" aria-label="數字鍵盤">
+                <button class="key-btn" type="button" data-key="7">7</button>
+                <button class="key-btn" type="button" data-key="8">8</button>
+                <button class="key-btn" type="button" data-key="9">9</button>
+                <button class="key-btn function" type="button" data-action="backspace" aria-label="刪除一位">⌫</button>
+
+                <button class="key-btn" type="button" data-key="4">4</button>
+                <button class="key-btn" type="button" data-key="5">5</button>
+                <button class="key-btn" type="button" data-key="6">6</button>
+                <button class="key-btn function" type="button" data-action="clear">清除</button>
+
+                <button class="key-btn" type="button" data-key="1">1</button>
+                <button class="key-btn" type="button" data-key="2">2</button>
+                <button class="key-btn" type="button" data-key="3">3</button>
+                <button class="key-btn function" type="button" data-action="sign">±</button>
+
+                <button class="key-btn zero" type="button" data-key="0">0</button>
+                <button class="key-btn submit" type="button" data-action="submit">送出答案</button>
+              </div>
+            </div>
+          </section>
+
+      <div id="endScreen" class="end-screen" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+        <div class="end-card">
+          <div id="endIcon" class="end-icon">🏆</div>
+          <h2 id="endTitle" class="end-title">遊戲結束</h2>
+          <p id="endMessage" class="end-message"></p>
+          <button id="restartBtn" class="restart-btn" type="button">重新開始</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const MAX_ENEMY_HP = 5;
+      const MAX_PLAYER_HP = 3;
+      const APPROACH_TIME_MS = 1600;
+      const QUESTION_TIME_MS = 10000;
+      const NEXT_QUESTION_DELAY_MS = 1050;
+
+      const state = {
+        enemyHp: MAX_ENEMY_HP,
+        playerHp: MAX_PLAYER_HP,
+        correctAnswer: 0,
+        currentInput: "",
+        active: false,
+        ended: false,
+        timeoutId: null,
+        countdownId: null,
+        approachTimeoutId: null,
+        startedAt: 0
+      };
+
+
+      const audio = {
+        context: null,
+        master: null,
+        enabled: true,
+
+        ensureContext() {
+          if (!this.enabled) return null;
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return null;
+
+          if (!this.context) {
+            this.context = new AudioCtx();
+            this.master = this.context.createGain();
+            this.master.gain.value = 0.46;
+            this.master.connect(this.context.destination);
+          }
+
+          if (this.context.state === "suspended") {
+            this.context.resume().catch(() => {});
+          }
+          return this.context;
+        },
+
+        setEnabled(enabled) {
+          this.enabled = enabled;
+          elements.soundToggle.textContent = enabled
+            ? "🔊 音效開啟"
+            : "🔇 音效關閉";
+          elements.soundToggle.setAttribute(
+            "aria-pressed",
+            enabled ? "false" : "true"
+          );
+          elements.soundToggle.setAttribute(
+            "aria-label",
+            enabled ? "關閉遊戲音效" : "開啟遊戲音效"
+          );
+
+          if (enabled) {
+            const ctx = this.ensureContext();
+            if (ctx && this.master) {
+              const now = ctx.currentTime;
+              this.master.gain.cancelScheduledValues(now);
+              this.master.gain.setTargetAtTime(0.46, now, 0.02);
+              this.playUiTone();
+            }
+          } else if (this.context && this.master) {
+            const now = this.context.currentTime;
+            this.master.gain.cancelScheduledValues(now);
+            this.master.gain.setTargetAtTime(0.0001, now, 0.02);
+          }
+        },
+
+        tone({
+          frequency,
+          start,
+          duration,
+          type = "sine",
+          volume = 0.18,
+          endFrequency = null
+        }) {
+          const ctx = this.ensureContext();
+          if (!ctx || !this.master) return;
+
+          const oscillator = ctx.createOscillator();
+          const gain = ctx.createGain();
+          oscillator.type = type;
+          oscillator.frequency.setValueAtTime(Math.max(20, frequency), start);
+
+          if (endFrequency !== null) {
+            oscillator.frequency.exponentialRampToValueAtTime(
+              Math.max(20, endFrequency),
+              start + duration
+            );
+          }
+
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.exponentialRampToValueAtTime(
+            Math.max(0.0002, volume),
+            start + Math.min(0.035, duration * 0.16)
+          );
+          gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+          oscillator.connect(gain);
+          gain.connect(this.master);
+          oscillator.start(start);
+          oscillator.stop(start + duration + 0.03);
+        },
+
+        noise({
+          start,
+          duration,
+          volume = 0.22,
+          lowpass = 1600,
+          highpass = 0
+        }) {
+          const ctx = this.ensureContext();
+          if (!ctx || !this.master) return;
+
+          const frameCount = Math.max(1, Math.floor(ctx.sampleRate * duration));
+          const buffer = ctx.createBuffer(1, frameCount, ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+
+          for (let i = 0; i < frameCount; i += 1) {
+            const decay = 1 - i / frameCount;
+            data[i] = (Math.random() * 2 - 1) * decay;
+          }
+
+          const source = ctx.createBufferSource();
+          const lowpassFilter = ctx.createBiquadFilter();
+          const gain = ctx.createGain();
+          source.buffer = buffer;
+          lowpassFilter.type = "lowpass";
+          lowpassFilter.frequency.value = lowpass;
+
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.exponentialRampToValueAtTime(
+            Math.max(0.0002, volume),
+            start + 0.018
+          );
+          gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+          source.connect(lowpassFilter);
+
+          if (highpass > 0) {
+            const highpassFilter = ctx.createBiquadFilter();
+            highpassFilter.type = "highpass";
+            highpassFilter.frequency.value = highpass;
+            lowpassFilter.connect(highpassFilter);
+            highpassFilter.connect(gain);
+          } else {
+            lowpassFilter.connect(gain);
+          }
+
+          gain.connect(this.master);
+          source.start(start);
+          source.stop(start + duration + 0.02);
+        },
+
+        playUiTone() {
+          const ctx = this.ensureContext();
+          if (!ctx) return;
+          const now = ctx.currentTime + 0.01;
+          this.tone({
+            frequency: 660,
+            start: now,
+            duration: 0.09,
+            type: "sine",
+            volume: 0.07,
+            endFrequency: 880
+          });
+        },
+
+        // 化解火球：清亮的魔法消散聲。
+        playDissolve() {
+          const ctx = this.ensureContext();
+          if (!ctx) return;
+          const now = ctx.currentTime + 0.015;
+
+          [523.25, 659.25, 783.99, 1046.5].forEach(
+            (frequency, index) => {
+              this.tone({
+                frequency,
+                start: now + index * 0.075,
+                duration: 0.32,
+                type: index % 2 ? "triangle" : "sine",
+                volume: 0.12 - index * 0.012,
+                endFrequency: frequency * 1.3
+              });
+            }
+          );
+
+          for (let i = 0; i < 7; i += 1) {
+            this.tone({
+              frequency: 950 + i * 115,
+              start: now + 0.05 + i * 0.045,
+              duration: 0.16,
+              type: "sine",
+              volume: 0.035,
+              endFrequency: 1450 + i * 130
+            });
+          }
+        },
+
+        // 被火球打中：爆裂、低頻撞擊與短暫耳鳴。
+        playHit() {
+          const ctx = this.ensureContext();
+          if (!ctx) return;
+          const now = ctx.currentTime + 0.01;
+
+          this.noise({
+            start: now,
+            duration: 0.52,
+            volume: 0.40,
+            lowpass: 1900
+          });
+          this.tone({
+            frequency: 135,
+            start: now,
+            duration: 0.56,
+            type: "sawtooth",
+            volume: 0.25,
+            endFrequency: 42
+          });
+          this.tone({
+            frequency: 210,
+            start: now + 0.025,
+            duration: 0.34,
+            type: "square",
+            volume: 0.10,
+            endFrequency: 70
+          });
+          this.tone({
+            frequency: 1480,
+            start: now + 0.16,
+            duration: 0.45,
+            type: "sine",
+            volume: 0.04,
+            endFrequency: 1120
+          });
+        },
+
+        // 打敗巫師：上行和弦、歡呼與掌聲。
+        playVictory() {
+          const ctx = this.ensureContext();
+          if (!ctx) return;
+          const now = ctx.currentTime + 0.03;
+          const melody = [
+            [523.25, 0.00, 0.18],
+            [659.25, 0.16, 0.18],
+            [783.99, 0.32, 0.22],
+            [1046.50, 0.52, 0.42]
+          ];
+
+          melody.forEach(([frequency, offset, duration]) => {
+            this.tone({
+              frequency,
+              start: now + offset,
+              duration,
+              type: "triangle",
+              volume: 0.17,
+              endFrequency: frequency * 1.015
+            });
+          });
+
+          [523.25, 659.25, 783.99].forEach((frequency) => {
+            this.tone({
+              frequency,
+              start: now + 0.92,
+              duration: 0.75,
+              type: "sine",
+              volume: 0.10
+            });
+          });
+
+          for (let i = 0; i < 18; i += 1) {
+            this.noise({
+              start: now + 0.72 + i * 0.075 + Math.random() * 0.025,
+              duration: 0.055 + Math.random() * 0.05,
+              volume: 0.07 + Math.random() * 0.04,
+              lowpass: 4300,
+              highpass: 900
+            });
+          }
+
+          for (let i = 0; i < 8; i += 1) {
+            this.tone({
+              frequency: 420 + Math.random() * 520,
+              start: now + 0.65 + Math.random() * 0.7,
+              duration: 0.18 + Math.random() * 0.22,
+              type: "sine",
+              volume: 0.03,
+              endFrequency: 650 + Math.random() * 650
+            });
+          }
+        },
+
+        // 被巫師打敗：自製低沉小調哀樂。
+        playDefeat() {
+          const ctx = this.ensureContext();
+          if (!ctx) return;
+          const now = ctx.currentTime + 0.04;
+          const melody = [
+            [392.00, 0.00, 0.34],
+            [349.23, 0.36, 0.34],
+            [311.13, 0.72, 0.42],
+            [261.63, 1.16, 0.60],
+            [233.08, 1.78, 0.72]
+          ];
+
+          melody.forEach(([frequency, offset, duration], index) => {
+            this.tone({
+              frequency,
+              start: now + offset,
+              duration,
+              type: index % 2 ? "triangle" : "sine",
+              volume: 0.115,
+              endFrequency: frequency * 0.985
+            });
+            this.tone({
+              frequency: frequency / 2,
+              start: now + offset,
+              duration: duration + 0.08,
+              type: "sine",
+              volume: 0.04
+            });
+          });
+
+          this.noise({
+            start: now + 0.9,
+            duration: 1.7,
+            volume: 0.03,
+            lowpass: 520
+          });
+        }
+      };
+
+      const elements = {
+        stage: document.getElementById("stage"),
+        playerHearts: document.getElementById("playerHearts"),
+        enemyHearts: document.getElementById("enemyHearts"),
+        fireball: document.getElementById("fireball"),
+        timerFill: document.getElementById("timerFill"),
+        seconds: document.getElementById("seconds"),
+        feedback: document.getElementById("feedback"),
+        expression: document.getElementById("expression"),
+        answerDisplay: document.getElementById("answerDisplay"),
+        wizard: document.getElementById("wizard"),
+        villager: document.getElementById("villager"),
+        endScreen: document.getElementById("endScreen"),
+        endIcon: document.getElementById("endIcon"),
+        endTitle: document.getElementById("endTitle"),
+        endMessage: document.getElementById("endMessage"),
+        restartBtn: document.getElementById("restartBtn"),
+        soundToggle: document.getElementById("soundToggle"),
+        keyButtons: [...document.querySelectorAll(".key-btn")]
+      };
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function createQuestion() {
+        const a = randomInt(-30, 30);
+        const b = randomInt(-30, 30);
+        const operator = Math.random() < 0.5 ? "+" : "-";
+        const shownA = a < 0 ? `(${a})` : `${a}`;
+        const shownB = b < 0 ? `(${b})` : `${b}`;
+
+        // 負數必須保留括號，例如：8 - (-5)，不可寫成 8--5。
+        elements.expression.textContent = `${shownA} ${operator} ${shownB} = ?`;
+        state.correctAnswer = operator === "+" ? a + b : a - b;
+        state.currentInput = "";
+        updateInputDisplay();
+      }
+
+      function renderHearts(container, current, maximum) {
+        container.innerHTML = "";
+        for (let i = 0; i < maximum; i += 1) {
+          const heart = document.createElement("span");
+          heart.className = `heart${i >= current ? " lost" : ""}`;
+          heart.textContent = "❤️";
+          heart.setAttribute("aria-hidden", "true");
+          container.appendChild(heart);
+        }
+        container.setAttribute("aria-label", `剩餘 ${current} 格生命，共 ${maximum} 格`);
+      }
+
+      function renderHealth() {
+        renderHearts(elements.playerHearts, state.playerHp, MAX_PLAYER_HP);
+        renderHearts(elements.enemyHearts, state.enemyHp, MAX_ENEMY_HP);
+      }
+
+      function setButtonsEnabled(enabled) {
+        elements.keyButtons.forEach((button) => {
+          button.disabled = !enabled;
+        });
+      }
+
+      function updateInputDisplay() {
+        elements.answerDisplay.textContent = state.currentInput || "0";
+      }
+
+      function appendDigit(digit) {
+        if (!state.active || state.ended) return;
+        const digitsOnly = state.currentInput.replace("-", "");
+        if (digitsOnly.length >= 3) return;
+
+        if (state.currentInput === "0") state.currentInput = digit;
+        else if (state.currentInput === "-0") state.currentInput = `-${digit}`;
+        else state.currentInput += digit;
+        updateInputDisplay();
+      }
+
+      function toggleSign() {
+        if (!state.active || state.ended) return;
+        if (state.currentInput.startsWith("-")) {
+          state.currentInput = state.currentInput.slice(1);
+        } else {
+          state.currentInput = `-${state.currentInput}`;
+        }
+        updateInputDisplay();
+      }
+
+      function clearInput() {
+        if (!state.active || state.ended) return;
+        state.currentInput = "";
+        updateInputDisplay();
+      }
+
+      function backspaceInput() {
+        if (!state.active || state.ended) return;
+        state.currentInput = state.currentInput.slice(0, -1);
+        if (state.currentInput === "-") state.currentInput = "";
+        updateInputDisplay();
+      }
+
+      function submitInput() {
+        if (!state.active || state.ended) return;
+        if (state.currentInput === "" || state.currentInput === "-") {
+          showFeedback("請先輸入一個完整答案。", "wrong");
+          return;
+        }
+        resolveAnswer(Number(state.currentInput));
+      }
+
+      function resetAnimation(element, className) {
+        element.classList.remove(className);
+        void element.offsetWidth;
+        element.classList.add(className);
+      }
+
+      function startCountdown() {
+        state.startedAt = performance.now();
+        elements.seconds.textContent = "10.0";
+
+        clearInterval(state.countdownId);
+        state.countdownId = setInterval(() => {
+          const elapsed = performance.now() - state.startedAt;
+          const remaining = Math.max(0, QUESTION_TIME_MS - elapsed);
+          elements.seconds.textContent = (remaining / 1000).toFixed(1);
+        }, 50);
+      }
+
+      function stopTimers() {
+        clearTimeout(state.timeoutId);
+        clearTimeout(state.approachTimeoutId);
+        clearInterval(state.countdownId);
+        state.timeoutId = null;
+        state.approachTimeoutId = null;
+        state.countdownId = null;
+      }
+
+      function clearFireballStates() {
+        elements.fireball.classList.remove(
+          "approaching",
+          "waiting",
+          "blocked",
+          "exploding"
+        );
+      }
+
+      function armQuestion() {
+        if (state.ended) return;
+
+        state.active = true;
+        clearFireballStates();
+        elements.fireball.classList.add("waiting");
+        setButtonsEnabled(true);
+        resetAnimation(elements.timerFill, "running");
+        startCountdown();
+
+        state.timeoutId = setTimeout(() => {
+          resolveAnswer(null, true);
+        }, QUESTION_TIME_MS);
+      }
+
+      function beginQuestion() {
+        if (state.ended) return;
+
+        stopTimers();
+        createQuestion();
+        state.active = false;
+        setButtonsEnabled(false);
+        elements.feedback.className = "feedback";
+        elements.feedback.textContent = "";
+        elements.seconds.textContent = "準備";
+        elements.timerFill.classList.remove("running");
+        elements.stage.classList.remove("explosion-shake");
+
+        clearFireballStates();
+        void elements.fireball.offsetWidth;
+        elements.fireball.classList.add("approaching");
+
+        state.approachTimeoutId = setTimeout(
+          armQuestion,
+          APPROACH_TIME_MS
+        );
+      }
+
+      function showFeedback(message, type) {
+        elements.feedback.textContent = message;
+        elements.feedback.className = `feedback ${type} show`;
+      }
+
+      function animateHit(target) {
+        target.classList.remove("hit");
+        void target.offsetWidth;
+        target.classList.add("hit");
+        setTimeout(() => target.classList.remove("hit"), 650);
+      }
+
+      function resolveAnswer(answer, timedOut = false) {
+        if (!state.active || state.ended) return;
+
+        state.active = false;
+        stopTimers();
+        setButtonsEnabled(false);
+        elements.timerFill.classList.remove("running");
+        elements.seconds.textContent = "0.0";
+
+        const isCorrect = !timedOut && Number(answer) === state.correctAnswer;
+        clearFireballStates();
+        void elements.fireball.offsetWidth;
+
+        if (isCorrect) {
+          elements.fireball.classList.add("blocked");
+          audio.playDissolve();
+          state.enemyHp -= 1;
+          animateHit(elements.wizard);
+          showFeedback(`答對了！火球被成功擋下！答案是 ${state.correctAnswer}`, "correct");
+        } else {
+          elements.fireball.classList.add("exploding");
+          audio.playHit();
+          elements.stage.classList.remove("explosion-shake");
+          void elements.stage.offsetWidth;
+          elements.stage.classList.add("explosion-shake");
+          state.playerHp -= 1;
+          animateHit(elements.villager);
+          const prefix = timedOut ? "時間到，火球爆炸了！" : "答錯了，火球爆炸了！";
+          showFeedback(`${prefix}正確答案是 ${state.correctAnswer}`, "wrong");
+        }
+
+        renderHealth();
+
+        if (state.enemyHp <= 0) {
+          setTimeout(() => endGame(true), 900);
+          return;
+        }
+
+        if (state.playerHp <= 0) {
+          setTimeout(() => endGame(false), 900);
+          return;
+        }
+
+        setTimeout(beginQuestion, NEXT_QUESTION_DELAY_MS);
+      }
+
+      function endGame(playerWon) {
+        state.ended = true;
+        state.active = false;
+        stopTimers();
+        setButtonsEnabled(false);
+        clearFireballStates();
+        elements.timerFill.classList.remove("running");
+        elements.stage.classList.remove("explosion-shake");
+
+        if (playerWon) {
+          audio.playVictory();
+          elements.endIcon.textContent = "🏆";
+          elements.endTitle.textContent = "邪惡的數學巫師被打敗了！";
+          elements.endMessage.textContent =
+            `你成功破解了所有火球，拯救了數學村莊。村民還剩 ${state.playerHp} 格生命。`;
+        } else {
+          audio.playDefeat();
+          elements.endIcon.textContent = "💥";
+          elements.endTitle.textContent = "無助的數學村民被打敗了！";
+          elements.endMessage.textContent =
+            `邪惡巫師還剩 ${state.enemyHp} 格生命。再挑戰一次，仔細計算火球中的算式！`;
+        }
+
+        elements.endScreen.classList.add("show");
+        elements.restartBtn.focus();
+      }
+
+      function restartGame() {
+        stopTimers();
+        state.enemyHp = MAX_ENEMY_HP;
+        state.playerHp = MAX_PLAYER_HP;
+        state.active = false;
+        state.ended = false;
+        state.currentInput = "";
+        updateInputDisplay();
+        elements.endScreen.classList.remove("show");
+        renderHealth();
+        beginQuestion();
+      }
+
+      elements.keyButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (button.dataset.key !== undefined) {
+            appendDigit(button.dataset.key);
+            return;
+          }
+
+          const actions = {
+            clear: clearInput,
+            backspace: backspaceInput,
+            sign: toggleSign,
+            submit: submitInput
+          };
+          const action = actions[button.dataset.action];
+          if (action) action();
+        });
+      });
+
+      elements.restartBtn.addEventListener("click", restartGame);
+
+      elements.soundToggle.addEventListener("click", () => {
+        audio.setEnabled(!audio.enabled);
+      });
+
+      // 瀏覽器要求先有使用者操作才能播放聲音；第一次點擊或按鍵時解鎖。
+      const unlockAudio = () => {
+        audio.ensureContext();
+        document.removeEventListener("pointerdown", unlockAudio);
+        document.removeEventListener("keydown", unlockAudio);
+      };
+      document.addEventListener("pointerdown", unlockAudio);
+      document.addEventListener("keydown", unlockAudio);
+
+      document.addEventListener("keydown", (event) => {
+        if (!state.active || state.ended) return;
+
+        // 支援主鍵盤與右側數字小鍵盤。
+        if (/^[0-9]$/.test(event.key)) {
+          event.preventDefault();
+          appendDigit(event.key);
+        } else if (
+          event.key === "-" ||
+          event.key === "_" ||
+          event.code === "NumpadSubtract"
+        ) {
+          event.preventDefault();
+          toggleSign();
+        } else if (event.key === "Backspace") {
+          event.preventDefault();
+          backspaceInput();
+        } else if (
+          event.key === "Escape" ||
+          event.key === "Delete" ||
+          event.code === "NumpadDecimal"
+        ) {
+          event.preventDefault();
+          clearInput();
+        } else if (
+          event.key === "Enter" ||
+          event.code === "NumpadEnter"
+        ) {
+          event.preventDefault();
+          submitInput();
+        }
+      });
+
+      renderHealth();
+      beginQuestion();
+    })();
+  </script>
+</body>
+</html>
