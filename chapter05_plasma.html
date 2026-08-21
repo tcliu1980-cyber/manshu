@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 5｜Plasma：什麼時候游離氣體才算電漿？</title>
+<style>
+:root{
+  --bg:#07111f; --panel:#0e1d2e; --panel2:#12263d; --text:#edf6ff; --muted:#a9bdd2;
+  --line:#2a4967; --accent:#55d6e8; --accent2:#ffd166; --good:#6ee7a8; --warn:#ffb86b;
+  --danger:#ff7272; --violet:#b79cff; --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 85% 8%,rgba(85,214,232,.12),transparent 25%),
+    radial-gradient(circle at 12% 34%,rgba(183,156,255,.10),transparent 22%),
+    var(--bg);
+  color:var(--text);line-height:1.72;
+}
+header{
+  min-height:72vh;display:grid;place-items:center;padding:70px 22px 45px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hero{width:min(1180px,100%)}
+.eyebrow{font-size:.88rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:800}
+h1{font-size:clamp(2.3rem,7vw,5.2rem);line-height:1.02;margin:.2em 0 .25em}
+h2{font-size:clamp(1.65rem,4vw,2.55rem);margin:0 0 8px}
+h3{margin:0 0 8px}
+.hero p,.lead{color:var(--muted);max-width:980px}
+.hero p{font-size:clamp(1.05rem,2.2vw,1.4rem)}
+.flow{
+  margin-top:30px;padding:18px 20px;border:1px solid var(--line);background:rgba(14,29,46,.72);
+  border-radius:18px;box-shadow:var(--shadow);overflow:auto;white-space:nowrap
+}
+.flow b{color:var(--accent2)}
+nav{
+  position:sticky;top:0;z-index:20;background:rgba(7,17,31,.90);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+.navin{width:min(1180px,100%);margin:auto;padding:10px 18px;display:flex;gap:10px;overflow:auto}
+.navin a{text-decoration:none;color:var(--muted);border:1px solid transparent;padding:8px 12px;border-radius:999px;white-space:nowrap}
+.navin a:hover{color:var(--text);border-color:var(--line);background:var(--panel)}
+main{width:min(1180px,100%);margin:auto;padding:35px 20px 90px}
+section{margin:58px 0;scroll-margin-top:80px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{
+  background:linear-gradient(145deg,rgba(18,38,61,.90),rgba(10,25,41,.95));
+  border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)
+}
+.card p{margin:.35em 0;color:var(--muted)}
+.eq{display:block;font-family:"Cambria Math",Cambria,serif;font-size:1.42rem;margin:10px 0;color:#fff}
+.tip{
+  border-left:4px solid var(--accent2);background:rgba(255,209,102,.08);
+  border-radius:8px 16px 16px 8px;padding:14px 16px;margin:18px 0
+}
+.callout{
+  border:1px solid rgba(85,214,232,.45);background:rgba(85,214,232,.07);
+  border-radius:16px;padding:18px
+}
+label{font-weight:700}
+input,button{font:inherit}
+input{
+  width:100%;margin:6px 0 12px;background:#071421;border:1px solid var(--line);
+  color:var(--text);padding:11px 12px;border-radius:10px
+}
+button{border:0;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:800}
+.primary{background:var(--accent);color:#04202a}
+.secondary{background:#16324e;color:var(--text);border:1px solid var(--line)}
+.result{font-size:1.08rem;margin-top:12px;padding:14px;border-radius:12px;background:#071421;border:1px solid var(--line)}
+.svgbox{width:100%;background:#091726;border:1px solid var(--line);border-radius:16px;display:block}
+.badge{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin:3px 3px 3px 0;font-size:.9rem}
+.quizq{margin:18px 0;padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:16px}
+.quizq button{margin:5px 6px 0 0}
+.feedback{min-height:28px;margin-top:8px;font-weight:700}
+.progress{position:fixed;left:0;top:0;height:3px;background:var(--accent);z-index:50;width:0}
+.small{font-size:.9rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;min-width:860px}
+th,td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent);text-align:left;background:#0b1a2a}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+footer{border-top:1px solid rgba(255,255,255,.08);padding:34px 20px 50px;color:var(--muted)}
+ul{margin:.3em 0 .8em 1.2em} li{margin:.35em 0}
+@media(max-width:920px){.grid,.grid3,.grid4{grid-template-columns:1fr}header{min-height:auto}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <div class="hero">
+    <div class="eyebrow">ION BURSTER · CHAPTER 5</div>
+    <h1>Plasma<br>物質的第四態？</h1>
+    <p>上一章我們看見氣體被游離，產生電子與離子。但「有一些離子」還不一定就是我們物理上所說的電漿。真正的 plasma 是一個由大量帶電粒子與中性粒子組成、會對電場與磁場產生<b>集體響應</b>的系統。</p>
+    <div class="flow">
+      Gas → Ionization → electrons + ions + neutrals → <b>Collective behavior</b> → Plasma
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navin">
+    <a href="#what">什麼是 Plasma</a>
+    <a href="#criteria">電漿判準</a>
+    <a href="#debye">Debye shielding</a>
+    <a href="#temperature">溫度</a>
+    <a href="#cold">Cold vs Thermal</a>
+    <a href="#applications">應用</a>
+    <a href="#space">太空 Plasma</a>
+    <a href="#ionburster">Ion Burster</a>
+    <a href="#quiz">小測驗</a>
+  </div>
+</nav>
+
+<main>
+<section id="what">
+  <div class="eyebrow">Part A</div>
+  <h2>1. Plasma 到底是什麼？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>不是單純「很熱的氣體」</h3>
+      <p>Plasma 的核心不是溫度，而是系統中存在足夠多的自由電子與離子，使它能對電場與磁場產生集體響應。</p>
+      <p>一個 plasma 通常包含：</p>
+      <p><span class="badge">electrons e⁻</span><span class="badge">positive ions</span><span class="badge">neutral atoms / molecules</span></p>
+    </div>
+    <div class="card">
+      <h3>也不一定「全部游離」</h3>
+      <p>很多工程 plasma 都是<b>弱游離 plasma</b>：絕大部分粒子仍然是中性氣體，只需要少量電子與離子，就能帶來很強的電化學與表面反應效果。</p>
+      <span class="eq">ionization fraction = n<sub>i</sub> / (n<sub>i</sub> + n<sub>n</sub>)</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>Gas 與 Plasma 的概念差異</h3>
+    <svg class="svgbox" viewBox="0 0 1050 360">
+      <rect width="1050" height="360" rx="16" fill="#091726"/>
+      <text x="35" y="40" fill="#55d6e8" font-size="22" font-weight="700">Gas</text>
+      <rect x="35" y="65" width="430" height="245" rx="16" fill="#0e1d2e" stroke="#2a4967"/>
+      <g fill="#6fa8dc">
+        <circle cx="100" cy="125" r="16"/><circle cx="128" cy="125" r="16"/>
+        <circle cx="210" cy="205" r="16"/><circle cx="238" cy="205" r="16"/>
+        <circle cx="350" cy="135" r="16"/><circle cx="378" cy="135" r="16"/>
+        <circle cx="320" cy="250" r="16"/><circle cx="348" cy="250" r="16"/>
+      </g>
+      <text x="135" y="292" fill="#a9bdd2" font-size="18">mostly neutral particles</text>
+
+      <text x="590" y="40" fill="#b79cff" font-size="22" font-weight="700">Plasma</text>
+      <rect x="590" y="65" width="425" height="245" rx="16" fill="#0e1d2e" stroke="#2a4967"/>
+      <g fill="#6fa8dc">
+        <circle cx="660" cy="135" r="15"/><circle cx="687" cy="135" r="15"/>
+        <circle cx="890" cy="215" r="15"/><circle cx="917" cy="215" r="15"/>
+      </g>
+      <g fill="#b79cff">
+        <circle cx="780" cy="125" r="19"/><circle cx="820" cy="230" r="19"/>
+      </g>
+      <text x="773" y="131" fill="#091726" font-size="18" font-weight="800">+</text>
+      <text x="813" y="236" fill="#091726" font-size="18" font-weight="800">+</text>
+      <g fill="#ffd166">
+        <circle cx="735" cy="210" r="7"/><circle cx="935" cy="130" r="7"/><circle cx="700" cy="265" r="7"/>
+      </g>
+      <text x="690" y="292" fill="#a9bdd2" font-size="18">electrons + ions + neutrals</text>
+    </svg>
+  </div>
+</section>
+
+<section id="criteria">
+  <div class="eyebrow">Part B</div>
+  <h2>2. 什麼時候可以把游離氣體稱為 Plasma？</h2>
+  <p class="lead">在更嚴謹的 plasma physics 中，常用三個概念建立判斷：quasi-neutrality、Debye shielding 與 collective behavior。</p>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>① Quasi-neutrality</h3>
+      <span class="eq">n<sub>e</sub> ≈ Σ Z<sub>i</sub> n<sub>i</sub></span>
+      <p>從比 Debye length 大很多的尺度來看，正負電荷總量幾乎互相抵消，因此 plasma 整體近似電中性。</p>
+      <p>但「近似中性」不代表局部完全沒有電場。</p>
+    </div>
+    <div class="card">
+      <h3>② Debye shielding</h3>
+      <p>Plasma 中的自由帶電粒子會重新排列，屏蔽局部電荷造成的電場。</p>
+      <span class="eq">λ<sub>D</sub> = √(ε₀kT<sub>e</sub> / n<sub>e</sub>e²)</span>
+      <p>λ<sub>D</sub> 就是這種屏蔽的重要空間尺度。</p>
+    </div>
+    <div class="card">
+      <h3>③ Collective behavior</h3>
+      <p>帶電粒子不只是彼此單獨碰撞，而會共同響應電磁場，形成振盪、波、屏蔽與流體行為。</p>
+      <span class="eq">ω<sub>pe</sub> = √(n<sub>e</sub>e² / ε₀m<sub>e</sub>)</span>
+    </div>
+  </div>
+
+  <div class="tip">
+    <b>大學部最重要的理解：</b>plasma 是「會集體響應電磁場的游離氣體」，而不是只要看到一個離子或一條火花就自動等於 plasma。
+  </div>
+</section>
+
+<section id="debye">
+  <div class="eyebrow">Part C</div>
+  <h2>3. Debye Shielding：Plasma 如何「自己屏蔽電場」？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>放一個正電荷進 Plasma</h3>
+      <p>自由電子會被吸引靠近，正離子則傾向被排斥。結果是原本正電荷產生的長程 Coulomb field 被周圍粒子部分抵消。</p>
+      <svg class="svgbox" viewBox="0 0 700 360">
+        <rect width="700" height="360" rx="16" fill="#091726"/>
+        <circle cx="350" cy="180" r="34" fill="#b79cff"/>
+        <text x="340" y="191" fill="#091726" font-size="30" font-weight="900">+</text>
+
+        <g fill="#ffd166">
+          <circle cx="270" cy="145" r="8"/><circle cx="295" cy="215" r="8"/>
+          <circle cx="390" cy="110" r="8"/><circle cx="425" cy="205" r="8"/>
+          <circle cx="335" cy="260" r="8"/><circle cx="245" cy="190" r="8"/>
+        </g>
+        <g fill="#b79cff" opacity=".65">
+          <circle cx="140" cy="105" r="14"/><circle cx="540" cy="95" r="14"/>
+          <circle cx="560" cy="260" r="14"/><circle cx="150" cy="275" r="14"/>
+        </g>
+        <circle cx="350" cy="180" r="115" fill="none" stroke="#55d6e8" stroke-dasharray="9 8" stroke-width="3"/>
+        <text x="460" y="180" fill="#55d6e8" font-size="18">~ λD</text>
+        <text x="210" y="328" fill="#a9bdd2" font-size="18">電子重新排列 → 局部電場被屏蔽</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3>Debye length 的物理意義</h3>
+      <span class="eq">λ<sub>D</sub> = √(ε₀kT<sub>e</sub> / n<sub>e</sub>e²)</span>
+      <ul>
+        <li>電子溫度 T<sub>e</sub> 越高 → λ<sub>D</sub> 越大</li>
+        <li>電子密度 n<sub>e</sub> 越高 → λ<sub>D</sub> 越小</li>
+      </ul>
+      <p>若系統尺寸遠大於 λ<sub>D</sub>，plasma 才比較能展現明顯的 quasi-neutral bulk behavior。</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>互動：Debye length 與 plasma frequency</h3>
+    <div class="grid">
+      <div>
+        <label>Electron temperature T<sub>e</sub> (eV)</label>
+        <input id="te" type="range" min="0.2" max="10" value="2" step="0.1" oninput="calcPlasma()">
+        <label>Electron density log₁₀(n<sub>e</sub> / m⁻³)</label>
+        <input id="neLog" type="range" min="12" max="20" value="16" step="0.1" oninput="calcPlasma()">
+      </div>
+      <div class="result" id="plasmaResult"></div>
+    </div>
+    <p class="small">這是理想單溫電子 plasma 的尺度估算，用來建立物理直覺。真實 corona plasma 具有碰撞、非均勻場與非 Maxwellian 電子能量分布。</p>
+  </div>
+</section>
+
+<section id="temperature">
+  <div class="eyebrow">Part D</div>
+  <h2>4. Plasma 中為什麼可以同時有「不同溫度」？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Electron temperature</h3>
+      <p>Plasma physics 常把電子平均能量寫成 eV 尺度。</p>
+      <span class="eq">1 eV ≈ 1.16 × 10⁴ K</span>
+      <p>但這個「電子溫度」描述的是電子能量分布，不代表整團氣體真的被加熱到一萬多 K。</p>
+    </div>
+    <div class="card">
+      <h3>為什麼電子比中性氣體更容易變「熱」？</h3>
+      <p>電子質量非常小，在電場中很容易被加速；但它們把能量傳給重很多的中性分子時，每次碰撞交換的能量比例可能有限。</p>
+      <p>因此可以出現：</p>
+      <span class="eq">T<sub>e</sub> ≫ T<sub>gas</sub></span>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>這就是 cold plasma 最反直覺的地方：</b>電子可以具有數 eV 的能量，但你周圍的大部分氣體仍接近室溫。
+  </div>
+</section>
+
+<section id="cold">
+  <div class="eyebrow">Part E</div>
+  <h2>5. Cold Plasma vs Thermal Plasma</h2>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>特徵</th>
+          <th>Cold / Non-thermal Plasma</th>
+          <th>Thermal Plasma</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>電子溫度</td>
+          <td>可很高</td>
+          <td>很高</td>
+        </tr>
+        <tr>
+          <td>離子／中性氣體溫度</td>
+          <td>可接近室溫或僅中度升溫</td>
+          <td>通常也很高</td>
+        </tr>
+        <tr>
+          <td>熱平衡</td>
+          <td>非平衡：T<sub>e</sub> ≫ T<sub>ion</sub>, T<sub>gas</sub></td>
+          <td>較接近局部熱平衡</td>
+        </tr>
+        <tr>
+          <td>常見例子</td>
+          <td>Corona、plasma etching、DBD、部分 plasma medicine</td>
+          <td>Arc plasma、plasma torch、fusion plasma（條件依系統）</td>
+        </tr>
+        <tr>
+          <td>Ion Burster</td>
+          <td><b>主要屬於此類型</b></td>
+          <td>不是我們想要的工作狀態</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid" style="margin-top:18px">
+    <div class="card">
+      <h3>Cold plasma</h3>
+      <p><span class="badge">低氣體溫度</span><span class="badge">高電子能量</span><span class="badge">非平衡</span></p>
+      <p>適合利用高能電子產生自由基、離子與激發態粒子，同時避免把整體材料加熱到很高溫。</p>
+    </div>
+    <div class="card">
+      <h3>Thermal plasma</h3>
+      <p><span class="badge">高溫</span><span class="badge">強能量交換</span><span class="badge">高焓</span></p>
+      <p>適合熔融、切割、噴塗、材料加工與需要高溫 plasma 的場合。</p>
+    </div>
+  </div>
+</section>
+
+<section id="applications">
+  <div class="eyebrow">Part F</div>
+  <h2>6. Plasma 的各種應用</h2>
+  <p class="lead">Plasma 最有價值的地方，是它能把電能轉換成高反應性的電子、離子、自由基、UV 光與熱。不同應用只是選擇不同的 plasma 工作區域。</p>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>① Semiconductor Etching</h3>
+      <svg class="svgbox" viewBox="0 0 340 220">
+        <rect width="340" height="220" rx="12" fill="#091726"/>
+        <rect x="55" y="160" width="230" height="28" fill="#6fa8dc"/>
+        <rect x="90" y="140" width="160" height="20" fill="#b79cff"/>
+        <g fill="#ffd166">
+          <circle cx="120" cy="55" r="6"/><circle cx="170" cy="75" r="6"/><circle cx="225" cy="52" r="6"/>
+        </g>
+        <g stroke="#ffd166" stroke-width="3">
+          <line x1="120" y1="65" x2="120" y2="128"/>
+          <line x1="170" y1="85" x2="170" y2="128"/>
+          <line x1="225" y1="62" x2="225" y2="128"/>
+        </g>
+        <text x="75" y="35" fill="#55d6e8" font-size="18">ions / radicals</text>
+      </svg>
+      <p>利用離子與自由基對晶圓進行方向性蝕刻，是現代 IC 製程的重要技術。</p>
+    </div>
+
+    <div class="card">
+      <h3>② Plasma Deposition</h3>
+      <svg class="svgbox" viewBox="0 0 340 220">
+        <rect width="340" height="220" rx="12" fill="#091726"/>
+        <rect x="55" y="165" width="230" height="24" fill="#6fa8dc"/>
+        <rect x="70" y="150" width="200" height="15" fill="#6ee7a8"/>
+        <g fill="#b79cff">
+          <circle cx="110" cy="65" r="7"/><circle cx="170" cy="48" r="7"/><circle cx="230" cy="75" r="7"/>
+        </g>
+        <g stroke="#6ee7a8" stroke-width="3">
+          <line x1="110" y1="75" x2="110" y2="142"/>
+          <line x1="170" y1="58" x2="170" y2="142"/>
+          <line x1="230" y1="85" x2="230" y2="142"/>
+        </g>
+        <text x="72" y="32" fill="#55d6e8" font-size="18">reactive species → film</text>
+      </svg>
+      <p>PECVD 等技術可在基板上形成薄膜，用於半導體、太陽能電池與光學元件。</p>
+    </div>
+
+    <div class="card">
+      <h3>③ Plasma Cleaning</h3>
+      <p><span class="badge">表面活化</span><span class="badge">去除有機污染</span></p>
+      <p>利用活性物種移除微量有機殘留、改變表面能，提升黏著、塗佈與 bonding 品質。</p>
+    </div>
+
+    <div class="card">
+      <h3>④ Plasma Medicine</h3>
+      <p><span class="badge">Cold plasma</span><span class="badge">Reactive species</span></p>
+      <p>低溫 plasma 可產生活性氧／氮物種，研究方向包含表面殺菌、傷口處理與生醫材料處理。</p>
+    </div>
+
+    <div class="card">
+      <h3>⑤ Plasma Cutting / Torch</h3>
+      <p><span class="badge">Thermal plasma</span><span class="badge">High temperature</span></p>
+      <p>利用高溫 plasma jet 熔融與移除金屬，應用於切割、焊接與熱噴塗。</p>
+    </div>
+
+    <div class="card">
+      <h3>⑥ Fusion</h3>
+      <span class="eq">D + T → ⁴He + n + 17.6 MeV</span>
+      <p>Tokamak、stellarator 等裝置利用磁場限制高溫 plasma，研究可控核融合能源。</p>
+    </div>
+  </div>
+</section>
+
+<section id="space">
+  <div class="eyebrow">Part G</div>
+  <h2>7. 宇宙其實到處都是 Plasma</h2>
+
+  <div class="grid4">
+    <div class="card"><h3>太陽</h3><p>高溫物質主要以電漿形式存在，並受到磁場強烈影響。</p></div>
+    <div class="card"><h3>Solar Wind</h3><p>太陽持續向外流出的電子與離子 plasma，充滿整個日球層。</p></div>
+    <div class="card"><h3>Magnetosphere</h3><p>地球磁場與太陽風 plasma 交互作用，形成磁層結構。</p></div>
+    <div class="card"><h3>Aurora</h3><p>高能帶電粒子沿磁力線進入高層大氣，碰撞激發原子與分子而發光。</p></div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>為什麼 Plasma physics 對太空科技特別重要？</h3>
+    <div class="flow">
+      Solar wind → Magnetosphere → Ionosphere → Charging → Communication → <b>Electric Propulsion</b>
+    </div>
+    <p>衛星不只「在真空中飛行」。很多軌道環境其實包含稀薄 plasma，會影響衛星充電、通訊、電磁環境與推進系統。</p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Part H</div>
+  <h2>8. Plasma 與衛星電推進的關係</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Gridded Ion Thruster</h3>
+      <p>先把 Xe 等推進劑游離成 plasma，再用高電位差抽取並加速正離子。</p>
+      <span class="eq">Xe + e⁻ → Xe⁺ + 2e⁻</span>
+      <span class="eq">qΔV = ½mv²</span>
+      <p>因此離子的排氣速度可以非常高。</p>
+    </div>
+    <div class="card">
+      <h3>Hall Thruster</h3>
+      <p>利用電場與磁場控制電子運動與 plasma 放電，再讓離子被電場加速排出。</p>
+      <span class="eq">F⃗ = q(E⃗ + v⃗ × B⃗)</span>
+      <p>這是 plasma physics、電磁學與太空推進真正交會的地方。</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>先建立概念：</b>真正的 satellite ion thruster 與我們的 atmospheric Ion Burster 並不是同一個裝置，但兩者共享「先產生帶電粒子，再利用電場控制動量」的核心物理。
+  </div>
+</section>
+
+<section id="ionburster">
+  <div class="eyebrow">Part I</div>
+  <h2>9. 我們的 Ion Burster 裡面是哪一種 Plasma？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Corona region</h3>
+      <svg class="svgbox" viewBox="0 0 760 310">
+        <rect width="760" height="310" rx="16" fill="#091726"/>
+        <polygon points="45,130 300,155 45,180" fill="none" stroke="#ff7070" stroke-width="8"/>
+        <line x1="675" y1="75" x2="675" y2="235" stroke="#70a5ff" stroke-width="10"/>
+        <g fill="#b79cff">
+          <circle cx="315" cy="132" r="6"/><circle cx="330" cy="150" r="7"/><circle cx="320" cy="174" r="5"/>
+          <circle cx="348" cy="125" r="5"/><circle cx="355" cy="173" r="6"/>
+        </g>
+        <g fill="#ffd166">
+          <circle cx="325" cy="143" r="4"/><circle cx="340" cy="164" r="4"/><circle cx="360" cy="143" r="4"/>
+        </g>
+        <text x="290" y="104" fill="#b79cff" font-size="19">weakly ionized plasma</text>
+        <text x="405" y="278" fill="#a9bdd2" font-size="18">大部分區域仍是中性空氣</text>
+      </svg>
+    </div>
+
+    <div class="card">
+      <h3>它具有三個特色</h3>
+      <p><span class="badge">Weakly ionized</span></p>
+      <p>只有一小部分空氣分子被游離。</p>
+      <p><span class="badge">Non-equilibrium</span></p>
+      <p>電子能量高，但中性氣體不一定很熱。</p>
+      <p><span class="badge">Strongly non-uniform</span></p>
+      <p>主要 plasma 區域集中在尖端附近的強電場區。</p>
+    </div>
+  </div>
+
+  <div class="flow" style="margin-top:18px">
+    High E → electron heating → ionization → <b>cold corona plasma</b> → ions → neutral collisions → ion wind
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Misconceptions</div>
+  <h2>10. 五個常見誤解</h2>
+  <div class="grid">
+    <div class="card"><h3>「Plasma 一定非常燙」</h3><p>不一定。Cold plasma 中電子能量可很高，但氣體仍可接近室溫。</p></div>
+    <div class="card"><h3>「Plasma 一定 100% 游離」</h3><p>不對。許多工程 plasma 都是弱游離系統。</p></div>
+    <div class="card"><h3>「Plasma 整體帶很多淨電荷」</h3><p>在 bulk 尺度上通常近似 quasi-neutral，但邊界與 sheath 區域可以有明顯空間電荷。</p></div>
+    <div class="card"><h3>「Corona 和 Arc 都只是同一種 plasma」</h3><p>兩者工作狀態、電流、溫度與空間結構差異很大。</p></div>
+    <div class="card"><h3>「太空是真正的完全真空」</h3><p>很多太空區域包含稀薄 plasma，例如太陽風、電離層與磁層。</p></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="eyebrow">Check your understanding</div>
+  <h2>11. 課堂小測</h2>
+
+  <div class="quizq">
+    <b>Q1. Plasma 最重要的概念之一是？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。Plasma 會對電磁場產生集體響應。')">帶電粒子的集體行為</button>
+    <button class="secondary" onclick="answer(this,false,'高溫不是 plasma 的唯一判準。')">一定非常高溫</button>
+    <button class="secondary" onclick="answer(this,false,'很多 plasma 都是弱游離的。')">一定 100% 游離</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q2. Debye length 描述的是什麼？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。它描述局部電荷造成的電場被 plasma 屏蔽的典型空間尺度。')">電場屏蔽的空間尺度</button>
+    <button class="secondary" onclick="answer(this,false,'不是電子繞線圈的半徑。')">電子在線圈中的軌道半徑</button>
+    <button class="secondary" onclick="answer(this,false,'與變壓器匝數無關。')">變壓器的匝數比</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q3. Cold plasma 為什麼可以「電子很熱、氣體不太熱」？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。電子質量很小，容易被電場加速，但能量不一定快速完全傳給重粒子。')">電子容易被加速，但與重粒子的能量平衡較慢</button>
+    <button class="secondary" onclick="answer(this,false,'冷電漿不是因為沒有電子。')">因為沒有自由電子</button>
+    <button class="secondary" onclick="answer(this,false,'磁場不是必要條件。')">因為一定有超強磁場</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q4. 本課程 Ion Burster 的 corona 最接近哪一種 plasma？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。它是弱游離、非熱平衡、局部高場的 cold plasma。')">Weakly ionized non-thermal plasma</button>
+    <button class="secondary" onclick="answer(this,false,'它不是核融合等離子體。')">Fusion plasma</button>
+    <button class="secondary" onclick="answer(this,false,'我們希望避免長時間高溫 arc。')">High-current thermal arc plasma</button>
+    <div class="feedback"></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Next</div>
+  <h2>下一章預告｜Satellite Ion Thruster：如何把 Plasma 變成推力？</h2>
+  <div class="card">
+    <p>下一章會正式把這些概念帶到太空推進：</p>
+    <div class="flow">
+      Propellant → Ionization → Plasma → Ion Extraction → Acceleration → Momentum → <b>Thrust</b>
+    </div>
+    <p>我們會比較 <b>chemical rocket、gridded ion thruster、Hall thruster</b>，並用</p>
+    <span class="eq">F = ṁv<sub>e</sub></span>
+    <p>與 specific impulse 解釋：為什麼 ion thruster 的推力很小，卻非常適合長時間的太空任務。</p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Teaching note</div>
+  <h2>教師使用提醒</h2>
+  <div class="card small">
+    <p>• 本章刻意將 Debye length、quasi-neutrality 與 plasma frequency 保留在概念層級，足以讓工學院與理學院大學部學生理解 plasma 不只是「游離氣體」。</p>
+    <p>• 1 eV ≈ 1.16×10⁴ K 是能量尺度換算，不應讓學生誤解為 cold plasma 中整團氣體都處於該熱力學溫度。</p>
+    <p>• Ion Burster 的 corona 可視為弱游離、非平衡氣體放電 plasma；實際參數取決於電極幾何、氣體、場強與放電模式。</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  Chapter 5｜Plasma Physics & Applications · Ion Burster 大學部教學網站
+</footer>
+
+<script>
+function calcPlasma(){
+  const Te_eV=parseFloat(document.getElementById('te').value);
+  const neLog=parseFloat(document.getElementById('neLog').value);
+  const ne=Math.pow(10,neLog);
+  const eps0=8.8541878128e-12;
+  const e=1.602176634e-19;
+  const me=9.1093837015e-31;
+  const kTe_J=Te_eV*e; // k_B T_e expressed as energy in joules
+  const lambdaD=Math.sqrt(eps0*kTe_J/(ne*e*e));
+  const omegaPe=Math.sqrt(ne*e*e/(eps0*me));
+  const fpe=omegaPe/(2*Math.PI);
+  const ND=(4*Math.PI/3)*ne*Math.pow(lambdaD,3);
+  const formatLength = lambdaD < 1e-3 ? `${(lambdaD*1e6).toFixed(2)} µm` : `${(lambdaD*1e3).toFixed(3)} mm`;
+  document.getElementById('plasmaResult').innerHTML =
+    `T<sub>e</sub> = ${Te_eV.toFixed(1)} eV；n<sub>e</sub> = 10<sup>${neLog.toFixed(1)}</sup> m⁻³<br>`+
+    `Debye length λ<sub>D</sub> ≈ <b>${formatLength}</b><br>`+
+    `Electron plasma frequency f<sub>pe</sub> ≈ <b>${(fpe/1e6).toFixed(2)} MHz</b><br>`+
+    `Particles in Debye sphere N<sub>D</sub> ≈ <b>${ND.toExponential(2)}</b>`;
+}
+function answer(btn,ok,msg){
+  const box=btn.closest('.quizq'),fb=box.querySelector('.feedback');
+  fb.textContent=msg;fb.style.color=ok?'var(--good)':'var(--warn)';
+}
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const pct=(d.scrollTop/(d.scrollHeight-d.clientHeight))*100;
+  document.getElementById('progress').style.width=pct+'%';
+});
+calcPlasma();
+</script>
+</body>
+</html>

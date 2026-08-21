@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 7｜Ion Wind & Electrohydrodynamics</title>
+<style>
+:root{
+  --bg:#07111f; --panel:#0e1d2e; --panel2:#12263d; --text:#edf6ff; --muted:#a9bdd2;
+  --line:#2a4967; --accent:#55d6e8; --accent2:#ffd166; --good:#6ee7a8; --warn:#ffb86b;
+  --danger:#ff7272; --violet:#b79cff; --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 84% 8%,rgba(85,214,232,.12),transparent 25%),
+    radial-gradient(circle at 12% 34%,rgba(183,156,255,.10),transparent 22%),
+    var(--bg);
+  color:var(--text);line-height:1.72;
+}
+header{
+  min-height:72vh;display:grid;place-items:center;padding:70px 22px 45px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hero{width:min(1180px,100%)}
+.eyebrow{font-size:.88rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:800}
+h1{font-size:clamp(2.3rem,7vw,5.2rem);line-height:1.02;margin:.2em 0 .25em}
+h2{font-size:clamp(1.65rem,4vw,2.55rem);margin:0 0 8px}
+h3{margin:0 0 8px}
+.hero p,.lead{color:var(--muted);max-width:980px}
+.hero p{font-size:clamp(1.05rem,2.2vw,1.4rem)}
+.flow{
+  margin-top:30px;padding:18px 20px;border:1px solid var(--line);background:rgba(14,29,46,.72);
+  border-radius:18px;box-shadow:var(--shadow);overflow:auto;white-space:nowrap
+}
+.flow b{color:var(--accent2)}
+nav{
+  position:sticky;top:0;z-index:20;background:rgba(7,17,31,.90);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+.navin{width:min(1180px,100%);margin:auto;padding:10px 18px;display:flex;gap:10px;overflow:auto}
+.navin a{text-decoration:none;color:var(--muted);border:1px solid transparent;padding:8px 12px;border-radius:999px;white-space:nowrap}
+.navin a:hover{color:var(--text);border-color:var(--line);background:var(--panel)}
+main{width:min(1180px,100%);margin:auto;padding:35px 20px 90px}
+section{margin:58px 0;scroll-margin-top:80px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{
+  background:linear-gradient(145deg,rgba(18,38,61,.90),rgba(10,25,41,.95));
+  border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)
+}
+.card p{margin:.35em 0;color:var(--muted)}
+.eq{display:block;font-family:"Cambria Math",Cambria,serif;font-size:1.42rem;margin:10px 0;color:#fff}
+.tip{
+  border-left:4px solid var(--accent2);background:rgba(255,209,102,.08);
+  border-radius:8px 16px 16px 8px;padding:14px 16px;margin:18px 0
+}
+.safety{
+  border-left:4px solid var(--danger);background:rgba(255,114,114,.08);
+  border-radius:8px 16px 16px 8px;padding:16px;margin:18px 0
+}
+.callout{
+  border:1px solid rgba(85,214,232,.45);background:rgba(85,214,232,.07);
+  border-radius:16px;padding:18px
+}
+label{font-weight:700}
+input,button{font:inherit}
+input{
+  width:100%;margin:6px 0 12px;background:#071421;border:1px solid var(--line);
+  color:var(--text);padding:11px 12px;border-radius:10px
+}
+button{border:0;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:800}
+.primary{background:var(--accent);color:#04202a}
+.secondary{background:#16324e;color:var(--text);border:1px solid var(--line)}
+.result{font-size:1.08rem;margin-top:12px;padding:14px;border-radius:12px;background:#071421;border:1px solid var(--line)}
+.svgbox{width:100%;background:#091726;border:1px solid var(--line);border-radius:16px;display:block}
+.badge{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin:3px 3px 3px 0;font-size:.9rem}
+.quizq{margin:18px 0;padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:16px}
+.quizq button{margin:5px 6px 0 0}
+.feedback{min-height:28px;margin-top:8px;font-weight:700}
+.progress{position:fixed;left:0;top:0;height:3px;background:var(--accent);z-index:50;width:0}
+.small{font-size:.9rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;min-width:880px}
+th,td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent);text-align:left;background:#0b1a2a}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+footer{border-top:1px solid rgba(255,255,255,.08);padding:34px 20px 50px;color:var(--muted)}
+ul{margin:.3em 0 .8em 1.2em} li{margin:.35em 0}
+@media(max-width:920px){.grid,.grid3,.grid4{grid-template-columns:1fr}header{min-height:auto}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <div class="hero">
+    <div class="eyebrow">ION BURSTER · CHAPTER 7</div>
+    <h1>Ion Wind<br>離子怎麼把空氣吹動？</h1>
+    <p>在大氣中，離子不會像衛星 ion thruster 那樣一路自由飛到遠方。它們很快就會撞上大量中性分子，把自己的動量一點一點傳給空氣。大量碰撞累積後，就形成可觀察到的 <b>ion wind</b>，也就是 electrohydrodynamic flow。</p>
+    <div class="flow">
+      Corona → Ions → Drift in E field → <b>Ion-neutral collisions</b> → Momentum transfer → Bulk airflow → EHD thrust
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navin">
+    <a href="#drift">Ion drift</a>
+    <a href="#collision">動量傳遞</a>
+    <a href="#ehd">EHD force</a>
+    <a href="#geometry">電極幾何</a>
+    <a href="#flow">氣流形成</a>
+    <a href="#compare">與 Ion Thruster 比較</a>
+    <a href="#interactive">互動計算</a>
+    <a href="#experiment">實作連結</a>
+    <a href="#quiz">小測驗</a>
+  </div>
+</nav>
+
+<main>
+<section id="drift">
+  <div class="eyebrow">Part A</div>
+  <h2>1. Ion Drift：離子在電場中怎麼移動？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>單一帶電粒子的受力</h3>
+      <span class="eq">F⃗ = qE⃗</span>
+      <p>正離子沿電場方向加速；負離子則朝相反方向受力。</p>
+      <p>但在大氣中，它們很快就會撞上中性分子，因此不會無限制持續加速。</p>
+    </div>
+    <div class="card">
+      <h3>平均漂移速度</h3>
+      <span class="eq">v<sub>d</sub> = μE</span>
+      <p>μ 是 ion mobility（離子遷移率）。它把大量「加速—碰撞—再加速」的微觀過程平均成一個宏觀漂移速度。</p>
+      <p class="small">實際 μ 取決於離子種類、氣體、壓力、溫度與場強。</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>微觀圖像：不是一路飛，而是反覆撞擊</h3>
+    <svg class="svgbox" viewBox="0 0 1080 360" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#ffd166"/>
+        </marker>
+      </defs>
+      <rect width="1080" height="360" rx="16" fill="#091726"/>
+      <text x="28" y="40" fill="#55d6e8" font-size="22" font-weight="700">正離子在電場中：加速 → 碰撞 → 再加速 → 再碰撞</text>
+
+      <line x1="70" y1="180" x2="1010" y2="180" stroke="#ffd166" stroke-width="3" marker-end="url(#arr1)"/>
+      <text x="890" y="155" fill="#ffd166" font-size="20">E field</text>
+
+      <circle cx="120" cy="180" r="18" fill="#b79cff"/>
+      <text x="112" y="187" fill="#091726" font-size="20" font-weight="800">+</text>
+
+      <g fill="#6fa8dc">
+        <circle cx="300" cy="145" r="15"/><circle cx="327" cy="145" r="15"/>
+        <circle cx="510" cy="215" r="15"/><circle cx="537" cy="215" r="15"/>
+        <circle cx="735" cy="130" r="15"/><circle cx="762" cy="130" r="15"/>
+        <circle cx="900" cy="235" r="15"/><circle cx="927" cy="235" r="15"/>
+      </g>
+
+      <path d="M140 180 C205 150 245 185 285 150" fill="none" stroke="#b79cff" stroke-width="5"/>
+      <path d="M335 150 C405 110 450 210 500 210" fill="none" stroke="#b79cff" stroke-width="5"/>
+      <path d="M545 210 C620 225 660 135 720 135" fill="none" stroke="#b79cff" stroke-width="5"/>
+      <path d="M770 135 C825 120 850 225 890 230" fill="none" stroke="#b79cff" stroke-width="5"/>
+
+      <text x="245" y="303" fill="#a9bdd2" font-size="18">每次碰撞都把部分動量傳給中性分子</text>
+    </svg>
+  </div>
+</section>
+
+<section id="collision">
+  <div class="eyebrow">Part B</div>
+  <h2>2. Ion-Neutral Collision：為什麼少量離子可以推動大量空氣？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>離子只是「中介者」</h3>
+      <p>真正大量被加速出去的並不是離子本身，而是中性空氣。</p>
+      <p>離子先從電場獲得動量，再透過碰撞把動量交給 N₂、O₂ 等中性分子。</p>
+      <span class="eq">Δp<sub>ion</sub> → Δp<sub>neutral</sub></span>
+    </div>
+    <div class="card">
+      <h3>碰撞很多次之後</h3>
+      <p>單次碰撞效果很小，但每秒可以發生大量碰撞。最後就形成有方向性的 bulk airflow。</p>
+      <span class="eq">F = dp/dt</span>
+      <p>也就是把電場提供的力，透過帶電粒子轉移到中性氣體。</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>這是 atmospheric Ion Burster 與 satellite ion thruster 最大的差別：</b><br>
+    在太空中，離子本身把動量直接帶走；在大氣中，離子主要把動量交給中性空氣，再由空氣形成氣流。
+  </div>
+</section>
+
+<section id="ehd">
+  <div class="eyebrow">Part C</div>
+  <h2>3. Electrohydrodynamic Force：把電場力寫成「流體中的體積力」</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Space charge density</h3>
+      <span class="eq">ρ<sub>e</sub> = qn<sub>i</sub></span>
+      <p>如果某區域存在淨空間電荷密度 ρ<sub>e</sub>，它會受到電場作用。</p>
+    </div>
+    <div class="card">
+      <h3>最直觀的 EHD body force</h3>
+      <span class="eq">f⃗ ≈ ρ<sub>e</sub>E⃗</span>
+      <p>f 是每單位體積受到的電力。這個力透過碰撞傳給中性氣體，就成為推動流體的來源。</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    更完整的 EHD 方程還可能包含介電泳、電致伸縮與壓力梯度等項；但對本課程的 corona ion wind，<b>space-charge force ρ<sub>e</sub>E</b> 是最重要的第一個理解模型。
+  </div>
+</section>
+
+<section id="geometry">
+  <div class="eyebrow">Part D</div>
+  <h2>4. 為什麼要用「尖針 + 大面積 Collector」？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Emitter：負責產生離子</h3>
+      <p>尖針利用 field enhancement，在局部產生 corona。</p>
+      <p><span class="badge">small radius</span><span class="badge">strong local E</span><span class="badge">ion generation</span></p>
+    </div>
+    <div class="card">
+      <h3>Collector：負責建立較大的漂移區</h3>
+      <p>較大、較鈍的 collector 不希望自己先產生強烈 corona，而是提供電位差與離子收集端。</p>
+      <p><span class="badge">large area</span><span class="badge">weaker local E</span><span class="badge">ion collection</span></p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>Emitter–Collector 的 EHD 工作區域</h3>
+    <svg class="svgbox" viewBox="0 0 1080 390" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#55d6e8"/>
+        </marker>
+        <marker id="arr3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#ffd166"/>
+        </marker>
+      </defs>
+      <rect width="1080" height="390" rx="16" fill="#091726"/>
+      <text x="28" y="40" fill="#55d6e8" font-size="22" font-weight="700">Emitter → ionization zone → drift region → collector</text>
+
+      <polygon points="70,160 315,195 70,230" fill="none" stroke="#ff7070" stroke-width="9"/>
+      <text x="74" y="140" fill="#ff9b9b" font-size="18">Needle emitter</text>
+
+      <g fill="#b79cff">
+        <circle cx="330" cy="165" r="7"/><circle cx="344" cy="190" r="8"/><circle cx="332" cy="215" r="6"/>
+        <circle cx="360" cy="175" r="6"/><circle cx="367" cy="212" r="6"/>
+      </g>
+      <text x="305" y="128" fill="#b79cff" font-size="18">corona zone</text>
+
+      <line x1="910" y1="90" x2="910" y2="300" stroke="#70a5ff" stroke-width="15"/>
+      <text x="855" y="330" fill="#9cbcff" font-size="18">Collector</text>
+
+      <g stroke="#ffd166" stroke-width="4" marker-end="url(#arr3)">
+        <line x1="375" y1="160" x2="850" y2="160"/>
+        <line x1="375" y1="195" x2="850" y2="195"/>
+        <line x1="375" y1="230" x2="850" y2="230"/>
+      </g>
+      <text x="540" y="140" fill="#ffd166" font-size="18">ion drift</text>
+
+      <g stroke="#55d6e8" stroke-width="5" marker-end="url(#arr2)">
+        <line x1="400" y1="280" x2="810" y2="280"/>
+      </g>
+      <text x="520" y="315" fill="#55d6e8" font-size="20">bulk airflow / ion wind</text>
+    </svg>
+  </div>
+</section>
+
+<section id="flow">
+  <div class="eyebrow">Part E</div>
+  <h2>5. Ion Wind 如何變成宏觀氣流？</h2>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>Step 1</h3>
+      <p><b>Corona 產生離子</b></p>
+      <p>尖端附近建立帶電粒子來源。</p>
+    </div>
+    <div class="card">
+      <h3>Step 2</h3>
+      <p><b>離子漂移</b></p>
+      <p>離子在 E 場中朝 collector 移動。</p>
+    </div>
+    <div class="card">
+      <h3>Step 3</h3>
+      <p><b>碰撞傳遞動量</b></p>
+      <p>離子反覆撞擊中性分子。</p>
+    </div>
+    <div class="card">
+      <h3>Step 4</h3>
+      <p><b>中性氣體形成平均速度</b></p>
+      <p>大量碰撞後，空氣產生定向流動。</p>
+    </div>
+    <div class="card">
+      <h3>Step 5</h3>
+      <p><b>形成 jet-like flow</b></p>
+      <p>幾何形狀會決定氣流集中程度。</p>
+    </div>
+    <div class="card">
+      <h3>Step 6</h3>
+      <p><b>產生反作用力</b></p>
+      <p>空氣獲得動量，裝置受到反方向推力。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Part F</div>
+  <h2>6. 推力來自哪裡？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>控制體積觀點</h3>
+      <p>若裝置讓空氣由近乎靜止加速成平均速度 u，則可以用動量流的觀點理解推力：</p>
+      <span class="eq">F ≈ ṁ<sub>air</sub> u</span>
+      <p>這和火箭推力公式形式相似，但這裡的工作流體是周圍空氣。</p>
+    </div>
+    <div class="card">
+      <h3>電學觀點</h3>
+      <p>電場先把力作用在 space charge 上：</p>
+      <span class="eq">f ≈ ρ<sub>e</sub>E</span>
+      <p>再透過 ion-neutral collisions 把這個力轉給整體空氣。</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>兩種看法其實是同一件事：</b><br>
+    microscopic：電場 → 離子 → 碰撞 → 中性分子。<br>
+    macroscopic：電場提供 body force → 空氣獲得動量 → 裝置受到反作用力。
+  </div>
+</section>
+
+<section id="compare">
+  <div class="eyebrow">Part G</div>
+  <h2>7. Atmospheric EHD vs Satellite Ion Thruster</h2>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>特徵</th>
+          <th>EHD / Ion Wind</th>
+          <th>Satellite Ion Thruster</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>環境</td>
+          <td>大氣</td>
+          <td>真空／太空</td>
+        </tr>
+        <tr>
+          <td>帶電粒子來源</td>
+          <td>周圍空氣的 corona ionization</td>
+          <td>Xe / Kr 等推進劑 plasma</td>
+        </tr>
+        <tr>
+          <td>主要動量載體</td>
+          <td>最後是中性空氣</td>
+          <td>高速離子束</td>
+        </tr>
+        <tr>
+          <td>碰撞角色</td>
+          <td><b>必要</b>：靠碰撞把動量交給空氣</td>
+          <td>通常希望盡量少碰撞</td>
+        </tr>
+        <tr>
+          <td>推力機制</td>
+          <td>Electrohydrodynamic flow</td>
+          <td>Direct ion exhaust momentum</td>
+        </tr>
+        <tr>
+          <td>共同核心</td>
+          <td colspan="2"><b>Electric field → charged particles → momentum</b></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="interactive">
+  <div class="eyebrow">Interactive Lab</div>
+  <h2>8. 互動：Ion mobility、drift speed 與 body force</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Experiment A｜Ion drift speed</h3>
+      <label>Ion mobility μ (cm²/V·s)</label>
+      <input id="mu" type="range" min="0.5" max="3.0" value="2.0" step="0.1" oninput="calcDrift()">
+      <label>Electric field E (kV/m)</label>
+      <input id="driftE" type="range" min="10" max="500" value="100" step="10" oninput="calcDrift()">
+      <div class="result" id="driftResult"></div>
+      <p class="small">這是線性 mobility 模型 v<sub>d</sub>=μE 的教學估算。高場下 mobility 可能不再是常數。</p>
+    </div>
+
+    <div class="card">
+      <h3>Experiment B｜EHD body force density</h3>
+      <label>Space charge density ρ<sub>e</sub> (µC/m³)</label>
+      <input id="rho" type="range" min="0.1" max="20" value="5" step="0.1" oninput="calcForce()">
+      <label>Electric field E (kV/m)</label>
+      <input id="forceE" type="range" min="10" max="500" value="100" step="10" oninput="calcForce()">
+      <div class="result" id="forceResult"></div>
+      <p class="small">使用 f≈ρ<sub>e</sub>E 的簡化模型，單位 N/m³。</p>
+    </div>
+  </div>
+</section>
+
+<section id="experiment">
+  <div class="eyebrow">Part H</div>
+  <h2>9. 這一章如何直接連到實作？</h2>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>觀察 1｜Corona 是否存在？</h3>
+      <p>看是否出現尖端附近的局部微光、微弱聲音或其他安全可觀察指標。</p>
+    </div>
+    <div class="card">
+      <h3>觀察 2｜有沒有 air flow？</h3>
+      <p>使用輕量、非接觸的氣流指示方式，確認是否有方向性的 bulk airflow。</p>
+    </div>
+    <div class="card">
+      <h3>觀察 3｜幾何改變會怎樣？</h3>
+      <p>比較尖端數量、collector 位置與間距對 corona 與 ion wind 的影響。</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <b>實作核心問題：</b>哪一種幾何可以讓「有用的 corona」最穩定，同時避免進入頻繁 spark 或 arc？
+  </div>
+
+  <div class="safety">
+    <b>操作原則：</b>電極幾何調整只在斷電並完成安全放電後進行；課堂目標是觀察受控 ion wind，而不是追求更長火花或持續電弧。
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Engineering view</div>
+  <h2>10. Ion Burster 的工程最佳化問題</h2>
+
+  <div class="grid4">
+    <div class="card"><h3>Emitter sharpness</h3><p>太鈍 → corona 不易開始；太極端 → 更容易局部不穩定放電。</p></div>
+    <div class="card"><h3>Gap distance</h3><p>太遠 → 場不足；太近 → 更容易跨隙 spark / arc。</p></div>
+    <div class="card"><h3>Collector geometry</h3><p>影響電場分布與氣流路徑。</p></div>
+    <div class="card"><h3>Current limiting</h3><p>限制放電電流有助於抑制 arc 與降低熱負荷。</p></div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>真正的設計目標不是「最大電壓」：</b><br>
+    而是找到一個穩定工作點，使 <b>ion generation、drift region、momentum transfer</b> 都有效，同時避免進入高耗能 arc。
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Misconceptions</div>
+  <h2>11. 五個常見誤解</h2>
+  <div class="grid">
+    <div class="card"><h3>「Ion wind 是離子本身吹出來的風」</h3><p>更精確地說，是離子把動量傳給大量中性分子，最後形成 bulk airflow。</p></div>
+    <div class="card"><h3>「離子越快，風一定越大」</h3><p>不一定。還要看離子密度、碰撞、幾何、電流與有效漂移區域。</p></div>
+    <div class="card"><h3>「有 arc 就表示推力最大」</h3><p>通常不對。Arc 會把大量能量變成熱，未必增加有效 EHD thrust。</p></div>
+    <div class="card"><h3>「Collector 只是接地片」</h3><p>Collector 幾何會決定場線、離子漂移路徑與氣流結構。</p></div>
+    <div class="card"><h3>「Atmospheric Ion Burster 就是 ion rocket」</h3><p>不是。前者依靠 ion-neutral collision，後者主要靠離子束直接帶走動量。</p></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="eyebrow">Check your understanding</div>
+  <h2>12. 課堂小測</h2>
+
+  <div class="quizq">
+    <b>Q1. 在大氣中的 ion wind，真正大量帶走動量的是？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。離子先把動量交給中性分子，最後形成 bulk airflow。')">中性空氣</button>
+    <button class="secondary" onclick="answer(this,false,'離子是中介者，但數量遠少於中性分子。')">只有離子本身</button>
+    <button class="secondary" onclick="answer(this,false,'電子不是主要的宏觀動量載體。')">只有電子</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q2. 簡化 EHD body force density 可寫成？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確：f≈ρeE。')">f ≈ ρ<sub>e</sub>E</button>
+    <button class="secondary" onclick="answer(this,false,'這是電容儲能公式。')">½CV²</button>
+    <button class="secondary" onclick="answer(this,false,'這是動能公式。')">½mv²</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q3. 為什麼 collector 通常不做得像 emitter 一樣尖？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。Collector 主要希望收集離子並建立漂移區，而不是再產生新的強烈 corona。')">避免 collector 自己形成強烈局部放電</button>
+    <button class="secondary" onclick="answer(this,false,'不是因為不能導電。')">因為鈍的金屬比較會導電</button>
+    <button class="secondary" onclick="answer(this,false,'Collector 一樣需要參與電場建立。')">因為 collector 完全不需要電場</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q4. Atmospheric EHD 與 satellite ion thruster 的共同核心是？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。兩者都利用電場控制帶電粒子並產生動量轉移。')">Electric field → charged particles → momentum</button>
+    <button class="secondary" onclick="answer(this,false,'Atmospheric EHD 不一定使用磁場。')">一定都要用磁場</button>
+    <button class="secondary" onclick="answer(this,false,'Ion Burster 不依靠化學燃燒。')">一定都要燃燒</button>
+    <div class="feedback"></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Next</div>
+  <h2>下一章預告｜實作課程：如何觀察 Breakdown、Corona 與 Ion Wind？</h2>
+  <div class="card">
+    <p>到這裡，理論鏈已經完整：</p>
+    <div class="flow">
+      Battery → High Voltage → Electric Field → Breakdown → Plasma → Ion Drift → <b>Ion Wind</b>
+    </div>
+    <p>下一章就可以正式進入 90 分鐘實作網站：器材辨識、安全流程、電極間距、尖端效應、Corona 辨識、Ion wind 觀察與工程挑戰。</p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Teaching note</div>
+  <h2>教師使用提醒</h2>
+  <div class="card small">
+    <p>• v<sub>d</sub>=μE 適合用來建立 ion mobility 的線性直覺；實際高場下 mobility 可能依 E/N 改變。</p>
+    <p>• f≈ρ<sub>e</sub>E 是 corona EHD 的第一階簡化模型。更完整的 EHD 流體方程還包含壓力、黏滯、介電與邊界效應。</p>
+    <p>• 本章重點是把 microscopic ion-neutral collision 與 macroscopic airflow / thrust 連起來。</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  Chapter 7｜Ion Wind & Electrohydrodynamics · Ion Burster 大學部教學網站
+</footer>
+
+<script>
+function calcDrift(){
+  const mu_cm=parseFloat(document.getElementById('mu').value);
+  const E_kV=parseFloat(document.getElementById('driftE').value);
+  const mu=mu_cm*1e-4; // cm^2/(V s) to m^2/(V s)
+  const E=E_kV*1000;
+  const v=mu*E;
+  document.getElementById('driftResult').innerHTML =
+    `μ = <b>${mu_cm.toFixed(1)} cm²/V·s</b>；E = <b>${E_kV.toFixed(0)} kV/m</b><br>`+
+    `v<sub>d</sub> = μE ≈ <b>${v.toFixed(2)} m/s</b>`;
+}
+function calcForce(){
+  const rho_uC=parseFloat(document.getElementById('rho').value);
+  const E_kV=parseFloat(document.getElementById('forceE').value);
+  const rho=rho_uC*1e-6;
+  const E=E_kV*1000;
+  const f=rho*E;
+  document.getElementById('forceResult').innerHTML =
+    `ρ<sub>e</sub> = <b>${rho_uC.toFixed(1)} µC/m³</b>；E = <b>${E_kV.toFixed(0)} kV/m</b><br>`+
+    `f ≈ ρ<sub>e</sub>E ≈ <b>${f.toFixed(3)} N/m³</b>`;
+}
+function answer(btn,ok,msg){
+  const box=btn.closest('.quizq'),fb=box.querySelector('.feedback');
+  fb.innerHTML=msg;fb.style.color=ok?'var(--good)':'var(--warn)';
+}
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const pct=(d.scrollTop/(d.scrollHeight-d.clientHeight))*100;
+  document.getElementById('progress').style.width=pct+'%';
+});
+calcDrift();calcForce();
+</script>
+</body>
+</html>

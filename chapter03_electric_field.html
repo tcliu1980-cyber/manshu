@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 3｜Electric Field 與針尖增強效應</title>
+<style>
+:root{
+  --bg:#07111f; --panel:#0e1d2e; --panel2:#12263d; --text:#edf6ff; --muted:#a9bdd2;
+  --line:#2a4967; --accent:#55d6e8; --accent2:#ffd166; --good:#6ee7a8; --warn:#ffb86b;
+  --danger:#ff7272; --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 85% 8%,rgba(85,214,232,.12),transparent 25%),
+    radial-gradient(circle at 10% 34%,rgba(255,209,102,.08),transparent 22%),
+    var(--bg);
+  color:var(--text);line-height:1.72;
+}
+header{
+  min-height:72vh;display:grid;place-items:center;padding:70px 22px 45px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hero{width:min(1180px,100%)}
+.eyebrow{font-size:.88rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:800}
+h1{font-size:clamp(2.3rem,7vw,5.2rem);line-height:1.02;margin:.2em 0 .25em}
+h2{font-size:clamp(1.65rem,4vw,2.55rem);margin:0 0 8px}
+h3{margin:0 0 8px}
+.hero p,.lead{color:var(--muted);max-width:980px}
+.hero p{font-size:clamp(1.05rem,2.2vw,1.4rem)}
+.flow{
+  margin-top:30px;padding:18px 20px;border:1px solid var(--line);background:rgba(14,29,46,.72);
+  border-radius:18px;box-shadow:var(--shadow);overflow:auto;white-space:nowrap
+}
+.flow b{color:var(--accent2)}
+nav{
+  position:sticky;top:0;z-index:20;background:rgba(7,17,31,.90);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+.navin{width:min(1180px,100%);margin:auto;padding:10px 18px;display:flex;gap:10px;overflow:auto}
+.navin a{text-decoration:none;color:var(--muted);border:1px solid transparent;padding:8px 12px;border-radius:999px;white-space:nowrap}
+.navin a:hover{color:var(--text);border-color:var(--line);background:var(--panel)}
+main{width:min(1180px,100%);margin:auto;padding:35px 20px 90px}
+section{margin:58px 0;scroll-margin-top:80px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{
+  background:linear-gradient(145deg,rgba(18,38,61,.90),rgba(10,25,41,.95));
+  border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)
+}
+.card p{margin:.35em 0;color:var(--muted)}
+.eq{display:block;font-family:"Cambria Math",Cambria,serif;font-size:1.45rem;margin:10px 0;color:#fff}
+.tip{
+  border-left:4px solid var(--accent2);background:rgba(255,209,102,.08);
+  border-radius:8px 16px 16px 8px;padding:14px 16px;margin:18px 0
+}
+.safety{
+  border-left:4px solid var(--danger);background:rgba(255,114,114,.08);
+  border-radius:8px 16px 16px 8px;padding:16px;margin:18px 0
+}
+.callout{
+  border:1px solid rgba(85,214,232,.45);background:rgba(85,214,232,.07);
+  border-radius:16px;padding:18px
+}
+label{font-weight:700}
+input,button{font:inherit}
+input{
+  width:100%;margin:6px 0 12px;background:#071421;border:1px solid var(--line);
+  color:var(--text);padding:11px 12px;border-radius:10px
+}
+button{border:0;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:800}
+.primary{background:var(--accent);color:#04202a}
+.secondary{background:#16324e;color:var(--text);border:1px solid var(--line)}
+.result{font-size:1.08rem;margin-top:12px;padding:14px;border-radius:12px;background:#071421;border:1px solid var(--line)}
+canvas{width:100%;background:#091726;border:1px solid var(--line);border-radius:16px;display:block}
+.svgbox{width:100%;background:#091726;border:1px solid var(--line);border-radius:16px;display:block}
+.badge{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin:3px 3px 3px 0;font-size:.9rem}
+.quizq{margin:18px 0;padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:16px}
+.quizq button{margin:5px 6px 0 0}
+.feedback{min-height:28px;margin-top:8px;font-weight:700}
+.progress{position:fixed;left:0;top:0;height:3px;background:var(--accent);z-index:50;width:0}
+.small{font-size:.9rem;color:var(--muted)}
+footer{border-top:1px solid rgba(255,255,255,.08);padding:34px 20px 50px;color:var(--muted)}
+ul{margin:.3em 0 .8em 1.2em} li{margin:.35em 0}
+@media(max-width:920px){.grid,.grid3,.grid4{grid-template-columns:1fr}header{min-height:auto}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <div class="hero">
+    <div class="eyebrow">ION BURSTER · CHAPTER 3</div>
+    <h1>Electric Field<br>為什麼要用尖針？</h1>
+    <p>第二章我們得到高電壓，但真正讓空氣中的帶電粒子加速、甚至開始游離的，是<b>電場 Electric Field</b>。本章要回答一個實作上最直接的問題：為什麼 Ion Burster 使用繡花針，而不是圓棒或平板？</p>
+    <div class="flow">
+      <b>High Voltage</b> → Potential Difference → Electric Field → Field Enhancement → Charged Particle Force → Air Ionization
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navin">
+    <a href="#field">電場</a>
+    <a href="#uniform">平行板</a>
+    <a href="#potential">電位與電場</a>
+    <a href="#geometry">幾何效應</a>
+    <a href="#tip">針尖增強</a>
+    <a href="#interactive">互動實驗</a>
+    <a href="#corona">連到 Corona</a>
+    <a href="#quiz">小測驗</a>
+  </div>
+</nav>
+
+<main>
+<section id="field">
+  <div class="eyebrow">Part A</div>
+  <h2>1. Electric Field：電場到底是什麼？</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>從力來定義</h3>
+      <span class="eq">F⃗ = qE⃗</span>
+      <p>帶電粒子放進電場後會受到力。對正電荷而言，受力方向與電場相同；電子因為帶負電，受力方向與電場相反。</p>
+      <span class="eq">E⃗ = F⃗ / q</span>
+    </div>
+    <div class="card">
+      <h3>電場的單位</h3>
+      <span class="eq">[E] = N/C = V/m</span>
+      <p>這兩種單位其實描述同一件事情：電場既可以看成「每單位電荷受到多少力」，也可以看成「電位在空間中變化得有多快」。</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>Ion Burster 的關鍵：</b>我們不是只需要「很高的電壓」，而是要在某個局部空間產生<b>足夠強的電場</b>，讓自由電子與離子得到足夠能量。
+  </div>
+</section>
+
+<section id="uniform">
+  <div class="eyebrow">Part B</div>
+  <h2>2. 最簡單的模型：平行板電場</h2>
+  <p class="lead">兩塊很大的平行導體板，相距 d，施加電位差 ΔV。忽略邊緣效應時，中間的電場近似均勻。</p>
+
+  <div class="grid">
+    <div class="card">
+      <svg class="svgbox" viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L9,3 L0,6 Z" fill="#ffd166"/>
+          </marker>
+        </defs>
+        <rect width="760" height="360" rx="16" fill="#091726"/>
+        <text x="25" y="35" fill="#55d6e8" font-size="22" font-weight="700">平行板：近似均勻電場</text>
+        <line x1="150" y1="95" x2="150" y2="295" stroke="#ff7070" stroke-width="12"/>
+        <line x1="610" y1="95" x2="610" y2="295" stroke="#70a5ff" stroke-width="12"/>
+        <text x="110" y="78" fill="#ff9090" font-size="22">+V</text>
+        <text x="585" y="78" fill="#9cbcff" font-size="22">0 V</text>
+        <g stroke="#ffd166" stroke-width="3" marker-end="url(#a1)">
+          <line x1="190" y1="125" x2="560" y2="125"/>
+          <line x1="190" y1="165" x2="560" y2="165"/>
+          <line x1="190" y1="205" x2="560" y2="205"/>
+          <line x1="190" y1="245" x2="560" y2="245"/>
+        </g>
+        <text x="320" y="322" fill="#a9bdd2" font-size="18">距離 d</text>
+        <line x1="180" y1="310" x2="575" y2="310" stroke="#a9bdd2" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="card">
+      <h3>平均電場</h3>
+      <span class="eq">E ≈ ΔV / d</span>
+      <p>例如，同樣的電壓下：</p>
+      <ul>
+        <li>距離越小 → 平均電場越大</li>
+        <li>電壓越高 → 平均電場越大</li>
+      </ul>
+      <div class="tip">
+        這個公式非常好用，但它只適合<b>近似均勻場</b>。針尖附近的電場非常不均勻，不能只靠 ΔV/d 完整描述。
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="potential">
+  <div class="eyebrow">Part C</div>
+  <h2>3. 電位 V 與電場 E 的關係</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>一般關係</h3>
+      <span class="eq">E⃗ = −∇V</span>
+      <p>電場指向電位下降最快的方向。「−」代表正電荷傾向往較低電位方向受力。</p>
+      <p>一維時可以寫成：</p>
+      <span class="eq">E<sub>x</sub> = −dV/dx</span>
+    </div>
+    <div class="card">
+      <h3>把它想成地形</h3>
+      <p>若把電位 V 想像成山的高度：</p>
+      <ul>
+        <li>等電位面 = 等高線</li>
+        <li>電場 = 最陡下降方向</li>
+        <li>電位變化越急 → 電場越強</li>
+      </ul>
+      <p>因此，幾何形狀若讓等電位面在某處「擠得很密」，那裡的電場就會很強。</p>
+    </div>
+  </div>
+</section>
+
+<section id="geometry">
+  <div class="eyebrow">Part D</div>
+  <h2>4. Geometry matters：電極形狀會改變電場</h2>
+  <p class="lead">這是本章最重要的工程概念。即使施加相同電壓，不同電極幾何形狀也會產生完全不同的局部電場。</p>
+
+  <div class="grid4">
+    <div class="card">
+      <h3>平行板</h3>
+      <svg class="svgbox" viewBox="0 0 250 210">
+        <rect width="250" height="210" rx="12" fill="#091726"/>
+        <line x1="55" y1="40" x2="55" y2="170" stroke="#ff7070" stroke-width="8"/>
+        <line x1="195" y1="40" x2="195" y2="170" stroke="#70a5ff" stroke-width="8"/>
+        <g stroke="#ffd166" stroke-width="2">
+          <line x1="75" y1="70" x2="175" y2="70"/>
+          <line x1="75" y1="105" x2="175" y2="105"/>
+          <line x1="75" y1="140" x2="175" y2="140"/>
+        </g>
+      </svg>
+      <p>大部分區域的場比較均勻。</p>
+    </div>
+
+    <div class="card">
+      <h3>兩個圓球</h3>
+      <svg class="svgbox" viewBox="0 0 250 210">
+        <rect width="250" height="210" rx="12" fill="#091726"/>
+        <circle cx="70" cy="105" r="35" fill="none" stroke="#ff7070" stroke-width="7"/>
+        <circle cx="180" cy="105" r="35" fill="none" stroke="#70a5ff" stroke-width="7"/>
+        <g stroke="#ffd166" stroke-width="2" fill="none">
+          <path d="M105 80 C125 70 145 70 145 80"/>
+          <path d="M105 105 C125 105 145 105 145 105"/>
+          <path d="M105 130 C125 140 145 140 145 130"/>
+        </g>
+      </svg>
+      <p>場開始具有曲率，但仍較平滑。</p>
+    </div>
+
+    <div class="card">
+      <h3>鈍端電極</h3>
+      <svg class="svgbox" viewBox="0 0 250 210">
+        <rect width="250" height="210" rx="12" fill="#091726"/>
+        <rect x="30" y="80" width="90" height="50" rx="22" fill="none" stroke="#ff7070" stroke-width="7"/>
+        <line x1="205" y1="45" x2="205" y2="165" stroke="#70a5ff" stroke-width="8"/>
+        <g stroke="#ffd166" stroke-width="2" fill="none">
+          <path d="M120 90 C150 82 170 75 190 70"/>
+          <path d="M120 105 C150 105 170 105 190 105"/>
+          <path d="M120 120 C150 128 170 135 190 140"/>
+        </g>
+      </svg>
+      <p>端部已有一定場集中。</p>
+    </div>
+
+    <div class="card">
+      <h3>尖針</h3>
+      <svg class="svgbox" viewBox="0 0 250 210">
+        <rect width="250" height="210" rx="12" fill="#091726"/>
+        <polygon points="28,88 125,105 28,122" fill="none" stroke="#ff7070" stroke-width="7"/>
+        <line x1="205" y1="45" x2="205" y2="165" stroke="#70a5ff" stroke-width="8"/>
+        <g stroke="#ffd166" stroke-width="2" fill="none">
+          <path d="M128 101 C155 75 175 68 190 62"/>
+          <path d="M128 105 C155 105 175 105 190 105"/>
+          <path d="M128 109 C155 135 175 142 190 148"/>
+        </g>
+      </svg>
+      <p><b>電場線在尖端附近最密集。</b></p>
+    </div>
+  </div>
+
+  <div class="tip">
+    同樣的 applied voltage，不代表每個位置的 electric field 都一樣。<b>尖端曲率半徑越小，局部電場通常越集中。</b>
+  </div>
+</section>
+
+<section id="tip">
+  <div class="eyebrow">Part E</div>
+  <h2>5. Field Enhancement：為什麼尖針特別容易放電？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>導體表面的電荷會重新分布</h3>
+      <p>靜電平衡時，導體內部電場為零，自由電荷會移動到表面。對導體表面外側：</p>
+      <span class="eq">E<sub>⊥</sub> = σ / ε<sub>0</sub></span>
+      <p>也就是說，表面電荷密度 σ 越高，表面附近的電場就越強。</p>
+    </div>
+    <div class="card">
+      <h3>尖端為什麼聚集更多表面電荷？</h3>
+      <p>在曲率半徑很小的位置，要維持整個導體為等電位，表面電荷會更集中。因此尖端附近的 σ 較大，E 也較大。</p>
+      <p>這就是常說的：</p>
+      <span class="eq">Sharp tip → charge concentration → stronger local E</span>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:18px">
+    <div class="card">
+      <h3>用孤立球體建立曲率直覺</h3>
+      <p>對一個孤立導體球，表面電場可寫成：</p>
+      <span class="eq">E<sub>surface</sub> = V / R</span>
+      <p>在相同電位尺度下，R 越小，表面電場越大。</p>
+      <div class="tip">
+        這個公式是<b>球形導體</b>的理想化結果，不是針對 needle-to-plane 幾何的精確公式；這裡用它來建立「曲率越小，局部場越強」的物理直覺。
+      </div>
+    </div>
+    <div class="card">
+      <h3>Lightning rod 也是相同概念</h3>
+      <p>避雷針、靜電放電針、電暈放電電極，都會利用尖端的 field enhancement。</p>
+      <p>因此本課程的繡花針，不只是「一根導電金屬」；它其實是一個很有效率的<b>局部電場集中器</b>。</p>
+    </div>
+  </div>
+</section>
+
+<section id="interactive">
+  <div class="eyebrow">Part F</div>
+  <h2>6. 互動：電壓、距離與尖端曲率</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Experiment A｜平行板平均電場</h3>
+      <label>Applied voltage ΔV (V)</label>
+      <input id="plateV" type="range" min="100" max="5000" value="1000" step="100" oninput="updatePlate()">
+      <label>Electrode distance d (mm)</label>
+      <input id="plateD" type="range" min="1" max="20" value="10" step="1" oninput="updatePlate()">
+      <div class="result" id="plateResult"></div>
+      <canvas id="plateCanvas" width="720" height="300"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Experiment B｜曲率半徑的影響</h3>
+      <label>Conceptual conductor potential V (V)</label>
+      <input id="sphereV" type="range" min="100" max="3000" value="1000" step="100" oninput="updateTip()">
+      <label>Local radius of curvature R (mm)</label>
+      <input id="radius" type="range" min="1" max="20" value="10" step="1" oninput="updateTip()">
+      <div class="result" id="tipResult"></div>
+      <canvas id="tipCanvas" width="720" height="300"></canvas>
+      <p class="small">此處使用 E ≈ V/R 的球形曲率模型建立直覺；不是實際針尖與收集電極的工程設計公式。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Part G</div>
+  <h2>7. 電場線與等電位線：兩種看同一個場的方法</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Electric Field Lines</h3>
+      <ul>
+        <li>由正電位／正電荷區指向較低電位區</li>
+        <li>線越密，代表場越強</li>
+        <li>不會彼此交叉</li>
+        <li>在導體表面外側，電場線垂直於表面</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Equipotential Lines / Surfaces</h3>
+      <ul>
+        <li>同一條線上的電位相同</li>
+        <li>等電位線與電場線互相垂直</li>
+        <li>等電位線越密，代表電位梯度越大</li>
+        <li>因此尖端附近的等電位面會被強烈壓縮</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="corona">
+  <div class="eyebrow">Bridge to Chapter 4</div>
+  <h2>8. 從 Field Enhancement 到 Corona</h2>
+  <p class="lead">現在我們已經可以解釋：為什麼整個裝置只有幾個位置最容易先出現游離。</p>
+
+  <div class="card">
+    <svg class="svgbox" viewBox="0 0 980 360" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#ffd166"/>
+        </marker>
+      </defs>
+      <rect width="980" height="360" rx="16" fill="#091726"/>
+      <text x="28" y="38" fill="#55d6e8" font-size="22" font-weight="700">尖針附近：局部 E 最大 → 最先開始游離</text>
+      <polygon points="70,150 360,180 70,210" fill="none" stroke="#ff7070" stroke-width="9"/>
+      <line x1="840" y1="70" x2="840" y2="290" stroke="#70a5ff" stroke-width="12"/>
+      <g stroke="#ffd166" fill="none" stroke-width="3" marker-end="url(#a2)">
+        <path d="M365 176 C480 105 650 88 800 95"/>
+        <path d="M365 180 C500 180 650 180 800 180"/>
+        <path d="M365 184 C480 255 650 272 800 265"/>
+      </g>
+      <g fill="#9d82ff">
+        <circle cx="385" cy="157" r="5"/><circle cx="400" cy="170" r="4"/><circle cx="390" cy="194" r="4"/>
+        <circle cx="415" cy="148" r="4"/><circle cx="420" cy="195" r="5"/><circle cx="438" cy="175" r="4"/>
+      </g>
+      <text x="360" y="120" fill="#bdaeff" font-size="20">局部游離區</text>
+      <text x="405" y="320" fill="#a9bdd2" font-size="18">高電壓不必讓整個空隙同時擊穿；尖端附近可以先形成局部 corona。</text>
+    </svg>
+  </div>
+
+  <div class="flow" style="margin-top:18px">
+    High Voltage → <b>Sharp Tip</b> → Field Enhancement → Electron Acceleration → Collision → Ionization → Corona → Ion Wind
+  </div>
+
+  <div class="safety">
+    <b>實作提醒：</b>學生觀察的目標應是理解「幾何形狀如何影響放電起始位置」，而不是追求更長或更強的電弧。調整電極前必須斷電並完成安全放電。
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Misconceptions</div>
+  <h2>9. 四個常見誤解</h2>
+  <div class="grid">
+    <div class="card"><h3>「電壓越高，所有地方的電場都一樣變強」</h3><p>不完全正確。幾何形狀會決定局部電場如何分布。</p></div>
+    <div class="card"><h3>「尖針比較容易放電，只因為它比較細」</h3><p>真正原因是尖端的小曲率半徑造成表面電荷集中與 field enhancement。</p></div>
+    <div class="card"><h3>「E = V/d 可以套用到任何電極」</h3><p>它主要是均勻場近似。針尖附近需要考慮非均勻電場。</p></div>
+    <div class="card"><h3>「只有電壓大小重要」</h3><p>放電起始也和距離、幾何、氣體、壓力與環境條件有關。</p></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="eyebrow">Check your understanding</div>
+  <h2>10. 課堂小測</h2>
+
+  <div class="quizq">
+    <b>Q1. 平行板近似下，若電壓固定而板間距離減半，平均電場約如何改變？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確：E ≈ ΔV/d，d 減半時 E 約增加兩倍。')">增加兩倍</button>
+    <button class="secondary" onclick="answer(this,false,'再看一次 E ≈ ΔV/d。')">減少一半</button>
+    <button class="secondary" onclick="answer(this,false,'距離改變會改變平均電場。')">不變</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q2. 為什麼繡花針尖端比圓棒更容易開始 corona？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確：小曲率半徑造成更強的局部電場。')">尖端有較小曲率半徑，局部電場較強</button>
+    <button class="secondary" onclick="answer(this,false,'顏色不是主要原因。')">因為針通常是銀色</button>
+    <button class="secondary" onclick="answer(this,false,'導電只是基本條件，不能解釋為何尖端最先放電。')">因為只有針會導電</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q3. 電場與電位的關係是？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確：E⃗ = −∇V。')">電場指向電位下降最快的方向</button>
+    <button class="secondary" onclick="answer(this,false,'等電位線上的電位相同，但電場不是沿著等電位線。')">電場沿著等電位線</button>
+    <button class="secondary" onclick="answer(this,false,'兩者不是無關。')">完全無關</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q4. 為什麼尖端附近最可能先出現氣體游離？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確：局部電場最強，使帶電粒子在短距離內更容易獲得較大的能量。')">局部電場較強，帶電粒子更容易被加速</button>
+    <button class="secondary" onclick="answer(this,false,'不是因為針本身產生空氣。')">尖端會製造更多空氣</button>
+    <button class="secondary" onclick="answer(this,false,'溫度可能影響放電，但不是尖端增強效應的核心原因。')">因為尖端一定比較熱</button>
+    <div class="feedback"></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Next</div>
+  <h2>下一章預告｜Air Breakdown：空氣為什麼突然變成導體？</h2>
+  <div class="card">
+    <p>下一章將從一個自由電子開始：</p>
+    <span class="eq">F⃗ = qE⃗</span>
+    <p>電子被強電場加速，碰撞 N₂ / O₂，產生更多電子與正離子；當這個倍增過程足夠強，就形成 <b>Townsend avalanche</b>，再進一步區分 <b>corona、spark 與 arc</b>。</p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Teaching note</div>
+  <h2>教師使用提醒</h2>
+  <div class="card small">
+    <p>• E = ΔV/d 是平行板近似，避免把它直接當成針尖場強的工程計算式。</p>
+    <p>• E = V/R 在本章只用作孤立球體的曲率直覺，不代表 needle-to-plane 幾何的精確場強。</p>
+    <p>• 這一章的學習重點是「高壓 → 電位梯度 → 局部電場 → 幾何增強」，為下一章氣體擊穿建立物理基礎。</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  Chapter 3｜Electric Field 與針尖增強效應 · Ion Burster 大學部教學網站
+</footer>
+
+<script>
+function updatePlate(){
+  const V=parseFloat(document.getElementById('plateV').value);
+  const dmm=parseFloat(document.getElementById('plateD').value);
+  const d=dmm/1000;
+  const E=V/d;
+  document.getElementById('plateResult').textContent =
+    `ΔV = ${V.toFixed(0)} V；d = ${dmm.toFixed(0)} mm；平均場 E ≈ ${(E/1000).toFixed(1)} kV/m`;
+
+  const c=document.getElementById('plateCanvas'),ctx=c.getContext('2d');
+  const W=c.width,H=c.height; ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#091726';ctx.fillRect(0,0,W,H);
+  const center=W/2, sep=Math.min(480,80+dmm*18);
+  const x1=center-sep/2,x2=center+sep/2;
+  ctx.strokeStyle='#ff7070';ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(x1,45);ctx.lineTo(x1,H-45);ctx.stroke();
+  ctx.strokeStyle='#70a5ff';ctx.beginPath();ctx.moveTo(x2,45);ctx.lineTo(x2,H-45);ctx.stroke();
+  const intensity=Math.min(1, E/500000);
+  ctx.strokeStyle=`rgba(255,209,102,${0.35+0.65*intensity})`;ctx.lineWidth=2+3*intensity;
+  for(let y=70;y<H-45;y+=34){ctx.beginPath();ctx.moveTo(x1+18,y);ctx.lineTo(x2-20,y);ctx.stroke();}
+  ctx.fillStyle='#b9cadb';ctx.font='18px sans-serif';
+  ctx.fillText('+V',x1-22,32);ctx.fillText('0 V',x2-20,32);
+  ctx.fillText(`d = ${dmm.toFixed(0)} mm`,center-45,H-15);
+}
+function updateTip(){
+  const V=parseFloat(document.getElementById('sphereV').value);
+  const rmm=parseFloat(document.getElementById('radius').value);
+  const r=rmm/1000, E=V/r;
+  document.getElementById('tipResult').textContent =
+    `Conceptual model：V = ${V.toFixed(0)} V；R = ${rmm.toFixed(0)} mm；E ≈ ${(E/1000).toFixed(1)} kV/m`;
+
+  const c=document.getElementById('tipCanvas'),ctx=c.getContext('2d');
+  const W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#091726';ctx.fillRect(0,0,W,H);
+  const tipX=310,cy=H/2, rad=10+rmm*2.2;
+  ctx.strokeStyle='#ff7070';ctx.lineWidth=7;
+  ctx.beginPath();ctx.moveTo(55,cy-rad*.7);ctx.lineTo(tipX-rad,cy-rad*.7);
+  ctx.quadraticCurveTo(tipX,cy-rad*.7,tipX+rad*.25,cy);
+  ctx.quadraticCurveTo(tipX,cy+rad*.7,tipX-rad,cy+rad*.7);
+  ctx.lineTo(55,cy+rad*.7);ctx.stroke();
+
+  const strength=Math.min(1, 0.25 + (20-rmm)/19*0.75);
+  ctx.strokeStyle=`rgba(255,209,102,${0.45+0.5*strength})`;ctx.lineWidth=2+3*strength;
+  for(let a=-0.65;a<=0.65;a+=0.26){
+    ctx.beginPath();
+    ctx.moveTo(tipX+rad*.28,cy);
+    const endX=620,endY=cy+a*145;
+    ctx.quadraticCurveTo(430,cy+a*55,endX,endY);
+    ctx.stroke();
+  }
+  ctx.fillStyle='#b9cadb';ctx.font='18px sans-serif';
+  ctx.fillText(`Local curvature radius ~ ${rmm.toFixed(0)} mm`,55,H-22);
+  ctx.fillStyle='#ffd166';ctx.fillText('Field concentration',390,48);
+}
+function answer(btn,ok,msg){
+  const box=btn.closest('.quizq'),fb=box.querySelector('.feedback');
+  fb.textContent=msg;fb.style.color=ok?'var(--good)':'var(--warn)';
+}
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const pct=(d.scrollTop/(d.scrollHeight-d.clientHeight))*100;
+  document.getElementById('progress').style.width=pct+'%';
+});
+updatePlate();updateTip();
+</script>
+</body>
+</html>

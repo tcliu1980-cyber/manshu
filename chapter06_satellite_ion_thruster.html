@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 6｜Satellite Ion Thruster：如何把 Plasma 變成推力？</title>
+<style>
+:root{
+  --bg:#07111f; --panel:#0e1d2e; --panel2:#12263d; --text:#edf6ff; --muted:#a9bdd2;
+  --line:#2a4967; --accent:#55d6e8; --accent2:#ffd166; --good:#6ee7a8; --warn:#ffb86b;
+  --danger:#ff7272; --violet:#b79cff; --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 84% 8%,rgba(85,214,232,.12),transparent 25%),
+    radial-gradient(circle at 12% 34%,rgba(183,156,255,.10),transparent 22%),
+    var(--bg);
+  color:var(--text);line-height:1.72;
+}
+header{
+  min-height:72vh;display:grid;place-items:center;padding:70px 22px 45px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hero{width:min(1180px,100%)}
+.eyebrow{font-size:.88rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:800}
+h1{font-size:clamp(2.3rem,7vw,5.2rem);line-height:1.02;margin:.2em 0 .25em}
+h2{font-size:clamp(1.65rem,4vw,2.55rem);margin:0 0 8px}
+h3{margin:0 0 8px}
+.hero p,.lead{color:var(--muted);max-width:980px}
+.hero p{font-size:clamp(1.05rem,2.2vw,1.4rem)}
+.flow{
+  margin-top:30px;padding:18px 20px;border:1px solid var(--line);background:rgba(14,29,46,.72);
+  border-radius:18px;box-shadow:var(--shadow);overflow:auto;white-space:nowrap
+}
+.flow b{color:var(--accent2)}
+nav{
+  position:sticky;top:0;z-index:20;background:rgba(7,17,31,.90);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+.navin{width:min(1180px,100%);margin:auto;padding:10px 18px;display:flex;gap:10px;overflow:auto}
+.navin a{text-decoration:none;color:var(--muted);border:1px solid transparent;padding:8px 12px;border-radius:999px;white-space:nowrap}
+.navin a:hover{color:var(--text);border-color:var(--line);background:var(--panel)}
+main{width:min(1180px,100%);margin:auto;padding:35px 20px 90px}
+section{margin:58px 0;scroll-margin-top:80px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{
+  background:linear-gradient(145deg,rgba(18,38,61,.90),rgba(10,25,41,.95));
+  border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)
+}
+.card p{margin:.35em 0;color:var(--muted)}
+.eq{display:block;font-family:"Cambria Math",Cambria,serif;font-size:1.42rem;margin:10px 0;color:#fff}
+.tip{
+  border-left:4px solid var(--accent2);background:rgba(255,209,102,.08);
+  border-radius:8px 16px 16px 8px;padding:14px 16px;margin:18px 0
+}
+.callout{
+  border:1px solid rgba(85,214,232,.45);background:rgba(85,214,232,.07);
+  border-radius:16px;padding:18px
+}
+label{font-weight:700}
+input,select,button{font:inherit}
+input,select{
+  width:100%;margin:6px 0 12px;background:#071421;border:1px solid var(--line);
+  color:var(--text);padding:11px 12px;border-radius:10px
+}
+button{border:0;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:800}
+.primary{background:var(--accent);color:#04202a}
+.secondary{background:#16324e;color:var(--text);border:1px solid var(--line)}
+.result{font-size:1.08rem;margin-top:12px;padding:14px;border-radius:12px;background:#071421;border:1px solid var(--line)}
+.svgbox{width:100%;background:#091726;border:1px solid var(--line);border-radius:16px;display:block}
+.badge{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin:3px 3px 3px 0;font-size:.9rem}
+.quizq{margin:18px 0;padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:16px}
+.quizq button{margin:5px 6px 0 0}
+.feedback{min-height:28px;margin-top:8px;font-weight:700}
+.progress{position:fixed;left:0;top:0;height:3px;background:var(--accent);z-index:50;width:0}
+.small{font-size:.9rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th,td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent);text-align:left;background:#0b1a2a}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+footer{border-top:1px solid rgba(255,255,255,.08);padding:34px 20px 50px;color:var(--muted)}
+ul{margin:.3em 0 .8em 1.2em} li{margin:.35em 0}
+@media(max-width:920px){.grid,.grid3,.grid4{grid-template-columns:1fr}header{min-height:auto}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <div class="hero">
+    <div class="eyebrow">ION BURSTER · CHAPTER 6</div>
+    <h1>Satellite Ion Thruster<br>如何把 Plasma 變成推力？</h1>
+    <p>在太空中，推進器不一定追求「一次推很大力」。很多任務更在意的是：能不能用很少的推進劑，長時間持續改變速度。Ion thruster 的核心，就是把推進劑變成 plasma，再利用電場把離子加速到極高速度。</p>
+    <div class="flow">
+      Propellant → Ionization → Plasma → Ion extraction → <b>Acceleration</b> → Momentum → Thrust
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navin">
+    <a href="#why">為什麼需要電推進</a>
+    <a href="#physics">推力物理</a>
+    <a href="#gridded">Gridded Ion</a>
+    <a href="#neutralizer">Neutralizer</a>
+    <a href="#hall">Hall Thruster</a>
+    <a href="#propellant">推進劑</a>
+    <a href="#compare">比較</a>
+    <a href="#calculator">互動計算</a>
+    <a href="#ionburster">與 Ion Burster 比較</a>
+    <a href="#quiz">小測驗</a>
+  </div>
+</nav>
+
+<main>
+<section id="why">
+  <div class="eyebrow">Part A</div>
+  <h2>1. 衛星為什麼不用化學火箭做所有事情？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Chemical rocket</h3>
+      <p>化學火箭利用燃燒或化學反應快速釋放能量，把大量氣體高速噴出。</p>
+      <p><span class="badge">高推力</span><span class="badge">短時間</span><span class="badge">適合發射</span></p>
+      <p>非常適合克服地球重力、進行快速機動。</p>
+    </div>
+    <div class="card">
+      <h3>Electric propulsion</h3>
+      <p>電推進把外部電能轉成帶電粒子的動能，因此排氣速度可以遠高於一般化學推進。</p>
+      <p><span class="badge">低推力</span><span class="badge">長時間</span><span class="badge">高推進劑效率</span></p>
+      <p>非常適合已經在太空中的衛星長時間工作。</p>
+    </div>
+  </div>
+
+  <div class="grid4" style="margin-top:18px">
+    <div class="card"><h3>Orbit Raising</h3><p>逐步把衛星從較低軌道推向目標軌道。</p></div>
+    <div class="card"><h3>Station Keeping</h3><p>抵消攝動與漂移，維持軌道位置。</p></div>
+    <div class="card"><h3>Constellation</h3><p>調整衛星星系中的相對位置與相位。</p></div>
+    <div class="card"><h3>Deep Space</h3><p>長時間持續加速，累積很大的總 Δv。</p></div>
+  </div>
+</section>
+
+<section id="physics">
+  <div class="eyebrow">Part B</div>
+  <h2>2. 推進器的核心不是「火」，而是動量</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Newton's third law / Momentum conservation</h3>
+      <p>把質量向後高速噴出，太空船就獲得向前的動量。</p>
+      <span class="eq">F ≈ ṁv<sub>e</sub></span>
+      <p>其中 ṁ 是推進劑質量流率，v<sub>e</sub> 是有效排氣速度。</p>
+    </div>
+    <div class="card">
+      <h3>Ion thruster 的策略</h3>
+      <p>它不追求很大的 ṁ，而是追求非常大的 v<sub>e</sub>。</p>
+      <span class="eq">small ṁ × very large v<sub>e</sub> → useful thrust</span>
+      <p>所以推力通常很小，但推進劑可以使用很久。</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>最重要的設計思想：</b>化學火箭靠「大量質量 × 中高速度」；ion thruster 靠「極少質量 × 非常高速度」。
+  </div>
+</section>
+
+<section id="gridded">
+  <div class="eyebrow">Part C</div>
+  <h2>3. Gridded Ion Thruster：最直觀的離子推進器</h2>
+
+  <div class="card">
+    <svg class="svgbox" viewBox="0 0 1150 470" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrG" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#55d6e8"/>
+        </marker>
+        <marker id="arrI" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#ffd166"/>
+        </marker>
+      </defs>
+      <rect width="1150" height="470" rx="18" fill="#091726"/>
+      <text x="30" y="42" fill="#55d6e8" font-size="24" font-weight="700">Gridded Ion Thruster</text>
+
+      <rect x="65" y="120" width="390" height="245" rx="22" fill="#102941" stroke="#2a4967" stroke-width="4"/>
+      <text x="135" y="105" fill="#edf6ff" font-size="19">Ionization chamber</text>
+
+      <line x1="15" y1="245" x2="65" y2="245" stroke="#55d6e8" stroke-width="5" marker-end="url(#arrG)"/>
+      <text x="12" y="220" fill="#55d6e8" font-size="18">Xe</text>
+
+      <g fill="#b79cff">
+        <circle cx="165" cy="185" r="16"/><circle cx="250" cy="280" r="16"/>
+        <circle cx="340" cy="200" r="16"/><circle cx="385" cy="305" r="16"/>
+      </g>
+      <g fill="#ffd166">
+        <circle cx="125" cy="280" r="6"/><circle cx="215" cy="205" r="6"/>
+        <circle cx="300" cy="320" r="6"/><circle cx="360" cy="255" r="6"/>
+      </g>
+      <text x="125" y="395" fill="#a9bdd2" font-size="17">Xe⁺ + electrons → plasma</text>
+
+      <line x1="490" y1="105" x2="490" y2="380" stroke="#6ee7a8" stroke-width="11"/>
+      <line x1="535" y1="105" x2="535" y2="380" stroke="#ff8f8f" stroke-width="11"/>
+      <text x="462" y="92" fill="#6ee7a8" font-size="17">Screen grid</text>
+      <text x="520" y="405" fill="#ff8f8f" font-size="17">Accel grid</text>
+
+      <g stroke="#ffd166" stroke-width="5" marker-end="url(#arrI)">
+        <line x1="555" y1="160" x2="980" y2="160"/>
+        <line x1="555" y1="220" x2="1010" y2="220"/>
+        <line x1="555" y1="280" x2="980" y2="280"/>
+        <line x1="555" y1="340" x2="1010" y2="340"/>
+      </g>
+      <text x="700" y="130" fill="#ffd166" font-size="20">高速 Xe⁺ ion beam</text>
+
+      <rect x="835" y="365" width="175" height="55" rx="12" fill="#102941" stroke="#55d6e8"/>
+      <text x="852" y="399" fill="#edf6ff" font-size="18">Neutralizer e⁻</text>
+      <line x1="920" y1="365" x2="920" y2="315" stroke="#55d6e8" stroke-width="4" marker-end="url(#arrG)"/>
+
+      <text x="610" y="442" fill="#a9bdd2" font-size="17">Positive ions are accelerated electrostatically; electrons are added downstream to keep the plume neutral.</text>
+    </svg>
+  </div>
+
+  <div class="grid3" style="margin-top:18px">
+    <div class="card">
+      <h3>① Ionization</h3>
+      <span class="eq">Xe + e⁻ → Xe⁺ + 2e⁻</span>
+      <p>電子撞擊 Xe，把它游離成正離子。</p>
+    </div>
+    <div class="card">
+      <h3>② Extraction</h3>
+      <p>帶孔的 grids 建立強電場，把 Xe⁺ 從 plasma 中抽出。</p>
+    </div>
+    <div class="card">
+      <h3>③ Acceleration</h3>
+      <span class="eq">qΔV = ½mv²</span>
+      <p>離子穿越電位差，把電位能轉成高速動能。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Part D</div>
+  <h2>4. 為什麼 1000 V 可以把 Xe⁺ 加速到數十 km/s？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>由能量守恆</h3>
+      <span class="eq">qΔV = ½mv²</span>
+      <span class="eq">v = √(2qΔV/m)</span>
+      <p>這是 ion thruster 最漂亮的一條物理公式：電位差直接決定單顆離子的動能。</p>
+    </div>
+    <div class="card">
+      <h3>以 Xe⁺ 為例</h3>
+      <p>如果一價 Xe⁺ 經過 1000 V 電位差，離子速度的尺度約為：</p>
+      <span class="eq">v ≈ 3.8 × 10⁴ m/s</span>
+      <p>也就是約 <b>38 km/s</b>。這比一般化學火箭的排氣速度尺度高很多。</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    真實推進器中還會有 beam divergence、grid losses、multiple charge states、ionization loss 等，因此實際效率不能只由這條理想公式決定。
+  </div>
+</section>
+
+<section id="neutralizer">
+  <div class="eyebrow">Part E</div>
+  <h2>5. Neutralizer：為什麼還要把電子加回去？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>只噴 Xe⁺ 會發生什麼事？</h3>
+      <p>如果太空船持續把正離子丟出去，太空船本體會留下過多電子，逐漸帶負電。</p>
+      <p>這個負電位會反過來吸引剛離開的 Xe⁺，最後妨礙 ion beam 繼續離開。</p>
+    </div>
+    <div class="card">
+      <h3>Neutralizer 的工作</h3>
+      <p>在推進器出口附近額外放出電子，讓正離子束在遠處保持近似電中性。</p>
+      <span class="eq">ion beam + electrons → quasi-neutral plume</span>
+      <p>這樣太空船才不會因持續噴出正離子而累積大量電荷。</p>
+    </div>
+  </div>
+</section>
+
+<section id="hall">
+  <div class="eyebrow">Part F</div>
+  <h2>6. Hall Thruster：用磁場困住電子，用電場加速離子</h2>
+
+  <div class="card">
+    <svg class="svgbox" viewBox="0 0 1120 470" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrH1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#ffd166"/>
+        </marker>
+        <marker id="arrH2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#55d6e8"/>
+        </marker>
+      </defs>
+      <rect width="1120" height="470" rx="18" fill="#091726"/>
+      <text x="30" y="42" fill="#55d6e8" font-size="24" font-weight="700">Hall Thruster：簡化原理圖</text>
+
+      <rect x="95" y="125" width="420" height="220" rx="26" fill="#102941" stroke="#2a4967" stroke-width="4"/>
+      <rect x="180" y="165" width="245" height="140" rx="18" fill="#07111f" stroke="#2a4967" stroke-width="3"/>
+      <text x="180" y="112" fill="#edf6ff" font-size="19">Annular discharge channel</text>
+
+      <line x1="20" y1="235" x2="95" y2="235" stroke="#55d6e8" stroke-width="5" marker-end="url(#arrH2)"/>
+      <text x="25" y="210" fill="#55d6e8" font-size="18">Xe</text>
+
+      <g fill="#b79cff">
+        <circle cx="265" cy="210" r="14"/><circle cx="330" cy="265" r="14"/>
+        <circle cx="395" cy="205" r="14"/>
+      </g>
+      <g fill="#ffd166">
+        <circle cx="235" cy="270" r="6"/><circle cx="360" cy="220" r="6"/>
+      </g>
+
+      <g stroke="#b79cff" stroke-width="3">
+        <line x1="470" y1="130" x2="470" y2="340"/>
+        <line x1="490" y1="130" x2="490" y2="340"/>
+      </g>
+      <text x="450" y="105" fill="#b79cff" font-size="17">B field</text>
+
+      <g stroke="#ffd166" stroke-width="5" marker-end="url(#arrH1)">
+        <line x1="515" y1="185" x2="940" y2="185"/>
+        <line x1="515" y1="245" x2="980" y2="245"/>
+        <line x1="515" y1="305" x2="940" y2="305"/>
+      </g>
+      <text x="680" y="155" fill="#ffd166" font-size="20">Xe⁺ accelerated outward</text>
+
+      <path d="M520 365 C590 330 635 405 700 360 C755 320 805 395 855 360" fill="none" stroke="#55d6e8" stroke-width="4"/>
+      <text x="615" y="415" fill="#55d6e8" font-size="18">electron Hall drift / neutralizer electrons</text>
+
+      <text x="735" y="442" fill="#a9bdd2" font-size="17">Magnetic field strongly affects electrons; ions are mainly accelerated by the electric field.</text>
+    </svg>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>電子</h3>
+      <span class="eq">F⃗ = q(E⃗ + v⃗ × B⃗)</span>
+      <p>電子質量小，容易受到磁場影響，在 channel 附近形成強烈的橫向 Hall motion。</p>
+    </div>
+    <div class="card">
+      <h3>離子</h3>
+      <p>Xe⁺ 質量大得多，磁場對其軌跡的影響相對較弱，主要受到軸向電場加速，形成高速離子 plume。</p>
+    </div>
+  </div>
+</section>
+
+<section id="propellant">
+  <div class="eyebrow">Part G</div>
+  <h2>7. 為什麼常用 Xenon？也可以用 Krypton 嗎？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Xenon (Xe)</h3>
+      <ul>
+        <li>惰性氣體，化學上穩定</li>
+        <li>原子質量大，單位離子可攜帶較多動量</li>
+        <li>容易儲存與控制</li>
+        <li>成熟電推進系統中非常常見</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Krypton (Kr)</h3>
+      <ul>
+        <li>同樣是惰性氣體</li>
+        <li>原子質量比 Xe 小</li>
+        <li>在部分系統中可作為成本或供應面的替代方案</li>
+        <li>推進器設計與工作點需要重新最佳化</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip">
+    推進劑的選擇不只看原子量，還要考慮游離能、儲存密度、供應系統、成本、材料相容性與整個 thruster 的最佳工作點。
+  </div>
+</section>
+
+<section id="compare">
+  <div class="eyebrow">Part H</div>
+  <h2>8. Chemical Rocket、Gridded Ion、Hall Thruster 比較</h2>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>特徵</th>
+          <th>Chemical Rocket</th>
+          <th>Gridded Ion Thruster</th>
+          <th>Hall Thruster</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>主要能量來源</td>
+          <td>化學反應</td>
+          <td>外部電力</td>
+          <td>外部電力</td>
+        </tr>
+        <tr>
+          <td>主要加速方式</td>
+          <td>高溫氣體膨脹</td>
+          <td>靜電 grid 加速離子</td>
+          <td>電場加速離子，磁場控制電子</td>
+        </tr>
+        <tr>
+          <td>排氣速度</td>
+          <td>較低</td>
+          <td>很高</td>
+          <td>很高</td>
+        </tr>
+        <tr>
+          <td>推力</td>
+          <td>高</td>
+          <td>低</td>
+          <td>低～中（視系統尺度）</td>
+        </tr>
+        <tr>
+          <td>適合工作方式</td>
+          <td>短時間、高加速度</td>
+          <td>長時間、高效率</td>
+          <td>長時間、高效率</td>
+        </tr>
+        <tr>
+          <td>典型太空用途</td>
+          <td>Launch / major maneuver</td>
+          <td>Deep-space / precision propulsion</td>
+          <td>Orbit raising / station keeping / constellations</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Part I</div>
+  <h2>9. Specific Impulse：為什麼電推進這麼省推進劑？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Specific impulse</h3>
+      <span class="eq">I<sub>sp</sub> = v<sub>e</sub> / g₀</span>
+      <p>I<sub>sp</sub> 的單位是秒，可以理解成「單位推進劑重量能提供多有效的推進效果」。</p>
+    </div>
+    <div class="card">
+      <h3>高排氣速度 → 高 Isp</h3>
+      <p>Ion thruster 的排氣速度可能達到數十 km/s，因此 specific impulse 可以遠高於傳統化學推進。</p>
+      <p>代價是：必須由衛星的 solar array / power system 提供電能，因此推力受可用電功率限制。</p>
+    </div>
+  </div>
+</section>
+
+<section id="calculator">
+  <div class="eyebrow">Interactive Lab</div>
+  <h2>10. 互動：從電壓直接算出 ion velocity、thrust 與 Isp</h2>
+
+  <div class="grid">
+    <div class="card">
+      <label>Ion species</label>
+      <select id="species" onchange="calcThruster()">
+        <option value="131.293">Xe⁺ (131.293 u)</option>
+        <option value="83.798">Kr⁺ (83.798 u)</option>
+        <option value="39.948">Ar⁺ (39.948 u)</option>
+      </select>
+
+      <label>Acceleration voltage ΔV (V)</label>
+      <input id="accV" type="range" min="100" max="3000" value="1000" step="50" oninput="calcThruster()">
+
+      <label>Mass flow ṁ (mg/s)</label>
+      <input id="mdot" type="range" min="0.1" max="5" value="1" step="0.1" oninput="calcThruster()">
+
+      <div class="result" id="thrusterResult"></div>
+    </div>
+
+    <div class="card">
+      <h3>使用的理想公式</h3>
+      <span class="eq">v = √(2qΔV/m)</span>
+      <span class="eq">F = ṁv</span>
+      <span class="eq">I<sub>sp</sub> = v/g₀</span>
+      <p class="small">這是單價離子、100% 加速與完全準直的理想模型。實際推進器的離子束發散、游離效率、加速效率、multiple charge states 與 power processing losses 都會讓真實結果不同。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Part J</div>
+  <h2>11. 為什麼 Ion Thruster 必須在真空中工作？</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>真空：離子可以自由飛很遠</h3>
+      <p>在低密度環境中，離子的 mean free path 很長，因此可以保持高速 beam，而不會立刻撞上大量空氣分子。</p>
+    </div>
+    <div class="card">
+      <h3>大氣：碰撞會迅速破壞 ion beam</h3>
+      <p>在一般大氣中，高速離子很快與中性分子碰撞，把動量傳給空氣。這就從「ion beam propulsion」變成更接近 electrohydrodynamic ion wind。</p>
+    </div>
+  </div>
+</section>
+
+<section id="ionburster">
+  <div class="eyebrow">Part K</div>
+  <h2>12. 真正的 Satellite Ion Thruster vs 我們的 Ion Burster</h2>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Satellite Ion Thruster</th>
+          <th>Atmospheric Ion Burster</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>工作環境</td>
+          <td>真空／太空</td>
+          <td>大氣</td>
+        </tr>
+        <tr>
+          <td>推進劑</td>
+          <td>Xe、Kr 等儲存氣體</td>
+          <td>周圍空氣</td>
+        </tr>
+        <tr>
+          <td>Plasma 產生</td>
+          <td>放電室或 Hall discharge</td>
+          <td>尖端 corona</td>
+        </tr>
+        <tr>
+          <td>動量主要由誰帶走</td>
+          <td>高速離子束</td>
+          <td>離子先撞中性空氣，再形成 bulk airflow</td>
+        </tr>
+        <tr>
+          <td>主要推力機制</td>
+          <td>Direct ion exhaust momentum</td>
+          <td>Electrohydrodynamic ion wind</td>
+        </tr>
+        <tr>
+          <td>共同核心</td>
+          <td colspan="2"><b>Electric field → charged particles → momentum transfer</b></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>這一章最重要的橋接：</b><br>
+    我們桌上的 Ion Burster 不是縮小版的衛星 ion thruster，但它讓學生可以在大氣中看見同一套基本物理：<b>高電壓建立電場 → 氣體游離 → 帶電粒子被加速 → 動量被傳遞。</b>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Misconceptions</div>
+  <h2>13. 五個常見誤解</h2>
+  <div class="grid">
+    <div class="card"><h3>「Ion thruster 推力很小，所以沒用」</h3><p>錯。太空沒有持續的大氣阻力，微小推力長時間累積可以產生很大的總 Δv。</p></div>
+    <div class="card"><h3>「Ion thruster 可以拿來從地面起飛」</h3><p>通常不行。它的推重比遠不足以像化學火箭一樣克服地球重力並穿越大氣。</p></div>
+    <div class="card"><h3>「電壓越高，推力一定成正比增加」</h3><p>不完全。理想單粒子速度與 √V 成正比，而實際推力還受質量流率與效率限制。</p></div>
+    <div class="card"><h3>「Neutralizer 只是裝飾」</h3><p>不是。沒有電子中和，太空船與 plume 的充電會妨礙持續排出正離子。</p></div>
+    <div class="card"><h3>「Ion Burster 就是衛星 ion thruster」</h3><p>不是。大氣中的 ion wind 與真空中的直接 ion beam propulsion 是不同機制。</p></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="eyebrow">Check your understanding</div>
+  <h2>14. 課堂小測</h2>
+
+  <div class="quizq">
+    <b>Q1. Ion thruster 為什麼可以用很少的推進劑？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。Ion thruster 的核心是非常高的排氣速度。')">因為排氣速度非常高</button>
+    <button class="secondary" onclick="answer(this,false,'它仍然需要推進劑。')">因為完全不需要推進劑</button>
+    <button class="secondary" onclick="answer(this,false,'低速反而需要更大的質量流率才能產生相同推力。')">因為排氣速度很低</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q2. Gridded ion thruster 中，什麼主要負責加速正離子？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。Grid 間的高電位差建立電場，直接加速正離子。')">電場</button>
+    <button class="secondary" onclick="answer(this,false,'磁場不是 gridded ion thruster 中加速離子的主要機制。')">只有磁場</button>
+    <button class="secondary" onclick="answer(this,false,'不是靠燃燒膨脹。')">高溫燃燒</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q3. Neutralizer 的主要用途是？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。Neutralizer 提供電子，使 ion plume 接近電中性並避免太空船持續充電。')">中和離子束與太空船充電</button>
+    <button class="secondary" onclick="answer(this,false,'它不是主要的推進劑儲槽。')">儲存 Xenon</button>
+    <button class="secondary" onclick="answer(this,false,'它不是用來冷卻太陽能板。')">冷卻 solar array</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q4. Hall thruster 中，磁場主要強烈影響哪一類粒子？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。電子質量很小，因此更容易被磁化並形成 Hall motion。')">電子</button>
+    <button class="secondary" onclick="answer(this,false,'Xe⁺ 質量大得多，通常主要由軸向電場加速。')">Xe⁺ 離子比電子更容易被磁場限制</button>
+    <button class="secondary" onclick="answer(this,false,'中性 Xe 不直接受到 Lorentz force。')">中性 Xe 原子</button>
+    <div class="feedback"></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Next</div>
+  <h2>下一章預告｜Ion Wind：如何把離子的動量傳給空氣？</h2>
+  <div class="card">
+    <p>Satellite ion thruster 的離子直接離開太空船；但我們的 Ion Burster 在大氣中工作，因此下一個問題是：</p>
+    <div class="flow">
+      Ion acceleration → Collision with neutrals → Momentum transfer → Bulk airflow → <b>Ion Wind</b>
+    </div>
+    <p>下一章會正式介紹 <b>electrohydrodynamics (EHD)</b>、ion drift、neutral collision 與推力來源，這會直接進入 90 分鐘實作課程的物理核心。</p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Teaching note</div>
+  <h2>教師使用提醒</h2>
+  <div class="card small">
+    <p>• 本章的 v = √(2qΔV/m)、F = ṁv、Isp = v/g₀ 均為理想化推進尺度公式，適合用來建立電推進直覺。</p>
+    <p>• 真實 gridded ion / Hall thruster 的性能還取決於 ionization efficiency、beam divergence、multiple charge states、grid losses、plume interaction 與 power processing efficiency。</p>
+    <p>• Atmospheric Ion Burster 與真空 ion thruster 應明確區分：前者主要依靠 ion-neutral momentum transfer 形成 EHD flow；後者主要直接利用 ion beam momentum。</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  Chapter 6｜Satellite Ion Thruster · Gridded Ion · Hall Thruster · Ion Burster 大學部教學網站
+</footer>
+
+<script>
+function calcThruster(){
+  const amu=parseFloat(document.getElementById('species').value);
+  const V=parseFloat(document.getElementById('accV').value);
+  const mdot_mgps=parseFloat(document.getElementById('mdot').value);
+  const e=1.602176634e-19;
+  const u=1.66053906660e-27;
+  const g0=9.80665;
+  const m=amu*u;
+  const v=Math.sqrt(2*e*V/m);
+  const mdot=mdot_mgps*1e-6;
+  const F=mdot*v;
+  const Isp=v/g0;
+  const beamPower=0.5*mdot*v*v;
+
+  document.getElementById('thrusterResult').innerHTML =
+    `ΔV = <b>${V.toFixed(0)} V</b>；ṁ = <b>${mdot_mgps.toFixed(1)} mg/s</b><br>`+
+    `Ion velocity v ≈ <b>${(v/1000).toFixed(1)} km/s</b><br>`+
+    `Ideal thrust F ≈ <b>${(F*1000).toFixed(1)} mN</b><br>`+
+    `Ideal I<sub>sp</sub> ≈ <b>${Isp.toFixed(0)} s</b><br>`+
+    `Ion kinetic power ≈ <b>${beamPower.toFixed(1)} W</b>`;
+}
+function answer(btn,ok,msg){
+  const box=btn.closest('.quizq'),fb=box.querySelector('.feedback');
+  fb.textContent=msg;fb.style.color=ok?'var(--good)':'var(--warn)';
+}
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const pct=(d.scrollTop/(d.scrollHeight-d.clientHeight))*100;
+  document.getElementById('progress').style.width=pct+'%';
+});
+calcThruster();
+</script>
+</body>
+</html>

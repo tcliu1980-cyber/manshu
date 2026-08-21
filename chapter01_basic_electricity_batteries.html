@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 1｜基本電學與電池</title>
+<style>
+:root{
+  --bg:#07111f;
+  --panel:#0e1d2e;
+  --panel2:#12263d;
+  --text:#edf6ff;
+  --muted:#a9bdd2;
+  --line:#2a4967;
+  --accent:#55d6e8;
+  --accent2:#ffd166;
+  --good:#6ee7a8;
+  --warn:#ffb86b;
+  --danger:#ff7272;
+  --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family: "Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 85% 8%,rgba(85,214,232,.12),transparent 25%),
+    radial-gradient(circle at 12% 28%,rgba(255,209,102,.08),transparent 23%),
+    var(--bg);
+  color:var(--text);
+  line-height:1.72;
+}
+a{color:var(--accent)}
+header{
+  min-height:72vh;
+  display:grid;
+  place-items:center;
+  padding:70px 22px 45px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hero{width:min(1120px,100%)}
+.eyebrow{
+  font-size:.88rem;
+  letter-spacing:.14em;
+  color:var(--accent);
+  text-transform:uppercase;
+  font-weight:800;
+}
+h1{
+  font-size:clamp(2.3rem,7vw,5.4rem);
+  line-height:1.02;
+  margin:.2em 0 .25em;
+}
+.hero p{
+  font-size:clamp(1.05rem,2.2vw,1.4rem);
+  max-width:850px;
+  color:var(--muted);
+}
+.flow{
+  margin-top:30px;
+  padding:18px 20px;
+  border:1px solid var(--line);
+  background:rgba(14,29,46,.72);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  overflow:auto;
+  white-space:nowrap;
+}
+.flow b{color:var(--accent2)}
+nav{
+  position:sticky; top:0; z-index:20;
+  background:rgba(7,17,31,.88);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.navin{
+  width:min(1120px,100%);
+  margin:auto;
+  padding:10px 18px;
+  display:flex;
+  gap:10px;
+  overflow:auto;
+}
+.navin a{
+  text-decoration:none;
+  color:var(--muted);
+  border:1px solid transparent;
+  padding:8px 12px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.navin a:hover{color:var(--text);border-color:var(--line);background:var(--panel)}
+main{width:min(1120px,100%);margin:auto;padding:35px 20px 90px}
+section{
+  margin:58px 0;
+  scroll-margin-top:80px;
+}
+h2{
+  font-size:clamp(1.65rem,4vw,2.55rem);
+  margin:0 0 8px;
+}
+h3{margin:0 0 8px}
+.lead{color:var(--muted);max-width:900px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{
+  background:linear-gradient(145deg,rgba(18,38,61,.9),rgba(10,25,41,.94));
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+.card .symbol{
+  font-family:Georgia,serif;
+  font-size:2.25rem;
+  color:var(--accent);
+}
+.card p{margin:.35em 0;color:var(--muted)}
+.eq{
+  display:block;
+  font-family:"Cambria Math",Cambria,serif;
+  font-size:1.45rem;
+  margin:10px 0;
+  color:#fff;
+}
+.tip{
+  border-left:4px solid var(--accent2);
+  background:rgba(255,209,102,.08);
+  border-radius:8px 16px 16px 8px;
+  padding:14px 16px;
+  margin:18px 0;
+}
+.callout{
+  border:1px solid rgba(85,214,232,.45);
+  background:rgba(85,214,232,.07);
+  border-radius:16px;
+  padding:18px;
+}
+label{font-weight:700}
+input,select,button{
+  font:inherit;
+}
+input,select{
+  width:100%;
+  margin:6px 0 12px;
+  background:#071421;
+  border:1px solid var(--line);
+  color:var(--text);
+  padding:11px 12px;
+  border-radius:10px;
+}
+button{
+  border:0;
+  border-radius:12px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:800;
+}
+.primary{background:var(--accent);color:#04202a}
+.secondary{background:#16324e;color:var(--text);border:1px solid var(--line)}
+.result{
+  font-size:1.15rem;
+  margin-top:12px;
+  padding:14px;
+  border-radius:12px;
+  background:#071421;
+  border:1px solid var(--line);
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
+}
+th,td{
+  padding:13px 12px;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+th{color:var(--accent);text-align:left;background:#0b1a2a}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+.battery-tabs{
+  display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;
+}
+.battery-tabs button.active{background:var(--accent);color:#04202a}
+.battery-detail{
+  min-height:220px;
+}
+.badge{
+  display:inline-block;
+  padding:4px 9px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  color:var(--muted);
+  margin:3px 3px 3px 0;
+  font-size:.9rem;
+}
+canvas{
+  width:100%;
+  background:#091726;
+  border:1px solid var(--line);
+  border-radius:16px;
+  display:block;
+}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.legend span{font-size:.9rem;color:var(--muted)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.quizq{
+  margin:18px 0;
+  padding:18px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:16px;
+}
+.quizq button{margin:5px 6px 0 0}
+.feedback{min-height:28px;margin-top:8px;font-weight:700}
+footer{
+  border-top:1px solid rgba(255,255,255,.08);
+  padding:34px 20px 50px;
+  color:var(--muted);
+}
+.small{font-size:.9rem;color:var(--muted)}
+.progress{
+  position:fixed;left:0;top:0;height:3px;background:var(--accent);z-index:50;width:0
+}
+@media(max-width:820px){
+  .grid,.grid4{grid-template-columns:1fr}
+  header{min-height:auto}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <div class="hero">
+    <div class="eyebrow">ION BURSTER · CHAPTER 1</div>
+    <h1>基本電學<br>與電池</h1>
+    <p>從「電荷如何移動」開始，建立電壓、電流、電阻、功率與能量的直覺，再比較不同電化學電源的放電特性。最後回到本課程的核心問題：<b>為什麼一顆 3.7 V 電池能驅動高壓模組？</b></p>
+    <div class="flow">
+      <b>化學能</b> → 電位差 → 電流 → 電功率 → Switching → 高電壓 → 強電場 → 氣體游離 → Plasma / Ion Burster
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navin">
+    <a href="#goals">學習目標</a>
+    <a href="#electricity">基本電學</a>
+    <a href="#power">功率與能量</a>
+    <a href="#battery">電池比較</a>
+    <a href="#curve">放電曲線</a>
+    <a href="#quiz">課堂小測</a>
+  </div>
+</nav>
+
+<main>
+<section id="goals">
+  <div class="eyebrow">Learning objectives</div>
+  <h2>學完這一章，你應該能回答什麼？</h2>
+  <div class="grid">
+    <div class="card"><h3>01｜電流是什麼？</h3><p>知道電流不是「電壓流過去」，而是單位時間通過截面的電荷量。</p></div>
+    <div class="card"><h3>02｜電壓是什麼？</h3><p>能用「每單位電荷可交換多少能量」來理解電位差。</p></div>
+    <div class="card"><h3>03｜電池為何會掉壓？</h3><p>理解開路電壓、工作電壓、內阻與放電曲線並不是同一件事。</p></div>
+    <div class="card"><h3>04｜3.7 V 怎麼變成高壓？</h3><p>知道電池提供的是能量來源，而高壓模組利用 switching 與電磁感應重新分配電壓與電流。</p></div>
+  </div>
+</section>
+
+<section id="electricity">
+  <div class="eyebrow">Part A</div>
+  <h2>1. 基本電學：先建立五個量</h2>
+  <p class="lead">在進入高壓以前，我們先把所有電路問題都會遇到的五個物理量放在同一張地圖裡。</p>
+
+  <div class="grid4">
+    <div class="card">
+      <div class="symbol">Q</div>
+      <h3>電荷 Charge</h3>
+      <span class="eq">Q [C]</span>
+      <p>物質帶電程度的物理量。電子帶負電，質子帶正電。</p>
+    </div>
+    <div class="card">
+      <div class="symbol">I</div>
+      <h3>電流 Current</h3>
+      <span class="eq">I = dQ/dt</span>
+      <p>每單位時間通過截面的電荷量。單位是安培 A = C/s。</p>
+    </div>
+    <div class="card">
+      <div class="symbol">V</div>
+      <h3>電壓 Voltage</h3>
+      <span class="eq">V = ΔU/Q</span>
+      <p>每單位電荷所對應的能量差。1 V = 1 J/C。</p>
+    </div>
+    <div class="card">
+      <div class="symbol">R</div>
+      <h3>電阻 Resistance</h3>
+      <span class="eq">V = IR</span>
+      <p>描述元件對電流的響應。對歐姆性元件而言，V 與 I 成正比。</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <b>不要把電壓想成「電流的量」。</b><br>
+    電壓描述的是能量差；電流描述的是電荷流率。兩者是不同物理量。
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>水流比喻：可以用，但不要用過頭</h3>
+      <p><b>電壓</b>可以類比成促使系統運動的壓力差；<b>電流</b>類比成流量；<b>電阻</b>類比成管路對流動的阻礙。</p>
+      <p>這個比喻適合建立直覺，但真正的電路仍應回到電場、電荷與能量來理解。</p>
+    </div>
+    <div class="card">
+      <h3>Ohm's law 快速計算</h3>
+      <label>電壓 V (V)</label>
+      <input id="ohmV" type="number" value="3.7" step="0.1">
+      <label>電阻 R (Ω)</label>
+      <input id="ohmR" type="number" value="100" step="1">
+      <button class="primary" onclick="calcOhm()">計算電流</button>
+      <div class="result" id="ohmResult">I = 37.0 mA</div>
+    </div>
+  </div>
+</section>
+
+<section id="power">
+  <div class="eyebrow">Part B</div>
+  <h2>2. 電功率與能量：高電壓不等於高功率</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>電功率</h3>
+      <span class="eq">P = VI</span>
+      <p>功率是每秒轉換多少能量。高電壓如果搭配極小電流，功率仍可能不大；反過來，低電壓也可以提供非常大的功率。</p>
+      <span class="eq">1 W = 1 J/s</span>
+    </div>
+    <div class="card">
+      <h3>電能</h3>
+      <span class="eq">E = Pt = VIt</span>
+      <p>電池「能撐多久」是能量問題；某瞬間「能輸出多少」則是功率問題。</p>
+      <span class="eq">1 Wh = 3600 J</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>互動：估算負載功率與耗能</h3>
+    <div class="grid">
+      <div>
+        <label>工作電壓 V (V)</label>
+        <input id="pV" type="number" value="3.7" step="0.1">
+        <label>工作電流 I (A)</label>
+        <input id="pI" type="number" value="1.0" step="0.1">
+      </div>
+      <div>
+        <label>工作時間 (min)</label>
+        <input id="pT" type="number" value="30" step="1">
+        <button class="primary" onclick="calcPower()">計算</button>
+        <div class="result" id="powerResult">P = 3.70 W；E = 1.85 Wh ≈ 6.66 kJ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>連回 Ion Burster：</b>3.7 V 鋰電池不是直接把「3.7 V 變成電弧」。它提供輸入能量；高壓模組先把直流切換成快速變化的電流，再透過變壓與高壓電路取得高電位差。下一章會專門討論這件事。
+  </div>
+</section>
+
+<section id="battery">
+  <div class="eyebrow">Part C</div>
+  <h2>3. 不同電池，其實是不同的電化學系統</h2>
+  <p class="lead">「1.5 V 電池」或「3.7 V 電池」只告訴我們一部分資訊。真正決定使用情境的還有內阻、可輸出電流、能量密度、放電曲線、可否充電，以及安全管理需求。</p>
+
+  <div class="battery-tabs">
+    <button class="secondary active" onclick="showBattery('zinc',this)">碳鋅電池</button>
+    <button class="secondary" onclick="showBattery('alkaline',this)">鹼性電池</button>
+    <button class="secondary" onclick="showBattery('nimh',this)">鎳氫電池 NiMH</button>
+    <button class="secondary" onclick="showBattery('lipo',this)">鋰聚合物電池</button>
+  </div>
+
+  <div class="card battery-detail" id="batteryDetail"></div>
+
+  <div class="tablewrap" style="margin-top:18px">
+    <table>
+      <thead>
+        <tr>
+          <th>種類</th>
+          <th>典型單電池電壓</th>
+          <th>放電特性</th>
+          <th>輸出能力</th>
+          <th>可否充電</th>
+          <th>典型使用場景</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>碳鋅</b><br><span class="small">Zinc–carbon</span></td>
+          <td>標稱約 1.5 V</td>
+          <td>隨放電逐步下降；高負載時電壓下陷明顯</td>
+          <td>較適合低耗電負載</td>
+          <td>一次電池</td>
+          <td>時鐘、遙控器、低功耗玩具、簡單教具</td>
+        </tr>
+        <tr>
+          <td><b>鹼性</b><br><span class="small">Alkaline</span></td>
+          <td>標稱約 1.5 V</td>
+          <td>放電平台通常比碳鋅穩定，容量也較高；仍會逐漸掉壓</td>
+          <td>中低功率負載表現佳</td>
+          <td>一般為一次電池</td>
+          <td>手電筒、無線滑鼠、量測設備、玩具</td>
+        </tr>
+        <tr>
+          <td><b>鎳氫電池</b><br><span class="small">NiMH</span></td>
+          <td>標稱約 1.2 V；充飽後開路電壓常高於 1.2 V</td>
+          <td>大部分放電區間電壓相對平坦，接近耗盡時才快速下降</td>
+          <td>可提供比碳鋅更高的電流；低內阻型適合中高負載</td>
+          <td>二次電池，可重複充電</td>
+          <td>相機閃光燈、玩具、無線設備、教學實驗、AA/AAA 高循環用途</td>
+        </tr>
+        <tr>
+          <td><b>鋰聚合物</b><br><span class="small">Li‑polymer</span></td>
+          <td>常見標稱約 3.7 V / cell；滿充常見 4.2 V</td>
+          <td>大部分 SOC 區間維持相對較高電壓，接近低電量端時下降加速</td>
+          <td>可設計為高輸出、低內阻</td>
+          <td>二次電池</td>
+          <td>無人機、RC、行動裝置、嵌入式系統、高瞬間功率設備</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip">
+    <b>教師提醒：</b>不要只比較「1.5 V、1.2 V、3.7 V」這些標稱電壓。實際選電池時，還必須一起看容量、內阻、瞬間輸出電流、自放電、重量、循環壽命與充電管理。NiMH 的 1.2 V 雖低於鹼性電池的 1.5 V，但在中高負載下往往能維持更穩定的工作電壓。
+  </div>
+</section>
+
+<section id="curve">
+  <div class="eyebrow">Part D</div>
+  <h2>4. 放電曲線：為什麼「剩 50% 電」不代表「只剩一半電壓」？</h2>
+  <p class="lead">下面是<b>概念示意圖</b>，用來比較曲線形狀，而不是任何特定廠牌或型號的 datasheet。實際曲線會隨負載電流、溫度、老化、截止電壓與電池尺寸而改變。</p>
+
+  <canvas id="curveCanvas" width="1000" height="480"></canvas>
+  <div class="legend">
+    <span><i class="dot" style="background:#f3c95b"></i>碳鋅（相對值）</span>
+    <span><i class="dot" style="background:#70d6ff"></i>鹼性（相對值）</span>
+    <span><i class="dot" style="background:#ff70a6"></i>Li‑polymer（相對值）</span>
+    <span><i class="dot" style="background:#77e59b"></i>NiMH（相對值）</span>
+  </div>
+
+  <div class="grid" style="margin-top:18px">
+    <div class="card">
+      <h3>碳鋅、鹼性：逐步下降</h3>
+      <p>一次電池的端電壓會隨反應物狀態、極化與內阻效應而逐步降低；負載越重，端電壓下陷通常越明顯。</p>
+    </div>
+    <div class="card">
+      <h3>NiMH、Li‑polymer：較明顯的工作平台</h3>
+      <p>NiMH 在大部分放電區間通常維持約 1.2 V 等級的平台；Li‑polymer 則維持較高的單 cell 電壓。兩者接近低 SOC 時都會出現較快速的電壓下降，因此不能把端電壓簡單視為線性的剩餘容量指標。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Part E</div>
+  <h2>5. 使用場景：為什麼 Ion Burster 選鋰電池？</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>低功耗、長時間</h3>
+      <p><span class="badge">碳鋅</span><span class="badge">鹼性</span></p>
+      <p>例如時鐘、遙控器、小型感測器。若瞬間輸出需求不高，成本與保存性通常比高功率能力更重要。</p>
+    </div>
+    <div class="card">
+      <h3>高功率、重量敏感</h3>
+      <p><span class="badge">Li‑polymer</span></p>
+      <p>無人機、模型飛行器、行動機器人與高壓模組輸入端常重視功率重量比與瞬間供電能力，因此鋰系電池非常常見。</p>
+    </div>
+    <div class="card">
+      <h3>可充電、反覆使用</h3>
+      <p><span class="badge">NiMH</span></p>
+      <p>NiMH 很適合 AA/AAA 可充電應用。它的單 cell 標稱電壓較低，但循環使用方便，而且在相機、玩具與需要中等以上電流的設備中通常比碳鋅更合適。</p>
+    </div>
+    <div class="card">
+      <h3>本課程的 3.7 V Li‑polymer</h3>
+      <p>它的角色是<b>低壓能量來源</b>。真正建立高電場的是下一級的 power electronics 與高壓輸出級，而不是電池本身。</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>重要安全概念：</b>Li‑polymer 電池具高能量與高輸出能力，需避免短路、過充、過放、刺穿與不合適的充電方式。課堂實作應使用已確認規格的電池、充電器與保護方式。
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="eyebrow">Check your understanding</div>
+  <h2>6. 課堂小測</h2>
+
+  <div class="quizq">
+    <b>Q1. 3.7 V、2 A 的負載，輸入功率是多少？</b><br>
+    <button class="secondary" onclick="answer(this,false,'再算一次：P = VI。')">1.85 W</button>
+    <button class="secondary" onclick="answer(this,true,'正確：P = 3.7 × 2 = 7.4 W。')">7.4 W</button>
+    <button class="secondary" onclick="answer(this,false,'注意電壓與電流要相乘。')">5.7 W</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q2. 哪個敘述最正確？</b><br>
+    <button class="secondary" onclick="answer(this,false,'高電壓本身不能決定功率，還要知道電流。')">電壓越高，功率一定越大</button>
+    <button class="secondary" onclick="answer(this,true,'正確。P = VI，因此需要同時知道 V 與 I。')">功率取決於電壓與電流</button>
+    <button class="secondary" onclick="answer(this,false,'電流與能量不是同一個物理量。')">電流就是電池剩餘能量</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q3. NiMH 與一般鹼性 AA 電池相比，哪個敘述最正確？</b><br>
+    <button class="secondary" onclick="answer(this,false,'NiMH 的典型標稱電壓約為 1.2 V，不是 3.7 V。')">NiMH 單 cell 標稱約 3.7 V</button>
+    <button class="secondary" onclick="answer(this,true,'正確：NiMH 可重複充電，而且在中高負載下通常具有良好的輸出能力。')">NiMH 可充電，且適合反覆使用與較高電流負載</button>
+    <button class="secondary" onclick="answer(this,false,'NiMH 在大部分放電區間通常有相對平坦的工作平台。')">NiMH 的電壓一定比碳鋅下降得更快</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q4. 為什麼 3.7 V Li‑polymer 適合做本課程高壓模組的輸入電源？</b><br>
+    <button class="secondary" onclick="answer(this,false,'電池本身仍然只有數伏特。')">因為它本身會直接產生數千伏</button>
+    <button class="secondary" onclick="answer(this,true,'正確：高壓由後級電力電子轉換產生；鋰電池負責提供低壓端能量與足夠輸出能力。')">因為它能提供低壓端所需能量與電流，再由高壓模組升壓</button>
+    <div class="feedback"></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Next</div>
+  <h2>下一章預告｜低電壓如何變成高電壓？</h2>
+  <div class="card">
+    <p style="font-size:1.15rem">下一章會從一個看似矛盾的問題開始：</p>
+    <p class="eq">3.7 V DC → ? → kV-level output</p>
+    <p>我們會介紹 switching、Faraday's law、transformer、匝數比，以及「電壓升高時，能量從哪裡來？」。</p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">References</div>
+  <h2>教學參考</h2>
+  <div class="card small">
+    <p>• 本頁的 NiMH、碳鋅、鹼性與 Li‑polymer 電壓與放電曲線採常見教學尺度呈現；不同廠牌、尺寸、負載與溫度條件下會有明顯差異。</p>
+    <p>• 本頁放電曲線為教學用概念示意，不代表任何特定電池廠牌或型號。正式工程設計應查閱實際 cell datasheet。</p>
+    <p>• 電池典型電壓為常見教材尺度；實際工作電壓會隨 chemistry、load、temperature、SOC、cell design 與 aging 改變。</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  Chapter 1｜基本電學與電池 · Ion Burster 大學部教學網站
+</footer>
+
+<script>
+function calcOhm(){
+  const v=parseFloat(document.getElementById('ohmV').value);
+  const r=parseFloat(document.getElementById('ohmR').value);
+  const el=document.getElementById('ohmResult');
+  if(!isFinite(v)||!isFinite(r)||r<=0){el.textContent='請輸入有效的 V 與 R。';return;}
+  const i=v/r;
+  el.textContent = i<1 ? `I = ${(i*1000).toFixed(2)} mA` : `I = ${i.toFixed(3)} A`;
+}
+function calcPower(){
+  const v=parseFloat(document.getElementById('pV').value);
+  const i=parseFloat(document.getElementById('pI').value);
+  const t=parseFloat(document.getElementById('pT').value);
+  const el=document.getElementById('powerResult');
+  if(![v,i,t].every(isFinite)||t<0){el.textContent='請輸入有效數值。';return;}
+  const p=v*i, wh=p*t/60, kj=wh*3.6;
+  el.textContent=`P = ${p.toFixed(2)} W；E = ${wh.toFixed(2)} Wh ≈ ${kj.toFixed(2)} kJ`;
+}
+const data={
+  zinc:{
+    title:'碳鋅電池 Zinc–carbon',
+    body:`<p><span class="badge">一次電池</span><span class="badge">約 1.5 V/cell</span><span class="badge">低成本</span></p>
+    <p><b>核心特色：</b>結構簡單、便宜，但內阻與高負載性能通常不如鹼性電池。當負載電流增加時，端電壓更容易明顯下降。</p>
+    <p><b>適合：</b>時鐘、遙控器、低功耗玩具、偶爾使用的簡單設備。</p>
+    <p><b>不適合：</b>馬達、高亮度照明、需要大瞬間電流的負載。</p>`},
+  alkaline:{
+    title:'鹼性電池 Alkaline',
+    body:`<p><span class="badge">一次電池</span><span class="badge">約 1.5 V/cell</span><span class="badge">容量較高</span></p>
+    <p><b>核心特色：</b>同尺寸下一般比碳鋅有較好的容量與中等負載表現，因此 AA/AAA 日常設備非常常見。</p>
+    <p><b>放電：</b>電壓並非固定 1.5 V，而會隨放電逐漸下降；負載、溫度與截止電壓都會影響可用容量。</p>
+    <p><b>適合：</b>手電筒、無線滑鼠、玩具、量測儀器與一般家電。</p>`},
+  nimh:{
+    title:'鎳氫電池 Nickel–metal hydride (NiMH)',
+    body:`<p><span class="badge">可充電</span><span class="badge">約 1.2 V/cell</span><span class="badge">良好循環壽命</span></p>
+    <p><b>核心特色：</b>NiMH 是常見的 AA/AAA 二次電池。雖然標稱電壓約 1.2 V，低於碳鋅與鹼性電池的 1.5 V，但它通常具有較低的內阻與較好的中高電流輸出能力。</p>
+    <p><b>放電：</b>電壓在大部分容量區間相對平坦，接近放完時才明顯快速下降。這種平台特性讓設備在大部分使用時間內維持較穩定的工作電壓。</p>
+    <p><b>自放電：</b>傳統 NiMH 的自放電較明顯；低自放電型（LSD NiMH）則改善很多，適合長時間待機與日常使用。</p>
+    <p><b>適合：</b>相機閃光燈、無線滑鼠、玩具、教學器材與需要反覆充放電的 AA/AAA 設備。</p>`},
+  lipo:{
+    title:'鋰聚合物電池 Lithium‑polymer',
+    body:`<p><span class="badge">可充電</span><span class="badge">常見標稱 3.7 V/cell</span><span class="badge">高功率重量比</span></p>
+    <p><b>核心特色：</b>重量輕、能量密度高，而且可設計成能供應較大的瞬間電流，因此廣泛使用於無人機、RC 與行動設備。</p>
+    <p><b>放電：</b>常見 cell 滿充約 4.2 V，工作過程中逐步下降，接近低 SOC 區域時電壓下降加快。不可只以「3.7 V」代表所有狀態。</p>
+    <p><b>課程角色：</b>提供高壓模組的低壓輸入能量。它本身不產生 kV；kV 來自後級 switching 與升壓電路。</p>`}
+};
+function showBattery(key,btn){
+  document.querySelectorAll('.battery-tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const d=data[key];
+  document.getElementById('batteryDetail').innerHTML=`<h3>${d.title}</h3>${d.body}`;
+}
+
+function answer(btn,ok,msg){
+  const box=btn.closest('.quizq');
+  const fb=box.querySelector('.feedback');
+  fb.textContent=msg;
+  fb.style.color=ok?'var(--good)':'var(--warn)';
+}
+function drawCurves(){
+  const c=document.getElementById('curveCanvas'),ctx=c.getContext('2d');
+  const W=c.width,H=c.height;
+  const L=80,R=30,T=35,B=65;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#091726';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#34516d';ctx.lineWidth=1;
+  for(let i=0;i<=10;i++){
+    let x=L+(W-L-R)*i/10;
+    ctx.beginPath();ctx.moveTo(x,T);ctx.lineTo(x,H-B);ctx.stroke();
+  }
+  for(let i=0;i<=5;i++){
+    let y=T+(H-T-B)*i/5;
+    ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(W-R,y);ctx.stroke();
+  }
+  ctx.fillStyle='#b9cadb';ctx.font='20px sans-serif';
+  ctx.fillText('相對端電壓',12,25);
+  ctx.fillText('已使用容量 / 可用燃料時間 →',W/2-115,H-18);
+  ctx.save();ctx.translate(25,H/2+70);ctx.rotate(-Math.PI/2);ctx.fillText('Normalized voltage',0,0);ctx.restore();
+
+  const curves=[
+    {color:'#f3c95b', f:x=>1.0-0.62*x-0.10*x*x},
+    {color:'#70d6ff', f:x=>1.0-0.38*x-0.20*x*x*x},
+    {color:'#ff70a6', f:x=>1.0-0.15*x-0.06*x*x-0.50*Math.pow(Math.max(0,x-.82)/.18,2)},
+    {color:'#77e59b', f:x=>0.88-0.08*x-0.38*Math.pow(Math.max(0,x-.84)/.16,2)}
+  ];
+  curves.forEach(cur=>{
+    ctx.strokeStyle=cur.color;ctx.lineWidth=5;ctx.beginPath();
+    for(let i=0;i<=200;i++){
+      const x=i/200, val=Math.max(.12,Math.min(1.04,cur.f(x)));
+      const px=L+x*(W-L-R), py=T+(1.05-val)/1.05*(H-T-B);
+      i?ctx.lineTo(px,py):ctx.moveTo(px,py);
+    }
+    ctx.stroke();
+  });
+  ctx.strokeStyle='#dceaf5';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(L,T);ctx.lineTo(L,H-B);ctx.lineTo(W-R,H-B);ctx.stroke();
+}
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const pct=(d.scrollTop/(d.scrollHeight-d.clientHeight))*100;
+  document.getElementById('progress').style.width=pct+'%';
+});
+window.addEventListener('resize',()=>{});
+showBattery('zinc',document.querySelector('.battery-tabs button'));
+calcOhm();calcPower();drawCurves();
+</script>
+</body>
+</html>

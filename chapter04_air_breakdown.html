@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 4｜Air Breakdown：空氣為什麼突然變成導體？</title>
+<style>
+:root{
+  --bg:#07111f; --panel:#0e1d2e; --panel2:#12263d; --text:#edf6ff; --muted:#a9bdd2;
+  --line:#2a4967; --accent:#55d6e8; --accent2:#ffd166; --good:#6ee7a8; --warn:#ffb86b;
+  --danger:#ff7272; --violet:#b79cff; --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 84% 8%,rgba(85,214,232,.12),transparent 25%),
+    radial-gradient(circle at 12% 34%,rgba(183,156,255,.09),transparent 22%),
+    var(--bg);
+  color:var(--text);line-height:1.72;
+}
+header{
+  min-height:72vh;display:grid;place-items:center;padding:70px 22px 45px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hero{width:min(1180px,100%)}
+.eyebrow{font-size:.88rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:800}
+h1{font-size:clamp(2.3rem,7vw,5.2rem);line-height:1.02;margin:.2em 0 .25em}
+h2{font-size:clamp(1.65rem,4vw,2.55rem);margin:0 0 8px}
+h3{margin:0 0 8px}
+.hero p,.lead{color:var(--muted);max-width:980px}
+.hero p{font-size:clamp(1.05rem,2.2vw,1.4rem)}
+.flow{
+  margin-top:30px;padding:18px 20px;border:1px solid var(--line);background:rgba(14,29,46,.72);
+  border-radius:18px;box-shadow:var(--shadow);overflow:auto;white-space:nowrap
+}
+.flow b{color:var(--accent2)}
+nav{
+  position:sticky;top:0;z-index:20;background:rgba(7,17,31,.90);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+.navin{width:min(1180px,100%);margin:auto;padding:10px 18px;display:flex;gap:10px;overflow:auto}
+.navin a{text-decoration:none;color:var(--muted);border:1px solid transparent;padding:8px 12px;border-radius:999px;white-space:nowrap}
+.navin a:hover{color:var(--text);border-color:var(--line);background:var(--panel)}
+main{width:min(1180px,100%);margin:auto;padding:35px 20px 90px}
+section{margin:58px 0;scroll-margin-top:80px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{
+  background:linear-gradient(145deg,rgba(18,38,61,.90),rgba(10,25,41,.95));
+  border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)
+}
+.card p{margin:.35em 0;color:var(--muted)}
+.eq{display:block;font-family:"Cambria Math",Cambria,serif;font-size:1.42rem;margin:10px 0;color:#fff}
+.tip{
+  border-left:4px solid var(--accent2);background:rgba(255,209,102,.08);
+  border-radius:8px 16px 16px 8px;padding:14px 16px;margin:18px 0
+}
+.safety{
+  border-left:4px solid var(--danger);background:rgba(255,114,114,.08);
+  border-radius:8px 16px 16px 8px;padding:16px;margin:18px 0
+}
+.callout{
+  border:1px solid rgba(85,214,232,.45);background:rgba(85,214,232,.07);
+  border-radius:16px;padding:18px
+}
+label{font-weight:700}
+input,button{font:inherit}
+input{
+  width:100%;margin:6px 0 12px;background:#071421;border:1px solid var(--line);
+  color:var(--text);padding:11px 12px;border-radius:10px
+}
+button{border:0;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:800}
+.primary{background:var(--accent);color:#04202a}
+.secondary{background:#16324e;color:var(--text);border:1px solid var(--line)}
+.result{font-size:1.08rem;margin-top:12px;padding:14px;border-radius:12px;background:#071421;border:1px solid var(--line)}
+canvas{width:100%;background:#091726;border:1px solid var(--line);border-radius:16px;display:block}
+.svgbox{width:100%;background:#091726;border:1px solid var(--line);border-radius:16px;display:block}
+.badge{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin:3px 3px 3px 0;font-size:.9rem}
+.quizq{margin:18px 0;padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:16px}
+.quizq button{margin:5px 6px 0 0}
+.feedback{min-height:28px;margin-top:8px;font-weight:700}
+.progress{position:fixed;left:0;top:0;height:3px;background:var(--accent);z-index:50;width:0}
+.small{font-size:.9rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th,td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent);text-align:left;background:#0b1a2a}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+footer{border-top:1px solid rgba(255,255,255,.08);padding:34px 20px 50px;color:var(--muted)}
+ul{margin:.3em 0 .8em 1.2em} li{margin:.35em 0}
+@media(max-width:920px){.grid,.grid3,.grid4{grid-template-columns:1fr}header{min-height:auto}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header>
+  <div class="hero">
+    <div class="eyebrow">ION BURSTER · CHAPTER 4</div>
+    <h1>Air Breakdown<br>空氣為什麼突然導電？</h1>
+    <p>正常空氣是很好的絕緣體，但在足夠強的電場中，一個自由電子就可能啟動連鎖碰撞。當電子倍增速度超過損失速度時，氣體會從「幾乎不導電」快速跨入<b>游離、電暈、火花甚至電弧</b>的狀態。</p>
+    <div class="flow">
+      Seed electron → Acceleration → Collision → <b>Ionization</b> → Townsend Avalanche → Corona / Spark / Arc
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navin">
+    <a href="#insulator">空氣是絕緣體？</a>
+    <a href="#collision">電子碰撞</a>
+    <a href="#avalanche">Townsend</a>
+    <a href="#mfp">平均自由程</a>
+    <a href="#paschen">Paschen</a>
+    <a href="#modes">Corona/Spark/Arc</a>
+    <a href="#ionburster">Ion Burster</a>
+    <a href="#quiz">小測驗</a>
+  </div>
+</nav>
+
+<main>
+<section id="insulator">
+  <div class="eyebrow">Part A</div>
+  <h2>1. 空氣明明是絕緣體，為什麼還會放電？</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>正常狀態：大部分粒子是中性的</h3>
+      <p>常溫常壓下，空氣主要由中性的 N₂、O₂ 等分子構成。自由電子與自由離子的數量很少，因此電導率很低。</p>
+      <svg class="svgbox" viewBox="0 0 700 280">
+        <rect width="700" height="280" rx="16" fill="#091726"/>
+        <text x="24" y="34" fill="#55d6e8" font-size="21" font-weight="700">正常空氣：大多數分子保持中性</text>
+        <g fill="#6fa8dc">
+          <circle cx="110" cy="115" r="14"/><circle cx="133" cy="115" r="14"/>
+          <circle cx="260" cy="170" r="14"/><circle cx="283" cy="170" r="14"/>
+          <circle cx="420" cy="100" r="14"/><circle cx="443" cy="100" r="14"/>
+        </g>
+        <g fill="#ff8f8f">
+          <circle cx="570" cy="175" r="13"/><circle cx="592" cy="175" r="13"/>
+        </g>
+        <circle cx="335" cy="80" r="5" fill="#ffd166"/>
+        <text x="350" y="85" fill="#ffd166" font-size="17">偶發自由電子 e⁻</text>
+        <text x="88" y="150" fill="#a9bdd2" font-size="16">N₂</text>
+        <text x="565" y="208" fill="#a9bdd2" font-size="16">O₂</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3>但「幾乎沒有」不等於「完全沒有」</h3>
+      <p>宇宙射線、天然放射線、紫外光、表面放射與熱擾動，都可能提供少量 seed electrons。</p>
+      <p>如果電場不夠強，這些電子很快被捕獲或復合，系統仍維持絕緣。</p>
+      <p>如果局部電場很強，情況就完全不同。</p>
+      <span class="eq">F⃗ = qE⃗</span>
+    </div>
+  </div>
+</section>
+
+<section id="collision">
+  <div class="eyebrow">Part B</div>
+  <h2>2. 一個電子如何把空氣「打成」帶電粒子？</h2>
+  <p class="lead">第三章的尖端電場，現在開始發揮作用。自由電子受到電場加速，在兩次碰撞之間取得動能。</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>電子在電場中取得能量</h3>
+      <span class="eq">ΔK ≈ eEλ</span>
+      <p>其中 λ 是電子在兩次碰撞之間的平均自由程。若電子累積的能量足以造成游離，就可能把一個中性分子撞成正離子與更多電子。</p>
+    </div>
+    <div class="card">
+      <h3>Electron-impact ionization</h3>
+      <span class="eq">e⁻ + N₂ → N₂⁺ + 2e⁻</span>
+      <span class="eq">e⁻ + O₂ → O₂⁺ + 2e⁻</span>
+      <p>一次碰撞後，原本 1 個自由電子可能變成 2 個可繼續加速的電子。</p>
+      <p class="small">典型第一游離能尺度：N₂ 約 15.6 eV，O₂ 約 12.1 eV；實際碰撞截面與放電動力學比單一能量門檻更複雜。</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>碰撞游離示意圖</h3>
+    <svg class="svgbox" viewBox="0 0 1000 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#ffd166"/>
+        </marker>
+      </defs>
+      <rect width="1000" height="340" rx="16" fill="#091726"/>
+      <text x="26" y="38" fill="#55d6e8" font-size="22" font-weight="700">電子加速 → 撞擊中性分子 → 游離</text>
+      <circle cx="120" cy="170" r="8" fill="#ffd166"/>
+      <text x="88" y="205" fill="#ffd166" font-size="18">e⁻</text>
+      <line x1="145" y1="170" x2="390" y2="170" stroke="#ffd166" stroke-width="5" marker-end="url(#arr1)"/>
+      <text x="205" y="140" fill="#a9bdd2" font-size="17">在 E 場中加速</text>
+
+      <circle cx="470" cy="170" r="22" fill="#6fa8dc"/>
+      <circle cx="505" cy="170" r="22" fill="#6fa8dc"/>
+      <text x="466" y="215" fill="#a9bdd2" font-size="18">N₂</text>
+
+      <text x="550" y="176" fill="#edf6ff" font-size="28">→</text>
+
+      <circle cx="670" cy="170" r="22" fill="#b79cff"/>
+      <circle cx="705" cy="170" r="22" fill="#b79cff"/>
+      <text x="665" y="215" fill="#b79cff" font-size="18">N₂⁺</text>
+
+      <circle cx="820" cy="130" r="8" fill="#ffd166"/>
+      <circle cx="855" cy="205" r="8" fill="#ffd166"/>
+      <text x="803" y="108" fill="#ffd166" font-size="18">e⁻</text>
+      <text x="860" y="230" fill="#ffd166" font-size="18">e⁻</text>
+    </svg>
+  </div>
+</section>
+
+<section id="avalanche">
+  <div class="eyebrow">Part C</div>
+  <h2>3. Townsend Avalanche：電子雪崩</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>從 1 個電子到很多電子</h3>
+      <p>如果每一代電子都能在被損失前再次造成游離，電子數就會快速增加。</p>
+      <span class="eq">N(x) = N₀ e<sup>αx</sup></span>
+      <p>α 稱為 <b>first Townsend ionization coefficient</b>，代表電子沿著場方向每單位距離造成有效游離的程度。</p>
+    </div>
+    <div class="card">
+      <h3>為什麼是「雪崩」？</h3>
+      <p>因為這不是線性增加：</p>
+      <span class="eq">1 → 2 → 4 → 8 → 16 → 32 → …</span>
+      <p>每增加一代，都會產生更多可以繼續碰撞的電子。</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>互動：看電子數如何指數增加</h3>
+    <label>總增殖參數 αx</label>
+    <input id="alphaX" type="range" min="0" max="7" value="3" step="0.1" oninput="updateAvalanche()">
+    <div class="result" id="avalancheResult"></div>
+    <canvas id="avalancheCanvas" width="1000" height="330"></canvas>
+    <p class="small">這是 Townsend exponential growth 的教學視覺化，不是特定空氣間隙的實際放電模擬。</p>
+  </div>
+</section>
+
+<section id="mfp">
+  <div class="eyebrow">Part D</div>
+  <h2>4. Mean Free Path：為什麼碰撞距離也很重要？</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>平均自由程 λ</h3>
+      <p>電子不會一路無碰撞地加速。它會在氣體分子之間飛行一段距離後碰撞。</p>
+      <span class="eq">Energy gain ≈ eEλ</span>
+      <p>如果 λ 太短，電子來不及取得足夠能量；如果氣體太稀薄，雖然 λ 變長，但可碰撞的分子又可能太少。</p>
+    </div>
+    <div class="card">
+      <h3>這就是壓力為什麼重要</h3>
+      <ul>
+        <li>高壓：分子密集，碰撞頻繁，λ 小</li>
+        <li>低壓：分子稀疏，λ 大，但碰撞機會下降</li>
+        <li>因此擊穿條件不是單純「壓力越低越容易」</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>互動：一次自由飛行可以取得多少能量？</h3>
+    <div class="grid">
+      <div>
+        <label>Electric field E (kV/m)</label>
+        <input id="energyE" type="range" min="10" max="1000" value="200" step="10" oninput="updateEnergy()">
+        <label>Mean free path λ (µm)</label>
+        <input id="lambda" type="range" min="1" max="200" value="50" step="1" oninput="updateEnergy()">
+      </div>
+      <div>
+        <div class="result" id="energyResult"></div>
+        <p class="small">因為 1 eV 是一個電子跨越 1 V 電位差得到的能量，所以 eEλ 換成 eV 時，數值上等於 E·λ 所對應的電位差（V）。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="paschen">
+  <div class="eyebrow">Part E</div>
+  <h2>5. Paschen's Law：擊穿電壓不是只由距離決定</h2>
+  <p class="lead">對近似均勻場的氣體間隙，擊穿電壓通常可用壓力 p 與距離 d 的乘積來描述。</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Paschen law 的一般形式</h3>
+      <span class="eq">V<sub>B</sub> = Bpd / [ ln(Apd) − ln{ln(1 + 1/γ<sub>se</sub>)} ]</span>
+      <p>A、B 與氣體種類有關，γ<sub>se</sub> 與電極表面的二次電子放射有關。</p>
+      <p>這裡最重要的不是背常數，而是理解：</p>
+      <span class="eq">V<sub>B</sub> = f(pd)</span>
+    </div>
+    <div class="card">
+      <h3>為什麼會有一個 minimum？</h3>
+      <p><b>pd 太大：</b>碰撞太頻繁，電子每次自由飛行取得的能量太少。</p>
+      <p><b>pd 太小：</b>分子太少，電子雖可加速很久，但不容易找到足夠碰撞對象。</p>
+      <p><b>中間區域：</b>能量獲取與碰撞機率取得平衡，因此最容易擊穿。</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>Paschen curve 概念圖</h3>
+    <canvas id="paschenCanvas" width="1000" height="430"></canvas>
+    <p class="small">此圖為概念示意，不對應特定氣體的數值常數。實際空氣擊穿還會受到濕度、電極形狀、表面狀態與非均勻場影響。</p>
+  </div>
+
+  <div class="tip">
+    <b>和本課程的關係：</b>我們使用的是尖針對鋁箔／collector 的高度非均勻場，因此不能把平行板 Paschen law 直接當成精確的 needle-to-plane 擊穿公式；它主要用來理解 p 與 d 為什麼共同影響放電。
+  </div>
+</section>
+
+<section id="modes">
+  <div class="eyebrow">Part F</div>
+  <h2>6. Corona、Spark、Arc 到底差在哪？</h2>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>① Corona 放電</h3>
+      <svg class="svgbox" viewBox="0 0 320 230">
+        <rect width="320" height="230" rx="14" fill="#091726"/>
+        <polygon points="35,100 145,115 35,130" fill="none" stroke="#ff7070" stroke-width="6"/>
+        <line x1="270" y1="55" x2="270" y2="175" stroke="#70a5ff" stroke-width="8"/>
+        <g fill="#b79cff">
+          <circle cx="152" cy="103" r="5"/><circle cx="160" cy="118" r="6"/><circle cx="150" cy="132" r="4"/>
+          <circle cx="174" cy="111" r="4"/><circle cx="178" cy="129" r="4"/>
+        </g>
+        <text x="77" y="205" fill="#b79cff" font-size="18">局部游離區</text>
+      </svg>
+      <p>只有高場區附近形成明顯游離，整個電極間隙並沒有建立穩定高導電通道。</p>
+      <p><span class="badge">局部</span><span class="badge">可持續</span><span class="badge">Ion wind 關鍵</span></p>
+    </div>
+
+    <div class="card">
+      <h3>② Spark 火花放電</h3>
+      <svg class="svgbox" viewBox="0 0 320 230">
+        <rect width="320" height="230" rx="14" fill="#091726"/>
+        <polygon points="35,100 120,115 35,130" fill="none" stroke="#ff7070" stroke-width="6"/>
+        <line x1="275" y1="55" x2="275" y2="175" stroke="#70a5ff" stroke-width="8"/>
+        <polyline points="122,115 150,92 177,132 205,98 232,125 270,112" fill="none" stroke="#ffd166" stroke-width="7"/>
+        <text x="85" y="205" fill="#ffd166" font-size="18">短暫導電通道</text>
+      </svg>
+      <p>電子雪崩與 streamer 發展到跨越間隙，形成短暫導電路徑，常伴隨「啪」聲與亮光。</p>
+      <p><span class="badge">短暫</span><span class="badge">跨隙</span><span class="badge">高場崩潰</span></p>
+    </div>
+
+    <div class="card">
+      <h3>③ Arc 電弧</h3>
+      <svg class="svgbox" viewBox="0 0 320 230">
+        <rect width="320" height="230" rx="14" fill="#091726"/>
+        <line x1="40" y1="115" x2="110" y2="115" stroke="#ff7070" stroke-width="9"/>
+        <line x1="270" y1="115" x2="200" y2="115" stroke="#70a5ff" stroke-width="9"/>
+        <path d="M110 115 C140 75 170 155 200 115" fill="none" stroke="#fff2a6" stroke-width="13"/>
+        <path d="M110 115 C140 75 170 155 200 115" fill="none" stroke="#ffd166" stroke-width="5"/>
+        <text x="87" y="205" fill="#ffb86b" font-size="18">高溫導電 plasma channel</text>
+      </svg>
+      <p>一旦形成穩定高溫、高導電 plasma channel，電流可大幅上升，電極加熱與材料侵蝕都會變得明顯。</p>
+      <p><span class="badge">穩定通道</span><span class="badge">高溫</span><span class="badge">高電流</span></p>
+    </div>
+  </div>
+
+  <div class="tablewrap" style="margin-top:18px">
+    <table>
+      <thead>
+        <tr>
+          <th>特徵</th>
+          <th>Corona</th>
+          <th>Spark</th>
+          <th>Arc</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>游離範圍</td><td>局部高場區</td><td>短暫跨越間隙</td><td>形成穩定導電通道</td></tr>
+        <tr><td>持續時間</td><td>可持續</td><td>通常很短</td><td>可持續</td></tr>
+        <tr><td>電流尺度</td><td>相對較低</td><td>瞬間上升</td><td>通常明顯較高</td></tr>
+        <tr><td>熱效應</td><td>較小</td><td>局部瞬間加熱</td><td>很強</td></tr>
+        <tr><td>Ion Burster</td><td><b>希望使用</b></td><td>通常應避免</td><td><b>應避免</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="ionburster">
+  <div class="eyebrow">Part G</div>
+  <h2>7. Ion Burster 真正想要的是「受控游離」，不是大電弧</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>我們想建立的狀態</h3>
+      <div class="flow" style="margin-top:0">
+        Sharp tip → Strong local E → <b>Corona</b> → Ions → Momentum transfer → Ion wind
+      </div>
+      <p>尖端附近產生局部游離，但不要讓整個間隙形成低阻抗、高電流的 plasma channel。</p>
+    </div>
+    <div class="card">
+      <h3>如果變成 Arc？</h3>
+      <ul>
+        <li>輸入能量大量變成熱</li>
+        <li>電極可能快速升溫</li>
+        <li>材料侵蝕增加</li>
+        <li>有效 ion wind 不一定增加</li>
+        <li>安全風險明顯提高</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <b>這是整堂課的一個重要工程觀念：</b><br>
+    「產生 plasma」不是目的本身；真正的設計問題是如何讓 plasma 出現在<b>需要的位置、需要的尺度、需要的工作模式</b>。
+  </div>
+
+  <div class="safety">
+    <b>實作安全與操作邊界：</b>課堂目標是觀察受控的放電起始與 corona 現象，不應把「拉長火花」或「維持電弧」當成競賽目標。任何電極位置調整，都應在斷電並完成安全放電後進行。
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Microscopic picture</div>
+  <h2>8. 把整個氣體擊穿過程串起來</h2>
+  <div class="card">
+    <svg class="svgbox" viewBox="0 0 1080 390" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L9,3 L0,6 Z" fill="#55d6e8"/>
+        </marker>
+      </defs>
+      <rect width="1080" height="390" rx="16" fill="#091726"/>
+      <text x="30" y="40" fill="#55d6e8" font-size="22" font-weight="700">從一顆自由電子到可見放電</text>
+
+      <g font-size="18" text-anchor="middle">
+        <rect x="35" y="105" width="150" height="90" rx="14" fill="#102941" stroke="#2a4967"/>
+        <text x="110" y="140" fill="#edf6ff">Seed</text><text x="110" y="168" fill="#ffd166">electron e⁻</text>
+
+        <rect x="225" y="105" width="150" height="90" rx="14" fill="#102941" stroke="#2a4967"/>
+        <text x="300" y="140" fill="#edf6ff">Acceleration</text><text x="300" y="168" fill="#ffd166">F = qE</text>
+
+        <rect x="415" y="105" width="150" height="90" rx="14" fill="#102941" stroke="#2a4967"/>
+        <text x="490" y="140" fill="#edf6ff">Collision</text><text x="490" y="168" fill="#a9bdd2">N₂ / O₂</text>
+
+        <rect x="605" y="105" width="150" height="90" rx="14" fill="#102941" stroke="#2a4967"/>
+        <text x="680" y="140" fill="#edf6ff">Ionization</text><text x="680" y="168" fill="#b79cff">ion + 2e⁻</text>
+
+        <rect x="795" y="105" width="150" height="90" rx="14" fill="#102941" stroke="#2a4967"/>
+        <text x="870" y="140" fill="#edf6ff">Avalanche</text><text x="870" y="168" fill="#ffd166">e^(αx)</text>
+      </g>
+
+      <g stroke="#55d6e8" stroke-width="4" marker-end="url(#arr2)">
+        <line x1="185" y1="150" x2="220" y2="150"/>
+        <line x1="375" y1="150" x2="410" y2="150"/>
+        <line x1="565" y1="150" x2="600" y2="150"/>
+        <line x1="755" y1="150" x2="790" y2="150"/>
+      </g>
+
+      <line x1="870" y1="195" x2="870" y2="250" stroke="#55d6e8" stroke-width="4"/>
+      <line x1="870" y1="250" x2="300" y2="250" stroke="#55d6e8" stroke-width="4"/>
+      <line x1="300" y1="250" x2="300" y2="285" stroke="#55d6e8" stroke-width="4"/>
+
+      <text x="300" y="325" text-anchor="middle" fill="#6ee7a8" font-size="20">局部、受控 → Corona</text>
+      <text x="550" y="325" text-anchor="middle" fill="#ffd166" font-size="20">跨越間隙 → Spark</text>
+      <text x="820" y="325" text-anchor="middle" fill="#ff8b73" font-size="20">高電流穩定通道 → Arc</text>
+    </svg>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Misconceptions</div>
+  <h2>9. 五個常見誤解</h2>
+  <div class="grid">
+    <div class="card"><h3>「空氣完全沒有自由電子」</h3><p>不對。背景輻射、光與環境過程會提供少量 seed charges。</p></div>
+    <div class="card"><h3>「只要電壓夠高就一定擊穿」</h3><p>擊穿同時與電場分布、距離、壓力、氣體與電極條件有關。</p></div>
+    <div class="card"><h3>「壓力越低越容易放電」</h3><p>不一定。太低壓時碰撞機率也會下降，這正是 Paschen curve 出現 minimum 的原因。</p></div>
+    <div class="card"><h3>「看到光就是 Arc」</h3><p>不對。Corona、spark、glow 與 arc 都可能發光，但放電機制與電流尺度不同。</p></div>
+    <div class="card"><h3>「Ion Burster 越會打火越好」</h3><p>不對。Ion wind 更需要的是受控 corona，而不是高溫 arc。</p></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="eyebrow">Check your understanding</div>
+  <h2>10. 課堂小測</h2>
+
+  <div class="quizq">
+    <b>Q1. Townsend avalanche 最核心的物理機制是？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。電子被加速後碰撞游離氣體，產生更多電子，形成倍增。')">電子撞擊游離造成電子倍增</button>
+    <button class="secondary" onclick="answer(this,false,'升溫不是 Townsend avalanche 的核心定義。')">空氣先被加熱到熔化</button>
+    <button class="secondary" onclick="answer(this,false,'磁場不是本章氣體游離的主要機制。')">磁場把所有分子拉開</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q2. 為什麼氣壓太低時不一定更容易擊穿？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。分子太少時，即使電子自由飛行很遠，也可能缺乏足夠碰撞來維持雪崩。')">可碰撞的分子太少</button>
+    <button class="secondary" onclick="answer(this,false,'電子並不會因為低壓就全部消失。')">因為電子全部消失</button>
+    <button class="secondary" onclick="answer(this,false,'低壓不是單純讓電壓變成零。')">因為電壓會自動變成零</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q3. 哪一種放電最符合 Ion Burster 希望使用的工作狀態？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確。局部 corona 可以產生大量離子，同時避免建立高電流、高溫 arc channel。')">Corona</button>
+    <button class="secondary" onclick="answer(this,false,'Spark 是短暫跨隙擊穿，不是主要工作狀態。')">Spark</button>
+    <button class="secondary" onclick="answer(this,false,'Arc 會造成高溫與材料侵蝕，通常應避免。')">Arc</button>
+    <div class="feedback"></div>
+  </div>
+
+  <div class="quizq">
+    <b>Q4. 在簡化圖像中，電子在一次自由飛行中得到的能量尺度約為？</b><br>
+    <button class="secondary" onclick="answer(this,true,'正確：ΔK ≈ eEλ。')">eEλ</button>
+    <button class="secondary" onclick="answer(this,false,'這是電容能量形式，不是電子自由飛行的能量尺度。')">½CV²</button>
+    <button class="secondary" onclick="answer(this,false,'這是機械動量，不是本題所問的能量增益。')">mv</button>
+    <div class="feedback"></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Next</div>
+  <h2>下一章預告｜Plasma：游離氣體何時可以稱為電漿？</h2>
+  <div class="card">
+    <p>到了這裡，我們已經產生電子、正離子與中性粒子的混合系統。下一章會正式進入 <b>Plasma</b>：</p>
+    <ul>
+      <li>Plasma 為什麼不是「普通的高溫氣體」？</li>
+      <li>quasi-neutrality 是什麼？</li>
+      <li>Debye shielding 是什麼？</li>
+      <li>cold plasma 與 thermal plasma 有什麼差別？</li>
+      <li>半導體、醫療、核融合、太空科技如何利用 plasma？</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Teaching note</div>
+  <h2>教師使用提醒</h2>
+  <div class="card small">
+    <p>• Townsend 公式 N = N₀e^(αx) 用來建立電子倍增直覺；真實氣體放電包含 attachment、secondary emission、space charge、streamer 等更完整機制。</p>
+    <p>• Paschen law 最適合用於近似均勻場。尖針—平板幾何屬於強烈非均勻場，因此本章將 Paschen curve 用作概念框架，而非精確預測工具。</p>
+    <p>• 學生實作應聚焦在受控 corona 與放電型態辨識，不以產生強烈火花或維持電弧為目標。</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  Chapter 4｜Air Breakdown · Townsend Avalanche · Corona / Spark / Arc · Ion Burster 大學部教學網站
+</footer>
+
+<script>
+function updateAvalanche(){
+  const ax=parseFloat(document.getElementById('alphaX').value);
+  const mult=Math.exp(ax);
+  document.getElementById('avalancheResult').textContent =
+    `αx = ${ax.toFixed(1)} → N/N₀ = e^(αx) ≈ ${mult.toFixed(1)} 倍`;
+
+  const c=document.getElementById('avalancheCanvas'),ctx=c.getContext('2d');
+  const W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#091726';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#34516d';ctx.lineWidth=1;
+  for(let i=0;i<=10;i++){let x=65+(W-100)*i/10;ctx.beginPath();ctx.moveTo(x,30);ctx.lineTo(x,H-55);ctx.stroke();}
+  for(let i=0;i<=5;i++){let y=30+(H-85)*i/5;ctx.beginPath();ctx.moveTo(65,y);ctx.lineTo(W-35,y);ctx.stroke();}
+  ctx.strokeStyle='#ffd166';ctx.lineWidth=5;ctx.beginPath();
+  const maxY=Math.exp(ax);
+  for(let i=0;i<=160;i++){
+    const t=i/160, x=65+t*(W-100), val=Math.exp(ax*t);
+    const norm=(val-1)/(Math.max(1.001,maxY)-1);
+    const y=H-55-norm*(H-105);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+  ctx.fillStyle='#b9cadb';ctx.font='18px sans-serif';
+  ctx.fillText('electron number N',10,25);
+  ctx.fillText('distance x →',W-145,H-18);
+}
+function updateEnergy(){
+  const E_kVm=parseFloat(document.getElementById('energyE').value);
+  const lam_um=parseFloat(document.getElementById('lambda').value);
+  const E=E_kVm*1000, lam=lam_um*1e-6;
+  const volts=E*lam;
+  document.getElementById('energyResult').innerHTML =
+    `E = ${E_kVm.toFixed(0)} kV/m；λ = ${lam_um.toFixed(0)} µm<br>`+
+    `eEλ ≈ <b>${volts.toFixed(2)} eV</b><br>`+
+    `<span class="small">比較尺度：O₂ 第一游離能約 12.1 eV；N₂ 約 15.6 eV。</span>`;
+}
+function drawPaschen(){
+  const c=document.getElementById('paschenCanvas'),ctx=c.getContext('2d');
+  const W=c.width,H=c.height,L=80,R=35,T=35,B=65;
+  ctx.fillStyle='#091726';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#34516d';ctx.lineWidth=1;
+  for(let i=0;i<=10;i++){let x=L+(W-L-R)*i/10;ctx.beginPath();ctx.moveTo(x,T);ctx.lineTo(x,H-B);ctx.stroke();}
+  for(let i=0;i<=5;i++){let y=T+(H-T-B)*i/5;ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(W-R,y);ctx.stroke();}
+  ctx.strokeStyle='#dceaf5';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,T);ctx.lineTo(L,H-B);ctx.lineTo(W-R,H-B);ctx.stroke();
+
+  ctx.strokeStyle='#55d6e8';ctx.lineWidth=5;ctx.beginPath();
+  for(let i=0;i<=250;i++){
+    const t=i/250; 
+    const x=L+t*(W-L-R);
+    // Conceptual U-shaped curve with shallow minimum
+    const u=(t-0.43);
+    const val=0.16 + 0.95*u*u + 0.18/(t+0.08);
+    const norm=Math.min(1, val/1.25);
+    const y=T+norm*(H-T-B);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+
+  const xm=L+0.43*(W-L-R), ym=T+0.30*(H-T-B);
+  ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(xm,ym,7,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#ffd166';ctx.font='18px sans-serif';ctx.fillText('Paschen minimum',xm+14,ym-8);
+  ctx.fillStyle='#b9cadb';ctx.fillText('Breakdown voltage V_B',10,25);ctx.fillText('p × d →',W-105,H-18);
+  ctx.fillText('太低：碰撞太少',105,H-90);ctx.fillText('太高：自由程太短',W-310,H-90);
+}
+function answer(btn,ok,msg){
+  const box=btn.closest('.quizq'),fb=box.querySelector('.feedback');
+  fb.textContent=msg;fb.style.color=ok?'var(--good)':'var(--warn)';
+}
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const pct=(d.scrollTop/(d.scrollHeight-d.clientHeight))*100;
+  document.getElementById('progress').style.width=pct+'%';
+});
+updateAvalanche();updateEnergy();drawPaschen();
+</script>
+</body>
+</html>
