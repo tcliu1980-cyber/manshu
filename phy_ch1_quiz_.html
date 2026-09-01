@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>普通物理學 第一章線上測驗｜物理量、單位與數量級</title>
+  <style>
+    :root{
+      --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#657089;
+      --line:#dfe5ef; --accent:#2457d6; --accent-soft:#eef3ff;
+      --ok:#16834a; --ok-soft:#eaf8f0; --bad:#c23737; --bad-soft:#fff0f0;
+      --warn:#9a6500; --warn-soft:#fff7e0;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:var(--bg); color:var(--text); line-height:1.65;
+      font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    }
+    .wrap{width:min(900px,calc(100% - 28px));margin:28px auto 64px}
+    .hero,.card{
+      background:var(--card);border:1px solid var(--line);border-radius:18px;
+      box-shadow:0 10px 28px rgba(25,45,90,.06);
+    }
+    .hero{padding:26px;margin-bottom:18px}
+    .card{padding:24px;margin-bottom:18px}
+    h1{margin:0 0 8px;font-size:clamp(1.65rem,3vw,2.35rem);line-height:1.25}
+    h2{margin:0 0 16px;font-size:1.35rem}
+    h3{margin:0 0 10px;font-size:1.06rem}
+    p{margin:8px 0}
+    .muted{color:var(--muted)}
+    .hidden{display:none!important}
+    label{font-weight:650}
+    input[type="text"]{
+      width:100%;font-size:1rem;margin-top:8px;padding:12px 14px;
+      border:1px solid #bdc7d8;border-radius:10px;outline:none;
+    }
+    input[type="text"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+    button{
+      border:0;border-radius:10px;padding:11px 18px;font-size:1rem;
+      font-weight:750;cursor:pointer;
+    }
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .primary{background:var(--accent);color:#fff}
+    .secondary{background:#eef1f6;color:var(--text)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .notice{
+      padding:12px 14px;border-radius:10px;background:var(--warn-soft);
+      color:#6f4b00;margin-top:14px;
+    }
+    .meta{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;
+    }
+    .meta>div{
+      background:#fafbfe;border:1px solid var(--line);border-radius:12px;padding:11px 13px;
+    }
+    .meta strong{display:block;font-size:.82rem;color:var(--muted);font-weight:650}
+    .meta span{font-variant-numeric:tabular-nums}
+    .progress{
+      height:9px;background:#e8edf6;border-radius:999px;overflow:hidden;margin:6px 0 20px;
+    }
+    .progress>div{height:100%;background:var(--accent);width:0%;transition:width .2s ease}
+    .timer-wrap{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0 20px;
+      background:#fbfcff;
+    }
+    .timer-label{color:var(--muted);font-weight:650}
+    .timer{
+      min-width:112px;text-align:center;font-size:1.55rem;font-weight:850;
+      font-variant-numeric:tabular-nums;color:var(--accent);
+    }
+    .timer.warning{color:var(--warn)}
+    .timer.danger{color:var(--bad)}
+    .timer-bar{
+      flex:1;height:12px;background:#e8edf6;border-radius:999px;overflow:hidden;
+    }
+    .timer-bar>div{height:100%;background:var(--accent);width:100%;transition:width .25s linear}
+    .question-box{
+      padding:20px;border:1px solid var(--line);border-radius:14px;background:#fff;
+    }
+    .qtitle{font-size:1.13rem;font-weight:780;margin-bottom:16px}
+    .option{
+      display:flex;gap:10px;align-items:flex-start;padding:12px 13px;
+      border:1px solid var(--line);border-radius:10px;margin:9px 0;cursor:pointer;
+      background:#fff;transition:.15s ease;
+    }
+    .option:hover{border-color:#9eb0d4;background:#fbfcff}
+    .option:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+    .option input{margin-top:5px}
+    .score{font-size:2rem;font-weight:850;color:var(--accent);margin:8px 0}
+    .result-grid{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:10px 18px;margin:16px 0;
+    }
+    .result-grid div{
+      padding:12px 14px;border:1px solid var(--line);background:#fafbfe;border-radius:10px;
+    }
+    .badge{
+      display:inline-block;padding:4px 9px;border-radius:999px;font-size:.84rem;
+      font-weight:750;margin-right:6px;
+    }
+    .badge.ok{background:var(--ok-soft);color:var(--ok)}
+    .badge.bad{background:var(--bad-soft);color:var(--bad)}
+    .badge.warn{background:var(--warn-soft);color:var(--warn)}
+    .review-item{
+      border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;
+    }
+    .review-item.ok{border-left:5px solid var(--ok)}
+    .review-item.bad{border-left:5px solid var(--bad)}
+    .answer-line{margin-top:7px}
+    .explain{
+      margin-top:10px;padding:10px 12px;border-radius:8px;background:#f5f7fb;color:#3e4a61;
+    }
+    @media(max-width:680px){
+      .meta,.result-grid{grid-template-columns:1fr}
+      .timer-wrap{flex-wrap:wrap}
+      .timer-bar{order:3;flex-basis:100%}
+      .hero,.card{padding:18px}
+      .wrap{margin-top:16px}
+    }
+    @media print{
+      body{background:#fff}
+      .actions,#quizPanel{display:none!important}
+      .hero,.card{box-shadow:none}
+      #resultPanel{display:block!important}
+    }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <h1>普通物理學 第一章線上測驗</h1>
+    <p>主題：物理量、SI / CGS 單位、數量級、SI 前綴、基本量、導出量與量綱分析</p>
+    <p class="muted">20 題單選題，每題 5 分，總分 100 分。每題作答上限 90 秒。</p>
+  </section>
+
+  <section id="startPanel" class="card">
+    <h2>開始測驗</h2>
+    <label for="studentName">學生姓名</label>
+    <input id="studentName" type="text" maxlength="40" autocomplete="name" placeholder="請輸入姓名" />
+    <div class="notice">
+      按下「開始作答」後才開始計時。每題最多 90 秒；時間到時若已選擇答案，系統會自動送出該答案；若完全未選擇，該題記為未作答、0 分。
+      進入下一題後不可返回修改。
+    </div>
+    <div class="actions"><button id="startBtn" class="primary">開始作答</button></div>
+  </section>
+
+  <section id="quizPanel" class="card hidden">
+    <div class="meta">
+      <div><strong>學生姓名</strong><span id="nameDisplay">—</span></div>
+      <div><strong>開始時間</strong><span id="startDisplay">—</span></div>
+      <div><strong>目前題目</strong><span id="progressText">1 / 20</span></div>
+    </div>
+    <div class="progress"><div id="progressBar"></div></div>
+
+    <div class="timer-wrap">
+      <div>
+        <div class="timer-label">本題剩餘時間</div>
+        <div id="timer" class="timer">01:30</div>
+      </div>
+      <div class="timer-bar"><div id="timerBar"></div></div>
+    </div>
+
+    <div id="questionBox" class="question-box"></div>
+
+    <div class="actions">
+      <button id="nextBtn" class="primary">確認答案並進入下一題</button>
+    </div>
+  </section>
+
+  <section id="resultPanel" class="card hidden">
+    <h2>成績統計</h2>
+    <div id="scoreText" class="score"></div>
+    <div class="result-grid">
+      <div><strong>學生姓名</strong><br><span id="resultName"></span></div>
+      <div><strong>總成績</strong><br><span id="resultScore"></span></div>
+      <div><strong>開始作答時間</strong><br><span id="resultStart"></span></div>
+      <div><strong>結束作答時間</strong><br><span id="resultEnd"></span></div>
+      <div><strong>總作答時間</strong><br><span id="resultDuration"></span></div>
+      <div><strong>答題結果</strong><br><span id="resultCount"></span></div>
+    </div>
+    <div class="actions">
+      <button class="secondary" onclick="window.print()">列印成績</button>
+      <button class="secondary" onclick="location.reload()">重新測驗</button>
+    </div>
+
+    <h2 style="margin-top:28px">逐題檢討</h2>
+    <div id="review"></div>
+  </section>
+</main>
+
+<script>
+const QUESTION_TIME_LIMIT = 90; // seconds
+const POINTS_PER_QUESTION = 5;
+
+const QUESTIONS = [
+  {
+    q:"一個完整的物理量通常應包含哪兩個部分？",
+    options:["數值與單位","公式與圖形","座標與方向","名稱與符號"],
+    answer:"數值與單位",
+    explain:"物理量通常表示為「數值 × 單位」，例如長度 2.5 m。"
+  },
+  {
+    q:"CGS 制中的 C、G、S 分別代表哪一組基本單位？",
+    options:["centimeter、gram、second","coulomb、gram、second","centimeter、kilogram、second","centimeter、gram、siemens"],
+    answer:"centimeter、gram、second",
+    explain:"CGS 名稱來自 centimeter、gram、second，即 cm、g、s。"
+  },
+  {
+    q:"下列 SI 前綴與倍率的配對，哪一組全部正確？",
+    options:[
+      "milli = 10⁻³、micro = 10⁻⁶、nano = 10⁻⁹、pico = 10⁻¹²、femto = 10⁻¹⁵",
+      "milli = 10⁻⁶、micro = 10⁻³、nano = 10⁻⁹、pico = 10⁻¹²、femto = 10⁻¹⁵",
+      "milli = 10⁻³、micro = 10⁻⁶、nano = 10⁻¹²、pico = 10⁻⁹、femto = 10⁻¹⁵",
+      "milli = 10³、micro = 10⁶、nano = 10⁹、pico = 10¹²、femto = 10¹⁵"
+    ],
+    answer:"milli = 10⁻³、micro = 10⁻⁶、nano = 10⁻⁹、pico = 10⁻¹²、femto = 10⁻¹⁵",
+    explain:"milli、micro、nano、pico、femto 依序為 10⁻³、10⁻⁶、10⁻⁹、10⁻¹²、10⁻¹⁵。"
+  },
+  {
+    q:"下列 SI 前綴與倍率的配對，哪一組全部正確？",
+    options:[
+      "kilo = 10³、mega = 10⁶、giga = 10⁹、tera = 10¹²",
+      "kilo = 10⁶、mega = 10³、giga = 10⁹、tera = 10¹²",
+      "kilo = 10³、mega = 10⁹、giga = 10⁶、tera = 10¹²",
+      "kilo = 10⁻³、mega = 10⁻⁶、giga = 10⁻⁹、tera = 10⁻¹²"
+    ],
+    answer:"kilo = 10³、mega = 10⁶、giga = 10⁹、tera = 10¹²",
+    explain:"kilo、mega、giga、tera 依序為 10³、10⁶、10⁹、10¹²；其中 mega 的符號是大寫 M。"
+  },
+  {
+    q:"下列哪一個長度最大？",
+    options:["1 mm","1 μm","1 nm","1 pm"],
+    answer:"1 mm",
+    explain:"1 mm = 10⁻³ m，而 μm、nm、pm 分別為 10⁻⁶ m、10⁻⁹ m、10⁻¹² m。"
+  },
+  {
+    q:"下列哪一組物理量寫法都符合一般 SI 書寫規範？",
+    options:["5 kg、25 °C、300 K","5kg、25°C、300 °K","5 Kg、25° C、300 K","5 kgs、25 C°、300°K"],
+    answer:"5 kg、25 °C、300 K",
+    explain:"數值與單位符號間通常留空格；kg 使用小寫且不加複數 s；攝氏寫作 °C；kelvin 寫作 K，不使用 °。"
+  },
+  {
+    q:"SI 中的「基本量（base quantity）」最適合用下列哪一項描述？",
+    options:["在 SI 中選定為彼此獨立基礎的一組物理量","任何可以用公式計算出的物理量","只要單位中沒有斜線的物理量","所有可以用 CGS 表示的物理量"],
+    answer:"在 SI 中選定為彼此獨立基礎的一組物理量",
+    explain:"SI 以七個基本量作為建立其他物理量與單位的基礎。"
+  },
+  {
+    q:"下列哪一個是 SI 基本量？",
+    options:["電流","速度","力","能量"],
+    answer:"電流",
+    explain:"SI 七個基本量包含長度、質量、時間、電流、熱力學溫度、物質量與發光強度。速度、力與能量都是導出量。"
+  },
+  {
+    q:"下列哪一組全部都是 SI 基本量？",
+    options:["長度、質量、時間、電流","長度、速度、時間、電流","質量、力、時間、溫度","能量、物質量、長度、時間"],
+    answer:"長度、質量、時間、電流",
+    explain:"長度、質量、時間與電流皆為 SI 基本量；速度、力與能量屬於導出量。"
+  },
+  {
+    q:"下列何者是「導出量（derived quantity）」？",
+    options:["速度","時間","質量","熱力學溫度"],
+    answer:"速度",
+    explain:"速度由長度除以時間得到，因此是導出量，其 SI 單位為 m/s。"
+  },
+  {
+    q:"Newton（N）是力的 SI 導出單位。1 N 可以寫成哪一項？",
+    options:["1 kg·m·s⁻²","1 kg·m·s⁻¹","1 kg·m²·s⁻²","1 kg·m⁻¹·s⁻²"],
+    answer:"1 kg·m·s⁻²",
+    explain:"由 F = ma，質量單位為 kg，加速度為 m/s²，因此 1 N = 1 kg·m·s⁻²。"
+  },
+  {
+    q:"若以 M、L、T 分別代表質量、長度、時間的量綱，速度 v 的量綱為何？",
+    options:["LT⁻¹","LT⁻²","MLT⁻¹","L²T⁻¹"],
+    answer:"LT⁻¹",
+    explain:"速度 = 距離 / 時間，因此 [v] = L/T = LT⁻¹。"
+  },
+  {
+    q:"加速度 a 的量綱為何？",
+    options:["LT⁻²","LT⁻¹","L²T⁻²","MLT⁻²"],
+    answer:"LT⁻²",
+    explain:"加速度 = 速度 / 時間，因此 [a] = LT⁻¹/T = LT⁻²。"
+  },
+  {
+    q:"由 F = ma 判斷，力 F 的量綱為何？",
+    options:["MLT⁻²","MLT⁻¹","ML²T⁻²","M⁻¹LT⁻²"],
+    answer:"MLT⁻²",
+    explain:"[F] = [m][a] = M × LT⁻² = MLT⁻²。"
+  },
+  {
+    q:"由動能 K = ½mv² 判斷，能量的量綱為何？",
+    options:["ML²T⁻²","MLT⁻²","ML²T⁻¹","M²LT⁻²"],
+    answer:"ML²T⁻²",
+    explain:"[K] = M(LT⁻¹)² = ML²T⁻²；常數 1/2 沒有量綱。"
+  },
+  {
+    q:"壓力 P = F/A。若 [F] = MLT⁻²、[A] = L²，則壓力的量綱為何？",
+    options:["ML⁻¹T⁻²","MLT⁻²","ML²T⁻²","M⁻¹LT⁻²"],
+    answer:"ML⁻¹T⁻²",
+    explain:"[P] = [F]/[A] = MLT⁻²/L² = ML⁻¹T⁻²。"
+  },
+  {
+    q:"下列哪一個運動學關係式在量綱上是正確的？其中 x 為長度、v 為速度、a 為加速度、t 為時間。",
+    options:["x = vt","x = vt²","v = at²","x = v/t"],
+    answer:"x = vt",
+    explain:"[vt] = (LT⁻¹)(T) = L，與 x 的長度量綱相同。其他選項的左右兩側量綱不同。"
+  },
+  {
+    q:"對公式 v² = u² + 2as 做量綱分析時，三個主要項 v²、u²、as 的共同量綱為何？",
+    options:["L²T⁻²","LT⁻²","L²T⁻¹","ML²T⁻²"],
+    answer:"L²T⁻²",
+    explain:"[v²] = [u²] = (LT⁻¹)² = L²T⁻²；[as] = (LT⁻²)(L) = L²T⁻²。"
+  },
+  {
+    q:"1 m² 等於多少 cm²？",
+    options:["10⁴ cm²","10² cm²","10³ cm²","10⁶ cm²"],
+    answer:"10⁴ cm²",
+    explain:"1 m = 100 cm，因此 1 m² = (100 cm)² = 10⁴ cm²。"
+  },
+  {
+    q:"汽車以 72 km/h 行駛，換算成 SI 單位後的速率是多少？",
+    options:["20 m/s","72 m/s","7.2 m/s","200 m/s"],
+    answer:"20 m/s",
+    explain:"72 km/h × (1000 m / 1 km) × (1 h / 3600 s) = 20 m/s。"
+  }
+];
+
+let studentName = "";
+let startTime = null;
+let endTime = null;
+let currentIndex = 0;
+let displayedQuestions = [];
+let results = [];
+let timerInterval = null;
+let questionStartMs = null;
+let questionDeadlineMs = null;
+let questionLocked = false;
+
+function shuffleArray(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function formatDate(d){
+  return new Intl.DateTimeFormat("zh-TW",{
+    year:"numeric",month:"2-digit",day:"2-digit",
+    hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false
+  }).format(d);
+}
+
+function formatDuration(ms){
+  const total=Math.max(0,Math.floor(ms/1000));
+  const h=Math.floor(total/3600), m=Math.floor((total%3600)/60), s=total%60;
+  if(h>0) return `${h} 小時 ${m} 分 ${s} 秒`;
+  return `${m} 分 ${s} 秒`;
+}
+
+function formatQuestionSeconds(sec){
+  return `${Math.max(0, sec).toFixed(1)} 秒`;
+}
+
+function startQuiz(){
+  studentName=document.getElementById("studentName").value.trim();
+  if(!studentName){
+    alert("請先輸入學生姓名。");
+    document.getElementById("studentName").focus();
+    return;
+  }
+
+  displayedQuestions=QUESTIONS.map((item,idx)=>({
+    ...item,
+    number:idx+1,
+    shuffledOptions:shuffleArray(item.options)
+  }));
+
+  startTime=new Date();
+  currentIndex=0;
+  results=[];
+
+  document.getElementById("nameDisplay").textContent=studentName;
+  document.getElementById("startDisplay").textContent=formatDate(startTime);
+  document.getElementById("startPanel").classList.add("hidden");
+  document.getElementById("quizPanel").classList.remove("hidden");
+
+  showQuestion();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showQuestion(){
+  clearInterval(timerInterval);
+  questionLocked=false;
+
+  const item=displayedQuestions[currentIndex];
+  document.getElementById("progressText").textContent=`${currentIndex+1} / ${displayedQuestions.length}`;
+  document.getElementById("progressBar").style.width=`${(currentIndex/displayedQuestions.length)*100}%`;
+  document.getElementById("nextBtn").textContent =
+    currentIndex === displayedQuestions.length-1 ? "確認答案並完成測驗" : "確認答案並進入下一題";
+
+  document.getElementById("questionBox").innerHTML=`
+    <div class="qtitle">${item.number}. ${item.q}</div>
+    ${item.shuffledOptions.map((opt,oi)=>`
+      <label class="option">
+        <input type="radio" name="currentQuestion" value="${encodeURIComponent(opt)}">
+        <span>${String.fromCharCode(65+oi)}. ${opt}</span>
+      </label>
+    `).join("")}
+  `;
+
+  questionStartMs=Date.now();
+  questionDeadlineMs=questionStartMs + QUESTION_TIME_LIMIT*1000;
+  updateTimer();
+  timerInterval=setInterval(updateTimer,250);
+}
+
+function updateTimer(){
+  const remainingMs=questionDeadlineMs-Date.now();
+  const remainingSec=Math.max(0,Math.ceil(remainingMs/1000));
+  const timer=document.getElementById("timer");
+  const timerBar=document.getElementById("timerBar");
+
+  const min=Math.floor(remainingSec/60);
+  const sec=remainingSec%60;
+  timer.textContent=`${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+  timerBar.style.width=`${Math.max(0,remainingMs)/(QUESTION_TIME_LIMIT*1000)*100}%`;
+
+  timer.classList.toggle("warning",remainingSec<=30 && remainingSec>10);
+  timer.classList.toggle("danger",remainingSec<=10);
+
+  if(remainingMs<=0){
+    clearInterval(timerInterval);
+    finalizeCurrentQuestion(true);
+  }
+}
+
+function finalizeCurrentQuestion(timedOut=false){
+  if(questionLocked) return;
+  questionLocked=true;
+  clearInterval(timerInterval);
+
+  const item=displayedQuestions[currentIndex];
+  const checked=document.querySelector('input[name="currentQuestion"]:checked');
+  const selected=checked ? decodeURIComponent(checked.value) : null;
+  const elapsedMs=Math.min(QUESTION_TIME_LIMIT*1000, Math.max(0, Date.now()-questionStartMs));
+  const isCorrect=selected !== null && selected===item.answer;
+
+  results.push({
+    ...item,
+    selected,
+    isCorrect,
+    timedOut,
+    elapsedMs,
+    points:isCorrect ? POINTS_PER_QUESTION : 0
+  });
+
+  currentIndex++;
+
+  if(currentIndex<displayedQuestions.length){
+    showQuestion();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }else{
+    finishQuiz();
+  }
+}
+
+function finishQuiz(){
+  endTime=new Date();
+  document.getElementById("quizPanel").classList.add("hidden");
+  document.getElementById("resultPanel").classList.remove("hidden");
+
+  const correct=results.filter(r=>r.isCorrect).length;
+  const unanswered=results.filter(r=>r.selected===null).length;
+  const wrong=results.length-correct-unanswered;
+  const score=results.reduce((sum,r)=>sum+r.points,0);
+
+  document.getElementById("scoreText").textContent=`${score} 分`;
+  document.getElementById("resultName").textContent=studentName;
+  document.getElementById("resultScore").textContent=`${score} / 100`;
+  document.getElementById("resultStart").textContent=formatDate(startTime);
+  document.getElementById("resultEnd").textContent=formatDate(endTime);
+  document.getElementById("resultDuration").textContent=formatDuration(endTime-startTime);
+  document.getElementById("resultCount").textContent=
+    `答對 ${correct} 題；答錯 ${wrong} 題；未作答 ${unanswered} 題`;
+
+  document.getElementById("review").innerHTML=results.map((item,idx)=>{
+    let statusClass=item.isCorrect ? "ok" : "bad";
+    let badge=item.isCorrect
+      ? `<span class="badge ok">答對 +5 分</span>`
+      : item.selected===null
+        ? `<span class="badge warn">未作答 0 分</span>`
+        : `<span class="badge bad">答錯 0 分</span>`;
+
+    let timeoutBadge=item.timedOut
+      ? `<span class="badge warn">90 秒時間到</span>`
+      : "";
+
+    return `
+      <div class="review-item ${statusClass}">
+        <h3>${idx+1}. ${item.q}</h3>
+        ${badge}${timeoutBadge}
+        <div class="answer-line"><strong>本題使用時間：</strong>${formatQuestionSeconds(item.elapsedMs/1000)}</div>
+        <div class="answer-line"><strong>你的答案：</strong>${item.selected ?? "未作答"}</div>
+        ${item.isCorrect ? "" : `<div class="answer-line"><strong>正確答案：</strong>${item.answer}</div>`}
+        <div class="explain"><strong>解析：</strong>${item.explain}</div>
+      </div>
+    `;
+  }).join("");
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+document.getElementById("startBtn").addEventListener("click",startQuiz);
+
+document.getElementById("nextBtn").addEventListener("click",()=>{
+  if(questionLocked) return;
+  const checked=document.querySelector('input[name="currentQuestion"]:checked');
+
+  if(!checked){
+    const ok=confirm("你尚未選擇答案。若繼續，本題將以「未作答」計 0 分，且無法返回修改。是否繼續？");
+    if(!ok) return;
+  }
+  finalizeCurrentQuestion(false);
+});
+
+// Prevent accidental form-like Enter from starting/reloading unexpectedly.
+document.getElementById("studentName").addEventListener("keydown",(e)=>{
+  if(e.key==="Enter") startQuiz();
+});
+
+// Warn students before accidentally leaving during an active quiz.
+window.addEventListener("beforeunload",(e)=>{
+  const quizActive=!document.getElementById("quizPanel").classList.contains("hidden");
+  if(quizActive){
+    e.preventDefault();
+    e.returnValue="";
+  }
+});
+</script>
+</body>
+</html>
