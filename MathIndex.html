@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>First-Order ODE 教學海報目錄</title>
+  <style>
+    :root{
+      --navy:#0b2f6b;
+      --blue:#1559a8;
+      --ink:#172033;
+      --muted:#5f6b7a;
+      --line:#d9e2ef;
+      --paper:#ffffff;
+      --bg:#f4f7fb;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+      line-height:1.55;
+    }
+    header{
+      background:linear-gradient(135deg,#082858,#114b91);
+      color:#fff;
+      padding:38px 22px 30px;
+      text-align:center;
+    }
+    header h1{margin:0;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:.02em}
+    header p{margin:10px auto 0;max-width:820px;opacity:.92;font-size:1.05rem}
+    .wrap{width:min(1380px,94vw);margin:0 auto}
+    nav{
+      position:sticky;top:0;z-index:20;
+      background:rgba(255,255,255,.96);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--line);
+      box-shadow:0 3px 15px rgba(17,38,70,.06);
+    }
+    nav .wrap{display:flex;gap:8px;overflow-x:auto;padding:10px 0;white-space:nowrap}
+    nav a{
+      color:var(--navy);text-decoration:none;font-weight:700;font-size:.92rem;
+      border:1px solid #c9d7e9;border-radius:999px;padding:7px 12px;background:#fff;
+    }
+    nav a:hover{background:#edf4ff}
+    main{padding:28px 0 55px}
+    section{scroll-margin-top:80px;margin:0 0 34px}
+    .section-title{
+      display:flex;align-items:baseline;gap:12px;margin:0 0 16px;padding-bottom:8px;border-bottom:3px solid var(--navy)
+    }
+    .section-title h2{margin:0;color:var(--navy);font-size:1.55rem}
+    .section-title span{color:var(--muted);font-size:.95rem}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+    .card{
+      background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+      box-shadow:0 8px 24px rgba(16,39,75,.08);
+    }
+    .thumb{background:#e9eef6;aspect-ratio:1/1.414;overflow:hidden;display:flex;align-items:flex-start;justify-content:center}
+    .thumb img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+    .meta{padding:14px 16px 16px}
+    .meta h3{margin:0 0 6px;font-size:1.08rem;color:#102f63}
+    .meta p{margin:0;color:var(--muted);font-size:.92rem}
+    .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+    .btn{
+      display:inline-block;text-decoration:none;border-radius:9px;padding:7px 11px;font-weight:700;font-size:.88rem
+    }
+    .view{background:var(--navy);color:#fff}
+    .download{background:#eef4fc;color:var(--navy);border:1px solid #c7d8ef}
+    footer{border-top:1px solid var(--line);background:#fff;color:var(--muted);text-align:center;padding:24px 16px}
+    @media(max-width:760px){
+      .grid{grid-template-columns:1fr}
+      header{padding-top:28px}
+    }
+    @media print{
+      nav,.actions{display:none}
+      body{background:#fff}
+      .card{break-inside:avoid;box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>First-Order ODE 教學海報目錄</h1>
+    <p>Chapter 1 · 一階常微分方程｜英文版、中文版與進階主題海報</p>
+  </div>
+</header>
+<nav>
+  <div class="wrap">
+    <a href="#intro">ODE Introduction</a>
+    <a href="#solution">Order & Initial Condition</a>
+    <a href="#separable">Separation</a>
+    <a href="#linear">Linear ODE</a>
+    <a href="#if">Integrating Factor</a>
+    <a href="#exact">Exact</a>
+    <a href="#homogeneous">Homogeneous</a>
+    <a href="#bernoulli">Bernoulli</a>
+    <a href="#riccati">Riccati</a>
+  </div>
+</nav>
+<main class="wrap">
+
+  <section id="intro">
+    <div class="section-title"><h2>1. Why Study First-Order ODEs?</h2><span>學習動機</span></div>
+    <div class="grid">
+      <article class="card"><a class="thumb" href="images/math_ch1_1.png" target="_blank"><img src="images/math_ch1_1.png" alt="Why Study First-Order ODEs poster"></a><div class="meta"><h3>math_ch1_1.png — English</h3><p>Why Study First-Order ODEs?</p><div class="actions"><a class="btn view" href="images/math_ch1_1.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_1.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_2.png" target="_blank"><img src="images/math_ch1_2.png" alt="為什麼要學一階常微分方程海報"></a><div class="meta"><h3>math_ch1_2.png — 中文</h3><p>為什麼要學一階常微分方程？</p><div class="actions"><a class="btn view" href="images/math_ch1_2.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_2.png" download>下載</a></div></div></article>
+    </div>
+  </section>
+
+  <section id="solution">
+    <div class="section-title"><h2>2. Order, General Solution & Initial Condition</h2><span>階數、通解與初始條件</span></div>
+    <div class="grid">
+      <article class="card"><a class="thumb" href="images/math_ch1_3.png" target="_blank"><img src="images/math_ch1_3.png" alt="Order and General Solution poster"></a><div class="meta"><h3>math_ch1_3.png — English</h3><p>Order and General Solution</p><div class="actions"><a class="btn view" href="images/math_ch1_3.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_3.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_4.png" target="_blank"><img src="images/math_ch1_4.png" alt="階數與通解海報"></a><div class="meta"><h3>math_ch1_4.png — 中文</h3><p>階數與通解</p><div class="actions"><a class="btn view" href="images/math_ch1_4.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_4.png" download>下載</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_5.png" target="_blank"><img src="images/math_ch1_5.png" alt="Initial Condition poster"></a><div class="meta"><h3>math_ch1_5.png — English</h3><p>Initial Condition</p><div class="actions"><a class="btn view" href="images/math_ch1_5.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_5.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_6.png" target="_blank"><img src="images/math_ch1_6.png" alt="初始條件海報"></a><div class="meta"><h3>math_ch1_6.png — 中文</h3><p>初始條件：從解的家族中選出唯一的解</p><div class="actions"><a class="btn view" href="images/math_ch1_6.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_6.png" download>下載</a></div></div></article>
+    </div>
+  </section>
+
+  <section id="separable">
+    <div class="section-title"><h2>3. Separation of Variables</h2><span>分離變數法</span></div>
+    <div class="grid">
+      <article class="card"><a class="thumb" href="images/math_ch1_7.png" target="_blank"><img src="images/math_ch1_7.png" alt="Separation of Variables poster"></a><div class="meta"><h3>math_ch1_7.png — English</h3><p>Separation of Variables: conditions, procedure and examples</p><div class="actions"><a class="btn view" href="images/math_ch1_7.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_7.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_8.png" target="_blank"><img src="images/math_ch1_8.png" alt="分離變數法海報"></a><div class="meta"><h3>math_ch1_8.png — 中文</h3><p>分離變數法：使用條件、解題步驟與例題</p><div class="actions"><a class="btn view" href="images/math_ch1_8.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_8.png" download>下載</a></div></div></article>
+    </div>
+  </section>
+
+  <section id="linear">
+    <div class="section-title"><h2>4. First-Order Linear ODE</h2><span>一階線性微分方程</span></div>
+    <div class="grid">
+      <article class="card"><a class="thumb" href="images/math_ch1_9.png" target="_blank"><img src="images/math_ch1_9.png" alt="First-Order Linear ODE poster"></a><div class="meta"><h3>math_ch1_9.png — English</h3><p>What linear means, standard form, applications and solution overview</p><div class="actions"><a class="btn view" href="images/math_ch1_9.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_9.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_10.png" target="_blank"><img src="images/math_ch1_10.png" alt="一階線性微分方程海報"></a><div class="meta"><h3>math_ch1_10.png — 中文</h3><p>何為線性、標準形式、常見用途與基本解法</p><div class="actions"><a class="btn view" href="images/math_ch1_10.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_10.png" download>下載</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_11.png" target="_blank"><img src="images/math_ch1_11.png" alt="Solving First-Order Linear ODEs poster"></a><div class="meta"><h3>math_ch1_11.png — English</h3><p>Solving First-Order Linear ODEs: worked examples</p><div class="actions"><a class="btn view" href="images/math_ch1_11.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_11.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_12.png" target="_blank"><img src="images/math_ch1_12.png" alt="求解一階線性微分方程海報"></a><div class="meta"><h3>math_ch1_12.png — 中文</h3><p>求解一階線性微分方程：積分因子法與例題</p><div class="actions"><a class="btn view" href="images/math_ch1_12.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_12.png" download>下載</a></div></div></article>
+    </div>
+  </section>
+
+  <section id="if">
+    <div class="section-title"><h2>5. Integrating Factor Method</h2><span>積分因子法</span></div>
+    <div class="grid">
+      <article class="card"><a class="thumb" href="images/math_ch1_13.png" target="_blank"><img src="images/math_ch1_13.png" alt="Integrating Factor Method poster"></a><div class="meta"><h3>math_ch1_13.png — English</h3><p>Integrating Factor Method</p><div class="actions"><a class="btn view" href="images/math_ch1_13.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_13.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_14.png" target="_blank"><img src="images/math_ch1_14.png" alt="積分因子法海報"></a><div class="meta"><h3>math_ch1_14.png — 中文</h3><p>積分因子法：原理、解題步驟、例題與常見錯誤</p><div class="actions"><a class="btn view" href="images/math_ch1_14.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_14.png" download>下載</a></div></div></article>
+    </div>
+  </section>
+
+  <section id="exact">
+    <div class="section-title"><h2>6. Exact Differential Equations</h2><span>正合微分方程式</span></div>
+    <div class="grid">
+      <article class="card"><a class="thumb" href="images/math_ch1_15.png" target="_blank"><img src="images/math_ch1_15.png" alt="Exact Differential Equations poster"></a><div class="meta"><h3>math_ch1_15.png — English</h3><p>Exactness test, potential function and worked example</p><div class="actions"><a class="btn view" href="images/math_ch1_15.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_15.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_16.png" target="_blank"><img src="images/math_ch1_16.png" alt="正合微分方程式海報"></a><div class="meta"><h3>math_ch1_16.png — 中文</h3><p>正合微分方程式：判斷條件、勢函數與例題</p><div class="actions"><a class="btn view" href="images/math_ch1_16.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_16.png" download>下載</a></div></div></article>
+    </div>
+  </section>
+
+  <section id="homogeneous">
+    <div class="section-title"><h2>7. Homogeneous First-Order Equations</h2><span>齊次（同次）一階微分方程</span></div>
+    <div class="grid">
+      <article class="card"><a class="thumb" href="images/math_ch1_17.png" target="_blank"><img src="images/math_ch1_17.png" alt="Homogeneous First-Order Equations bilingual poster"></a><div class="meta"><h3>math_ch1_17.png — English / 中文</h3><p>Homogeneous equation, substitution v=y/x, solving method and examples</p><div class="actions"><a class="btn view" href="images/math_ch1_17.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_17.png" download>Download</a></div></div></article>
+    </div>
+  </section>
+
+  <section id="bernoulli">
+    <div class="section-title"><h2>8. Bernoulli Equation</h2><span>伯努利方程</span></div>
+    <div class="grid">
+      <article class="card"><a class="thumb" href="images/math_ch1_18.png" target="_blank"><img src="images/math_ch1_18.png" alt="Bernoulli Equation poster"></a><div class="meta"><h3>math_ch1_18.png — English</h3><p>Bernoulli Equation: nonlinear-to-linear substitution</p><div class="actions"><a class="btn view" href="images/math_ch1_18.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_18.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_19.png" target="_blank"><img src="images/math_ch1_19.png" alt="伯努利方程海報"></a><div class="meta"><h3>math_ch1_19.png — 中文</h3><p>伯努利方程：非線性方程的線性化與例題</p><div class="actions"><a class="btn view" href="images/math_ch1_19.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_19.png" download>下載</a></div></div></article>
+    </div>
+  </section>
+
+  <section id="riccati">
+    <div class="section-title"><h2>9. Riccati Equation</h2><span>黎卡提方程式</span></div>
+    <div class="grid">
+      <article class="card"><a class="thumb" href="images/math_ch1_20.png" target="_blank"><img src="images/math_ch1_20.png" alt="Riccati Equation poster"></a><div class="meta"><h3>math_ch1_20.png — English-oriented</h3><p>Riccati equation: form, properties, transformations, examples and applications</p><div class="actions"><a class="btn view" href="images/math_ch1_20.png" target="_blank">Open</a><a class="btn download" href="images/math_ch1_20.png" download>Download</a></div></div></article>
+      <article class="card"><a class="thumb" href="images/math_ch1_21.png" target="_blank"><img src="images/math_ch1_21.png" alt="黎卡提方程式中文詳細海報"></a><div class="meta"><h3>math_ch1_21.png — 中文 / bilingual detail</h3><p>黎卡提方程式：解法、與二階線性 ODE 的關聯、例題與應用</p><div class="actions"><a class="btn view" href="images/math_ch1_21.png" target="_blank">開啟</a><a class="btn download" href="images/math_ch1_21.png" download>下載</a></div></div></article>
+    </div>
+  </section>
+
+</main>
+<footer>
+  First-Order ODE Poster Collection · Math Chapter 1 · 21 posters
+</footer>
+</body>
+</html>
