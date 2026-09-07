@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="大學初學者三小時 MCU 基礎講義：架構、記憶體、燒錄、Clock、Timer、GPIO、PWM、UART、I2C 與 SPI。">
+  <title>MCU 基礎三小時｜從晶片到通訊</title>
+  <style>
+    :root{
+      --navy:#102d3b;--navy2:#183f50;--ink:#173441;--muted:#58707a;--paper:#f5f3ec;--white:#fffefa;
+      --line:#cbd5d6;--teal:#087f7b;--teal2:#d9f0ec;--blue:#236f9c;--blue2:#dfedf6;--amber:#e1a62c;
+      --amber2:#fff0c4;--red:#b9443d;--red2:#f9e1de;--green:#397c5a;--shadow:0 16px 50px rgba(17,45,59,.10);
+      --sans:Arial,"Noto Sans TC","Microsoft JhengHei",sans-serif;--mono:"Cascadia Mono","SFMono-Regular",Consolas,monospace;
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:26px}body{margin:0;background:
+      linear-gradient(90deg,rgba(16,45,59,.032) 1px,transparent 1px),
+      linear-gradient(rgba(16,45,59,.032) 1px,transparent 1px),var(--paper);
+      background-size:28px 28px;color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75}
+    a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}.mono{font-family:var(--mono)}
+    .shell{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:100vh}
+    .side{position:sticky;top:0;height:100vh;padding:28px 22px;background:var(--navy);color:#eaf3f4;overflow:auto}
+    .brand{display:flex;align-items:center;gap:12px;padding:0 8px 24px;border-bottom:1px solid rgba(255,255,255,.16)}
+    .brand-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:9px;background:var(--amber);color:var(--navy);font:900 18px var(--mono)}
+    .brand strong{display:block;font-size:16px;letter-spacing:.04em}.brand small{display:block;color:#a9c1c8;font-size:12px}
+    .progress-box{margin:22px 8px}.progress-label{display:flex;justify-content:space-between;color:#abc2c8;font-size:12px}
+    .progress-track{height:5px;margin-top:8px;background:rgba(255,255,255,.13);overflow:hidden}.progress-bar{width:0;height:100%;background:var(--amber);transition:width .25s}
+    nav{display:grid;gap:4px;margin-top:18px}nav a{display:grid;grid-template-columns:32px 1fr;align-items:center;padding:9px 10px;border-radius:7px;color:#bcd0d5;font-size:13px;line-height:1.3}
+    nav a span{color:#79c9c3;font:700 10px var(--mono)}nav a:hover,nav a.active{background:rgba(255,255,255,.09);color:white}
+    .side-tools{display:grid;gap:8px;margin:24px 8px 0}.side-tools button{border:1px solid rgba(255,255,255,.25);border-radius:7px;padding:9px;background:transparent;color:white;font-size:13px}
+    .main{min-width:0}.hero,.section{max-width:1240px;margin:auto;padding:88px clamp(28px,6vw,86px)}
+    .hero{min-height:92vh;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(310px,.8fr);align-items:center;gap:70px}
+    .tag,.eyebrow{color:var(--teal);font:900 11px var(--mono);letter-spacing:.15em;text-transform:uppercase}
+    .tag{display:inline-block;padding:7px 10px;border:1px solid var(--line);background:rgba(255,254,250,.75)}
+    h1{margin:22px 0 28px;font-size:clamp(52px,6.5vw,92px);line-height:.98;letter-spacing:-.06em}h1 em{color:var(--teal);font-style:normal}
+    .lead{max-width:760px;margin:0;color:var(--muted);font-size:clamp(18px,1.7vw,23px);line-height:1.75}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}.btn{border:1px solid var(--navy);border-radius:7px;padding:11px 16px;background:transparent;color:var(--navy);font-weight:800}
+    .btn.primary{background:var(--teal);border-color:var(--teal);color:white}.btn:hover{transform:translateY(-1px)}
+    .route-card{border:1px solid var(--navy);background:var(--white);box-shadow:14px 14px 0 var(--amber2)}
+    .route-card header{padding:20px 24px;background:var(--navy);color:white}.route-card h2{margin:4px 0 0;font-size:24px}.route-list{padding:10px 24px 20px}
+    .route-row{display:grid;grid-template-columns:68px 1fr;gap:15px;padding:18px 0;border-bottom:1px solid var(--line)}.route-row:last-child{border:0}
+    .route-row time{color:var(--teal);font:900 15px var(--mono)}.route-row strong{display:block}.route-row p{margin:3px 0 0;color:var(--muted);font-size:13px;line-height:1.55}
+    .section{border-top:1px solid rgba(16,45,59,.17)}.section-head{display:grid;grid-template-columns:70px 1fr;gap:18px;margin-bottom:50px}
+    .section-no{padding-top:8px;color:var(--amber);font:900 18px var(--mono)}.section h2{margin:6px 0 12px;font-size:clamp(36px,4.4vw,62px);line-height:1.12;letter-spacing:-.045em}
+    .section-intro{max-width:870px;margin:0;color:var(--muted);font-size:18px}.grid2,.grid3,.grid4{display:grid;gap:18px}.grid2{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(3,1fr)}.grid4{grid-template-columns:repeat(4,1fr)}
+    .card{padding:26px;border:1px solid var(--line);background:var(--white)}.card h3{margin:9px 0 10px;font-size:23px;line-height:1.3}.card p{margin:0;color:var(--muted)}.card p+p{margin-top:10px}
+    .callout{display:grid;grid-template-columns:auto 1fr;gap:14px;margin:26px 0;padding:20px 22px;border-left:5px solid var(--amber);background:var(--amber2)}.callout strong{font-size:18px}.callout p{margin:3px 0 0;color:var(--muted)}
+    .danger{border-left-color:var(--red);background:var(--red2)}.good{border-left-color:var(--teal);background:var(--teal2)}
+    .compare{width:100%;border-collapse:collapse;background:var(--white);font-size:15px}.compare th,.compare td{padding:15px;border:1px solid var(--line);text-align:left;vertical-align:top}.compare th{background:var(--navy);color:white}.compare td strong{display:block}.compare td small{color:var(--muted)}
+    .term{border-bottom:2px dotted var(--teal);font-weight:800}.term[title]{cursor:help}
+    .diagram{padding:28px;border:1px solid var(--navy);background:var(--white);overflow:auto}.chip-map{min-width:700px;display:grid;grid-template-columns:1fr 1.1fr 1fr;grid-template-rows:repeat(4,92px);gap:12px;align-items:stretch}
+    .block{display:flex;flex-direction:column;justify-content:center;padding:15px;border:1px solid var(--navy);background:var(--blue2);text-align:center}.block b{font-size:18px}.block small{color:var(--muted)}
+    .block.cpu{grid-column:2;grid-row:2/4;background:var(--navy);color:white}.block.cpu small{color:#b9cbd0}.block.flash{grid-column:1;grid-row:1/3}.block.sram{grid-column:1;grid-row:3}.block.clock{grid-column:2;grid-row:1;background:var(--amber2)}.block.gpio{grid-column:3;grid-row:1/3;background:var(--teal2)}
+    .block.timer{grid-column:2;grid-row:4;background:var(--amber2)}.block.comm{grid-column:3;grid-row:3/5;background:var(--teal2)}.block.adc{grid-column:1;grid-row:4}
+    .flowline{display:grid;grid-template-columns:repeat(7,minmax(112px,1fr));gap:8px;align-items:stretch;min-width:900px}
+    .step{position:relative;padding:18px 12px;border:1px solid var(--line);background:var(--white);text-align:center}.step:not(:last-child)::after{content:"→";position:absolute;right:-17px;top:42%;z-index:2;color:var(--amber);font-weight:900}.step b{display:block;font-size:14px}.step small{display:block;margin-top:6px;color:var(--muted)}
+    .step.on{background:var(--teal2);border-color:var(--teal);box-shadow:inset 0 -4px var(--teal)}
+    .interactive{padding:24px;border:1px solid var(--navy);background:#edf3f2}.interactive-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}.interactive-head h3{margin:0}.interactive-head p{margin:3px 0 0;color:var(--muted);font-size:14px}
+    .memory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.memory{padding:20px;border:1px solid var(--line);background:white}.memory b{display:block;font-size:21px}.memory .persist{display:inline-block;margin:10px 0;padding:3px 7px;border-radius:20px;background:var(--teal2);color:var(--teal);font-size:12px;font-weight:800}.memory .volatile{background:var(--red2);color:var(--red)}
+    .cpu-lab{display:grid;grid-template-columns:1fr 1fr;gap:20px}.cycle-box{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.cycle{padding:18px;border:1px solid var(--line);background:white}.cycle.on{border-color:var(--teal);background:var(--teal2)}.cycle b{display:block}.cycle small{color:var(--muted)}
+    .clock-face{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}.wave{height:150px;padding:18px;background:var(--navy);overflow:hidden}.wave svg{width:100%;height:100%}.clock-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:16px;background:white;border:1px solid var(--line)}.stat b{display:block;font:900 25px var(--mono);color:var(--teal)}.stat span{font-size:13px;color:var(--muted)}
+    input[type=range]{width:100%;accent-color:var(--teal)}.range-row{display:grid;grid-template-columns:100px 1fr 110px;gap:12px;align-items:center}.range-row output{font:800 14px var(--mono);text-align:right}
+    .timer-math{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.mathbox{padding:16px;border:1px solid var(--line);background:white}.mathbox span{display:block;color:var(--muted);font-size:12px}.mathbox b{font:900 18px var(--mono)}
+    .pin-types{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.pin-card{position:relative;min-height:170px;padding:22px;border:1px solid var(--line);background:white}.pin-card code{display:inline-block;padding:3px 7px;background:var(--navy);color:white;font:800 13px var(--mono)}.pin-card h3{margin:14px 0 8px}.pin-card p{color:var(--muted);font-size:14px}
+    .gpio-lab{display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:center}.gpio-visual{display:grid;place-items:center;min-height:300px;background:var(--navy);color:white}.pin-node{display:grid;place-items:center;width:140px;height:140px;border:12px solid #335563;border-radius:50%;background:#173441;text-align:center}.pin-node.high{border-color:var(--amber);box-shadow:0 0 34px rgba(225,166,44,.45)}.pin-node.floating{border-style:dashed;border-color:var(--red)}.pin-node b{font:900 25px var(--mono)}.gpio-controls{display:grid;gap:14px}.button-row{display:flex;flex-wrap:wrap;gap:8px}.mini-btn{padding:8px 11px;border:1px solid var(--navy);border-radius:6px;background:white;color:var(--navy);font-weight:800}.mini-btn.selected{background:var(--teal);border-color:var(--teal);color:white}.status{padding:16px;border-left:4px solid var(--teal);background:white}.status.warn{border-left-color:var(--red);background:var(--red2)}
+    .mux{display:grid;grid-template-columns:1fr 180px 1fr;gap:18px;align-items:center}.mux-options{display:grid;gap:8px}.mux-option{padding:12px;border:1px solid var(--line);background:white}.mux-option.active{background:var(--teal2);border-color:var(--teal)}.physical-pin{display:grid;place-items:center;width:150px;height:150px;margin:auto;border:12px solid var(--amber);border-radius:50%;background:var(--navy);color:white;text-align:center}.mux-note{color:var(--muted)}
+    .circuit{display:flex;align-items:center;justify-content:center;gap:5px;min-height:92px;margin:16px 0;padding:12px;background:var(--paper);overflow:auto}.circuit i{flex:1;min-width:18px;max-width:45px;height:3px;background:var(--navy)}.circuit b,.circuit span{white-space:nowrap;font:800 12px var(--mono)}.circuit .part{padding:7px 9px;border:2px solid var(--amber);background:white}.circuit .ledpart{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#ffd34e;border:2px solid var(--navy)}.circuit .switch{padding:6px 9px;border:2px dashed var(--teal);background:white}
+    .pwm-lab{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}.pwm-wave{height:200px;padding:18px;background:var(--navy)}.pwm-wave svg{width:100%;height:100%}.led-demo{display:grid;place-items:center;min-height:200px;background:white;border:1px solid var(--line)}.led-bulb{width:92px;height:92px;border-radius:50%;background:#ffd34e;box-shadow:0 0 50px rgba(255,211,78,.65);transition:.2s}.led-demo b{display:block;margin-top:15px;font:900 25px var(--mono)}
+    .bus-tabs{display:flex;gap:6px;margin-bottom:14px}.bus-tabs button{flex:1;padding:12px;border:1px solid var(--navy);background:white;font-weight:900}.bus-tabs button.active{background:var(--navy);color:white}
+    .bus-panel{display:none}.bus-panel.active{display:block}.wire-diagram{display:grid;grid-template-columns:180px 1fr 180px;gap:15px;align-items:center;min-width:650px}.device{padding:22px;border:1px solid var(--navy);background:white;text-align:center}.wires{display:grid;gap:9px}.wire-row{display:grid;grid-template-columns:76px 1fr 76px;align-items:center;gap:8px;color:var(--muted);font:800 12px var(--mono)}.wire-row i{height:4px;background:var(--teal);position:relative}.wire-row i::after{content:"";position:absolute;right:-1px;top:-4px;border-left:8px solid var(--teal);border-block:6px solid transparent}.wire-row.back i::after{right:auto;left:-1px;border-left:0;border-right:8px solid var(--blue)}.wire-row.back i{background:var(--blue)}
+    .protocol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.protocol-grid article{padding:18px;border:1px solid var(--line);background:white}.protocol-grid h4{margin:0 0 7px}.protocol-grid p{margin:0;color:var(--muted);font-size:14px}
+    .frame{display:flex;gap:3px;overflow:auto;padding:18px;background:var(--navy)}.bit{min-width:40px;padding:10px 5px;border:1px solid #597480;color:white;text-align:center;font:800 13px var(--mono)}.bit.start,.bit.stop{background:var(--amber);color:var(--navy)}.bit.data{background:#1e697c}
+    .question{padding:23px;border:1px solid var(--line);background:white}.question h3{margin:7px 0 15px;font-size:19px}.answer{display:none;margin-top:16px;padding-top:15px;border-top:1px dashed var(--teal);color:var(--muted)}.question.open .answer{display:block}.reveal{padding:7px 11px;border:1px solid var(--navy);border-radius:6px;background:transparent;font-weight:800}
+    .glossary-tools{display:flex;gap:10px;margin-bottom:18px}.glossary-tools input{flex:1;padding:12px 14px;border:1px solid var(--navy);background:white}.glossary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.gloss-item{padding:18px;border:1px solid var(--line);background:white}.gloss-item b{font:900 16px var(--mono);color:var(--teal)}.gloss-item span{display:block;margin-top:6px;color:var(--muted);font-size:14px}.gloss-item.hide{display:none}
+    .checklist{display:grid;gap:8px}.check{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:14px;background:white;border:1px solid var(--line)}.check input{width:20px;height:20px;accent-color:var(--teal)}
+    .sources a{color:var(--blue);text-decoration:underline}.sources li{margin:8px 0}footer{display:flex;justify-content:space-between;gap:20px;padding:30px clamp(28px,6vw,86px);background:var(--navy);color:#c4d6db;font-size:13px}
+    .mobile-nav{display:none}.print-note{font-size:12px;color:var(--muted)}
+    @media(max-width:1050px){.shell{grid-template-columns:1fr}.side{display:none}.mobile-nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(16,45,59,.96);color:white}.mobile-nav button{border:1px solid rgba(255,255,255,.3);border-radius:6px;background:transparent;color:white;padding:7px 10px}.mobile-menu{display:none;position:fixed;inset:54px 0 auto 0;z-index:25;max-height:70vh;padding:12px;background:var(--navy);overflow:auto}.mobile-menu.open{display:grid}.mobile-menu a{padding:10px;color:#d7e5e8;border-bottom:1px solid rgba(255,255,255,.1)}.hero{min-height:auto;grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:760px){body{font-size:16px}.hero,.section{padding:58px 20px}.hero{gap:45px}.hero h1{font-size:54px}.section-head{grid-template-columns:1fr;gap:5px}.section h2{font-size:38px}.grid2,.grid3,.grid4,.memory-grid,.cpu-lab,.pin-types,.protocol-grid,.glossary,.pwm-lab,.clock-face{grid-template-columns:1fr}.compare{font-size:13px}.compare th,.compare td{padding:10px}.timer-math{grid-template-columns:repeat(2,1fr)}.gpio-lab{grid-template-columns:1fr}.mux{grid-template-columns:1fr}.range-row{grid-template-columns:1fr}.range-row output{text-align:left}.interactive-head{align-items:flex-start;flex-direction:column}.wire-diagram{min-width:580px}footer{flex-direction:column}.chip-map{transform-origin:left top}.route-card{box-shadow:7px 7px 0 var(--amber2)}}
+    @media print{body{background:white}.shell{display:block}.side,.mobile-nav,.hero-actions,.side-tools,.interactive button,.glossary-tools{display:none!important}.hero,.section{max-width:none;min-height:auto;padding:35px 24px;break-inside:auto}.section{break-before:page}.card,.interactive,.diagram,.question{break-inside:avoid;box-shadow:none}.answer{display:block!important}footer{background:white;color:var(--ink);border-top:1px solid var(--line)}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="mobile-nav"><strong>MCU 基礎三小時</strong><button id="menuBtn" aria-expanded="false">章節選單</button></div>
+  <div class="mobile-menu" id="mobileMenu" aria-label="行動版章節選單"></div>
+  <div class="shell">
+    <aside class="side">
+      <div class="brand"><span class="brand-mark">μC</span><div><strong>MCU FOUNDATIONS</strong><small>大學初學者｜3 小時</small></div></div>
+      <div class="progress-box"><div class="progress-label"><span>閱讀進度</span><b id="progressText">0%</b></div><div class="progress-track"><div class="progress-bar" id="progressBar"></div></div></div>
+      <nav id="sideNav" aria-label="課程章節">
+        <a href="#plan"><span>00</span>課程地圖</a><a href="#mcu"><span>01</span>MCU 與常見晶片</a>
+        <a href="#inside"><span>02</span>MCU 內部架構</a><a href="#memory"><span>03</span>Flash、SRAM 與 EEPROM</a>
+        <a href="#upload"><span>04</span>為何需要燒錄程式</a><a href="#clock"><span>05</span>Clock、Reset 與 CPU</a>
+        <a href="#timer"><span>06</span>Timer 與 Interrupt</a><a href="#gpio"><span>07</span>GPIO 與接腳電路</a>
+        <a href="#pwm"><span>08</span>PWM 如何產生</a><a href="#bus"><span>09</span>UART、I²C、SPI</a>
+        <a href="#datasheet"><span>10</span>看懂 Datasheet</a><a href="#check"><span>11</span>課後檢核與術語表</a>
+      </nav>
+      <div class="side-tools"><button onclick="window.print()">列印／另存 PDF</button><button onclick="resetAll()">重設互動內容</button></div>
+    </aside>
+    <main class="main">
+      <section class="hero" id="top">
+        <div>
+          <span class="tag">微控制器原理與 Arduino 應用</span>
+          <h1>打開 <em>MCU</em><br>這顆黑盒子</h1>
+          <p class="lead">Arduino 接腳不是一排神奇的孔。每一個動作，都來自 MCU 內部的 CPU、記憶體、Clock、Timer 與通訊周邊。這三小時從「程式如何進入晶片」開始，一步步看到訊號如何變成控制。</p>
+          <div class="hero-actions"><a class="btn primary" href="#plan">開始三小時課程</a><a class="btn" href="#check">先看學習目標</a></div>
+          <p class="print-note">本頁可離線使用；教師答案按下按鈕後才顯示，列印時會自動展開。</p>
+        </div>
+        <aside class="route-card">
+          <header><span class="eyebrow" style="color:#8fd6d0">THREE-HOUR ROUTE</span><h2>三段式學習路徑</h2></header>
+          <div class="route-list">
+            <div class="route-row"><time>0–60</time><div><strong>晶片怎麼執行程式？</strong><p>MCU、CPU、Flash、SRAM、編譯、燒錄與重置。</p></div></div>
+            <div class="route-row"><time>60–120</time><div><strong>時間與接腳如何運作？</strong><p>Clock、Timer、Interrupt、GPIO、電壓與輸入輸出電路。</p></div></div>
+            <div class="route-row"><time>120–180</time><div><strong>MCU 如何控制與溝通？</strong><p>PWM、UART、I²C、SPI、接腳複用與 datasheet。</p></div></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section" id="plan" data-title="課程地圖">
+        <header class="section-head"><div class="section-no">00</div><div><span class="eyebrow">LESSON MAP</span><h2>三小時不是背名詞，而是建立一條因果鏈</h2><p class="section-intro">先回答「晶片裡有什麼」，再回答「它如何掌握時間」，最後理解「它如何透過接腳與外界交換訊號」。每個專有名詞都要能連回實際硬體。</p></div></header>
+        <div class="grid3">
+          <article class="card"><span class="eyebrow">HOUR 1</span><h3>程式進入晶片</h3><p><b>0–15：</b>MCU、CPU、開發板<br><b>15–35：</b>MCU內部與記憶體<br><b>35–50：</b>編譯、燒錄、Bootloader<br><b>50–60：</b>CPU取指令互動與檢核</p></article>
+          <article class="card"><span class="eyebrow">HOUR 2</span><h3>時間變成控制</h3><p><b>60–80：</b>Clock、週期與Reset<br><b>80–100：</b>Timer、Prescaler、Interrupt<br><b>100–115：</b>GPIO輸入輸出與電氣限制<br><b>115–120：</b>接腳判讀</p></article>
+          <article class="card"><span class="eyebrow">HOUR 3</span><h3>波形與裝置通訊</h3><p><b>120–138：</b>Pin Multiplexing與PWM<br><b>138–165：</b>UART、I²C、SPI<br><b>165–175：</b>Datasheet任務<br><b>175–180：</b>口頭檢核</p></article>
+        </div>
+        <div class="callout good"><b>✓</b><div><strong>建議教法</strong><p>每次先顯示一張圖或一個現象，讓學生猜測，再給術語。第一次接觸時，「能用自己的話說出運作過程」比背英文全名更重要。</p></div></div>
+      </section>
+
+      <section class="section" id="mcu" data-title="MCU 與常見晶片">
+        <header class="section-head"><div class="section-no">01</div><div><span class="eyebrow">WHAT IS AN MCU?</span><h2>MCU 是一部縮小到晶片裡的控制電腦</h2><p class="section-intro"><span class="term" title="Microcontroller Unit">MCU</span> 是 Microcontroller Unit，中文稱微控制器。它把運算核心、記憶體及輸入輸出周邊整合在同一顆積體電路中，適合不斷重複「讀取—判斷—控制」的任務。</p></div></header>
+        <div class="grid3">
+          <article class="card"><span class="eyebrow">MCU</span><h3>微控制器</h3><p>晶片內已包含 CPU、記憶體、GPIO、Timer 等周邊。通常功耗低、開機快，適合控制裝置。</p></article>
+          <article class="card"><span class="eyebrow">CPU</span><h3>運算核心</h3><p>CPU 是 MCU 裡負責讀取指令、解碼、運算與決策的部分。CPU 是 MCU 的一部分，不等於整顆 MCU。</p></article>
+          <article class="card"><span class="eyebrow">DEVELOPMENT BOARD</span><h3>開發板</h3><p>在 MCU 外加入 USB、穩壓電路、Reset 按鈕、接頭和保護電路，讓我們更容易供電、燒錄與接線。</p></article>
+        </div>
+        <div class="callout"><b>?</b><div><strong>Arduino UNO 是 MCU 嗎？</strong><p>不是。Arduino UNO 是開發板。UNO R3 的主 MCU 是 ATmega328P；UNO R4 Minima 的主 MCU 是 Renesas RA4M1。</p></div></div>
+        <div style="overflow:auto">
+          <table class="compare">
+            <thead><tr><th>代表 MCU</th><th>核心與時脈</th><th>記憶體概念</th><th>I/O電壓／特色</th><th>課程角色</th></tr></thead>
+            <tbody>
+              <tr><td><strong>ATmega328P</strong><small>Arduino UNO R3</small></td><td>8-bit AVR<br>16 MHz（UNO R3）</td><td>32 KB Flash<br>2 KB SRAM</td><td>UNO R3 為 5 V<br>架構簡潔</td><td>最適合看見基本 GPIO、Timer 與暫存器</td></tr>
+              <tr><td><strong>Renesas RA4M1</strong><small>Arduino UNO R4</small></td><td>32-bit Arm Cortex-M4<br>48 MHz</td><td>256 KB Flash<br>32 KB SRAM</td><td>UNO R4 I/O 為 5 V<br>周邊更完整</td><td>銜接現代 32-bit MCU</td></tr>
+              <tr><td><strong>ESP32-S3</strong><small>ESP32 開發板</small></td><td>雙核心 Xtensa LX7<br>最高 240 MHz</td><td>晶片內 SRAM<br>模組通常外接 Flash</td><td>3.3 V<br>Wi-Fi、Bluetooth</td><td>IoT、無線控制與多周邊整合</td></tr>
+              <tr><td><strong>RP2040</strong><small>Raspberry Pi Pico</small></td><td>雙核心 Cortex-M0+<br>最高 133 MHz</td><td>264 KB SRAM<br>使用外部 Flash</td><td>3.3 V<br>PIO 可程式化 I/O</td><td>觀察 MCU 不一定內建程式 Flash</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="question" style="margin-top:20px"><span class="eyebrow">教師提問</span><h3>為什麼洗衣機通常使用 MCU，而不是桌上型電腦的處理器？</h3><button class="reveal">顯示教師參考</button><div class="answer">洗衣機的任務固定：讀按鍵、門鎖、水位和溫度，再依流程控制馬達、閥門與蜂鳴器。MCU 成本低、功耗低、開機快，而且可以直接連接這些 I/O。</div></div>
+      </section>
+
+      <section class="section" id="inside" data-title="MCU 內部架構">
+        <header class="section-head"><div class="section-no">02</div><div><span class="eyebrow">INSIDE THE CHIP</span><h2>MCU 內部不是一個房間，而是一座互連的工廠</h2><p class="section-intro">CPU 不會直接「碰到」每一根接腳。它透過內部匯流排讀寫記憶體與周邊的暫存器；GPIO、Timer、ADC 和通訊控制器則各自完成專門工作。</p></div></header>
+        <div class="diagram">
+          <div class="chip-map" role="img" aria-label="MCU內部包含CPU、Flash、SRAM、Clock、GPIO、ADC、Timer與通訊周邊">
+            <div class="block flash"><b>Flash</b><small>保存韌體與常數</small></div><div class="block sram"><b>SRAM</b><small>執行時的變數與堆疊</small></div>
+            <div class="block adc"><b>ADC</b><small>電壓轉成數字</small></div><div class="block clock"><b>Clock System</b><small>提供同步節拍</small></div>
+            <div class="block cpu"><b>CPU CORE</b><small>取指令 → 解碼 → 執行<br>經由 Bus 存取其他模組</small></div>
+            <div class="block gpio"><b>GPIO</b><small>輸入緩衝器<br>輸出驅動器</small></div><div class="block timer"><b>Timer / Counter</b><small>計數、比較、捕捉、PWM</small></div>
+            <div class="block comm"><b>Communication</b><small>UART<br>I²C<br>SPI</small></div>
+          </div>
+        </div>
+        <div class="grid3" style="margin-top:18px">
+          <article class="card"><h3>Bus｜匯流排</h3><p>晶片內共享的資料道路，通常包含資料、位址與控制訊號。CPU 用位址指定要讀寫哪一個記憶體位置或周邊暫存器。</p></article>
+          <article class="card"><h3>Register｜暫存器</h3><p>位於 CPU 或周邊內的小型高速儲存位置。改變其中某些 bit，就能改變 GPIO 方向、啟動 Timer 或送出資料。</p></article>
+          <article class="card"><h3>Peripheral｜周邊</h3><p>不是外接模組，而是 MCU 內部的專用硬體功能，例如 ADC、Timer、UART。它們能在 CPU 少量介入下持續工作。</p></article>
+        </div>
+        <div class="card" style="margin-top:18px">
+          <span class="eyebrow">THE 0–1 BRIDGE</span><h3>bit、byte、二進位與邏輯閘：只學現在需要的部分</h3>
+          <div class="grid4">
+            <p><b>bit</b><br>最小資料單位，只有 0 或 1。硬體中通常對應兩個可區分的電壓或狀態。</p>
+            <p><b>byte</b><br>通常由 8 bits 組成，可表達 00000000 到 11111111，也就是十進位 0–255。</p>
+            <p><b>Binary／Hex</b><br>二進位只用 0、1；十六進位用 0–9、A–F，一個十六進位數字剛好代表 4 bits，方便閱讀暫存器。</p>
+            <p><b>Logic Gate</b><br>AND、OR、NOT 等邏輯閘是處理 0／1 的電子電路。大量邏輯閘組成 CPU、記憶體與周邊控制器。</p>
+          </div>
+          <div class="frame" style="margin-top:18px" aria-label="八位元暫存器範例"><span class="bit">D7<br>0</span><span class="bit">D6<br>0</span><span class="bit">D5<br>1</span><span class="bit">D4<br>0</span><span class="bit">D3<br>0</span><span class="bit">D2<br>0</span><span class="bit">D1<br>0</span><span class="bit">D0<br>1</span></div>
+          <p style="margin-top:14px">這個 8-bit register 的內容是二進位 <span class="mono">0010 0001</span>，也可寫成十六進位 <span class="mono">0x21</span>。每一個 bit 都可能是一個開關，例如 D5 控制某功能是否啟用，D0 決定某接腳輸出狀態。後續學位元運算時，再用 AND、OR、NOT 精準修改它們。</p>
+        </div>
+        <div class="interactive" style="margin-top:24px">
+          <div class="interactive-head"><div><h3>互動：CPU 的「取指令—解碼—執行」循環</h3><p>按下下一步，觀察一行程式如何變成硬體動作。</p></div><button class="btn primary" id="cpuNext">下一步</button></div>
+          <div class="cpu-lab">
+            <div class="cycle-box" id="cycleBox"><div class="cycle on"><b>1. Fetch 取指令</b><small>從 Flash 指定位置讀取機器指令。</small></div><div class="cycle"><b>2. Decode 解碼</b><small>判斷這是運算、跳躍或 I/O 指令。</small></div><div class="cycle"><b>3. Execute 執行</b><small>ALU 運算，或讀寫周邊暫存器。</small></div><div class="cycle"><b>4. Next 下一筆</b><small>更新程式計數器，繼續執行。</small></div></div>
+            <div class="card"><span class="eyebrow">EXAMPLE</span><h3 id="cpuTitle">從 Flash 取得指令</h3><p id="cpuText">CPU 的 Program Counter 指向下一個指令位址。這一步讀到「把 LED 腳位設為 HIGH」所對應的機器碼。</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="memory" data-title="記憶體">
+        <header class="section-head"><div class="section-no">03</div><div><span class="eyebrow">MEMORY</span><h2>Flash 保存程式，SRAM 支撐程式運行</h2><p class="section-intro">「記憶體」不是只有一種。MCU 使用不同種類的記憶體，分別解決斷電保存、快速讀寫與少量設定資料保存等需求。</p></div></header>
+        <div class="memory-grid">
+          <article class="memory"><b>Flash</b><span class="persist">斷電後保留</span><p>非揮發性記憶體。程式編譯後的機器碼通常儲存在這裡。讀取快，但寫入前常需要以區塊擦除，寫入壽命也有限。</p></article>
+          <article class="memory"><b>SRAM</b><span class="persist volatile">斷電後消失</span><p>揮發性記憶體。用來存放正在變化的變數、陣列，以及記錄函式呼叫與返回位置的堆疊（stack）。速度快，但容量通常比 Flash 小。</p></article>
+          <article class="memory"><b>EEPROM／Data Flash</b><span class="persist">斷電後保留</span><p>適合保存校正值、裝置編號或設定。不同 MCU 的實作不同；有些用專用 EEPROM，有些用 Data Flash 或模擬方式。</p></article>
+        </div>
+        <div class="grid2" style="margin-top:18px">
+          <article class="card"><span class="eyebrow">POWER OFF</span><h3>拔掉電源後</h3><p>Flash 內的程式仍在；EEPROM中的設定通常仍在；SRAM裡當次運行的變數消失。再次上電時，程式從重置入口重新開始。</p></article>
+          <article class="card"><span class="eyebrow">BEGINNER TRAP</span><h3>Flash 大，不代表變數空間也大</h3><p>UNO R3 雖有 32 KB Flash，但 SRAM 只有 2 KB。很長的字串或大陣列可能讓 SRAM 用盡，即使程式仍放得進 Flash。</p></article>
+        </div>
+        <div class="question" style="margin-top:20px"><span class="eyebrow">教師提問</span><h3>程式中的計數器變數，為何重新開機後通常回到初始值？</h3><button class="reveal">顯示教師參考</button><div class="answer">計數器在執行期間通常位於 SRAM；SRAM 需要持續供電才能保存資料。重新上電後，啟動程式會重新建立變數並賦予初始值。</div></div>
+      </section>
+
+      <section class="section" id="upload" data-title="燒錄程式">
+        <header class="section-head"><div class="section-no">04</div><div><span class="eyebrow">COMPILE & UPLOAD</span><h2>為什麼程式需要「燒錄」進 MCU？</h2><p class="section-intro">人寫的 Arduino C/C++ 原始碼不是 CPU 能直接執行的電壓控制序列。它必須先轉換成特定 MCU 認得的機器碼，再寫入非揮發性的程式記憶體。</p></div></header>
+        <div class="diagram"><div class="flowline" id="uploadFlow">
+          <div class="step on"><b>1 原始碼</b><small>人可讀的 C/C++</small></div><div class="step"><b>2 編譯</b><small>轉為目標指令</small></div>
+          <div class="step"><b>3 連結</b><small>合併函式與函式庫</small></div><div class="step"><b>4 HEX／BIN</b><small>可燒錄的機器碼</small></div>
+          <div class="step"><b>5 傳輸</b><small>USB／UART／SWD／ISP</small></div><div class="step"><b>6 寫入 Flash</b><small>保存韌體</small></div>
+          <div class="step"><b>7 Reset 執行</b><small>從重置入口開始</small></div>
+        </div></div>
+        <div class="interactive" style="margin-top:18px"><div class="interactive-head"><div><h3 id="uploadTitle">原始碼：人看得懂，CPU還看不懂</h3><p id="uploadText">例如 digitalWrite(13, HIGH)，必須依目標晶片和核心函式庫轉成真正的機器指令。</p></div><button class="btn primary" id="uploadNext">播放下一步</button></div></div>
+        <div class="grid3" style="margin-top:18px">
+          <article class="card"><h3>Firmware｜韌體</h3><p>寫入嵌入式裝置、控制硬體行為的程式。它不像一般桌面軟體由使用者每次點擊啟動，而常在上電後自動執行。</p></article>
+          <article class="card"><h3>Bootloader｜開機載入程式</h3><p>位於 MCU 特定記憶體區的小程式。上電或 Reset 後先檢查是否有新程式要接收；若沒有，就跳到使用者程式。</p></article>
+          <article class="card"><h3>Programmer／Debugger</h3><p>燒錄器／除錯器可經由 ISP、SWD 或 JTAG 等專用硬體介面，直接寫入程式、暫停 CPU 或查看暫存器，不一定經過 Bootloader。</p></article>
+        </div>
+        <div class="callout danger"><b>!</b><div><strong>「燒錄」不是把晶片燒熱</strong><p>這個名稱來自早期可程式化記憶體的寫入習慣。現代 Flash 是利用電場改變記憶單元的電荷狀態，正常燒錄不應造成可感覺的高溫。</p></div></div>
+      </section>
+
+      <section class="section" id="clock" data-title="Clock 與 Reset">
+        <header class="section-head"><div class="section-no">05</div><div><span class="eyebrow">CLOCK & RESET</span><h2>Clock 是全晶片共用的節拍器</h2><p class="section-intro"><span class="term" title="Clock signal，時脈訊號">Clock</span> 是週期性變化的數位訊號。許多同步電路只在指定邊緣更新狀態，因此 CPU、Timer 和通訊周邊能按照共同節拍前進。</p></div></header>
+        <div class="interactive">
+          <div class="clock-face">
+            <div class="wave"><svg viewBox="0 0 600 150" preserveAspectRatio="none" aria-label="方波時脈"><polyline id="clockWave" points="" fill="none" stroke="#63d0c7" stroke-width="5"/></svg></div>
+            <div><div class="range-row"><label for="clockSlider">示意頻率</label><input id="clockSlider" type="range" min="1" max="10" value="4"><output id="clockOut">4 MHz</output></div>
+              <div class="clock-stats" style="margin-top:18px"><div class="stat"><b id="periodOut">250 ns</b><span>一個 Clock 週期 T = 1/f</span></div><div class="stat"><b id="edgeOut">4,000,000</b><span>每秒週期數</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid3" style="margin-top:18px">
+          <article class="card"><h3>Oscillator｜振盪源</h3><p>產生規律週期訊號的電路，可來自晶體、陶瓷振盪器、RC振盪器或晶片內部振盪器。Clock system 再分頻、倍頻並送往各模組。</p></article>
+          <article class="card"><h3>Frequency｜頻率</h3><p>單位 Hz，表示每秒週期數。16 MHz 等於每秒一千六百萬個週期，但不代表每秒一定執行一千六百萬行 C++。</p></article>
+          <article class="card"><h3>Reset｜重置</h3><p>把 CPU 與關鍵周邊帶回已知狀態，並讓程式從重置入口重新開始。Reset 不會等同清除已燒錄的 Flash。</p></article>
+        </div>
+        <div class="callout"><b>≠</b><div><strong>Clock cycle 不一定等於一條程式指令</strong><p>不同指令可能需要不同週期；快取、Flash等待時間、中斷與編譯結果也會影響實際速度。時脈越高通常也伴隨較高功耗與更嚴格的電源、訊號完整性要求。</p></div></div>
+      </section>
+
+      <section class="section" id="timer" data-title="Timer 與 Interrupt">
+        <header class="section-head"><div class="section-no">06</div><div><span class="eyebrow">TIMER / COUNTER</span><h2>Timer 是會自己數 Clock 的硬體計數器</h2><p class="section-intro">如果 CPU 忙著用迴圈數數，它很難同時做其他事。Timer 由硬體根據時脈自動遞增，達到指定值時可改變輸出、產生事件或提出中斷請求。</p></div></header>
+        <div class="grid4">
+          <article class="card"><span class="eyebrow">1 CLOCK</span><h3>時脈來源</h3><p>來自系統 Clock 或外部脈衝。</p></article><article class="card"><span class="eyebrow">2 PRESCALER</span><h3>預除頻器</h3><p>先把過快的 Clock 除以 8、64、256 等倍率。</p></article>
+          <article class="card"><span class="eyebrow">3 COUNTER</span><h3>計數器</h3><p>每收到一個計數 Clock，就增加或減少一次。</p></article><article class="card"><span class="eyebrow">4 EVENT</span><h3>事件</h3><p>溢位或 Compare Match 時，可觸發中斷或改變接腳。</p></article>
+        </div>
+        <div class="interactive" style="margin-top:18px">
+          <div class="interactive-head"><div><h3>互動：計算 Timer 的一個計數時間</h3><p>改變預除頻值，觀察 Timer 速度與可量測時間範圍的取捨。</p></div></div>
+          <div class="range-row"><label for="preSlider">Prescaler</label><input id="preSlider" type="range" min="0" max="4" value="2" step="1"><output id="preOut">÷64</output></div>
+          <div class="timer-math"><div class="mathbox"><span>輸入 Clock</span><b>16 MHz</b></div><div class="mathbox"><span>Timer Clock</span><b id="timerClock">250 kHz</b></div><div class="mathbox"><span>每次計數</span><b id="tickTime">4 μs</b></div><div class="mathbox"><span>16-bit 溢位時間</span><b id="overflowTime">262.144 ms</b></div></div>
+        </div>
+        <div class="grid2" style="margin-top:18px">
+          <article class="card"><h3>Interrupt｜中斷</h3><p>周邊發生重要事件時，暫時請 CPU 停下目前流程，先執行一段中斷服務程式，完成後再回去。它避免 CPU 不斷輪詢。</p></article>
+          <article class="card"><h3>Compare Match｜比較符合</h3><p>當 Timer 數到預先設定的值，硬體就產生事件。這能建立準確週期、排程取樣，或在不用 CPU 每次介入的情況下產生 PWM。</p></article>
+        </div>
+        <div class="question" style="margin-top:20px"><span class="eyebrow">教師提問</span><h3>Prescaler 變大，Timer 的「解析度」與「最長計時範圍」如何改變？</h3><button class="reveal">顯示教師參考</button><div class="answer">Prescaler 變大後，每一個 tick 間隔變長，時間解析度變粗；但計數器較慢到達最大值，因此不溢位的最長計時範圍變長。</div></div>
+      </section>
+
+      <section class="section" id="gpio" data-title="GPIO">
+        <header class="section-head"><div class="section-no">07</div><div><span class="eyebrow">GENERAL-PURPOSE INPUT / OUTPUT</span><h2>GPIO 是可由程式設定角色的數位接腳</h2><p class="section-intro"><span class="term" title="General-Purpose Input/Output，通用輸入輸出">GPIO</span> 並不是「隨便接都可以」。它內部包含輸入緩衝器、輸出驅動器與模式控制；程式必須先決定接腳是讀取外界，還是主動輸出電位。</p></div></header>
+        <div class="pin-types">
+          <article class="pin-card"><code>VCC / VDD</code><h3>電源接腳</h3><p>為晶片或某一電壓域供電。它不是一般 GPIO，不可任意當訊號腳使用。</p></article>
+          <article class="pin-card"><code>GND / VSS</code><h3>參考地</h3><p>電壓的共同參考點與回流路徑。兩個模組通訊時通常必須共地。</p></article>
+          <article class="pin-card"><code>RESET</code><h3>重置接腳</h3><p>以指定電位觸發重置。可能需要上拉電阻或依 datasheet 接電容形成上電重置。</p></article>
+          <article class="pin-card"><code>GPIO</code><h3>數位輸入／輸出</h3><p>輸入模式讀取 HIGH／LOW；輸出模式由驅動器拉高或拉低。</p></article>
+          <article class="pin-card"><code>ADC / AIN</code><h3>類比輸入</h3><p>將連續電壓量化成數字。輸入不可超過允許範圍，解析度由 ADC 位元數決定。</p></article>
+          <article class="pin-card"><code>XTAL / OSC</code><h3>外部時脈接腳</h3><p>連接晶體或外部 Clock。周圍電容與走線需依硬體設計建議。</p></article>
+        </div>
+        <div class="interactive" style="margin-top:22px">
+          <div class="interactive-head"><div><h3>互動：同一根 GPIO 的三種典型狀態</h3><p>先選模式，再改變電位或上拉設定。</p></div></div>
+          <div class="gpio-lab">
+            <div class="gpio-visual"><div class="pin-node high" id="pinNode"><div><small>GPIO PIN</small><b id="pinValue">HIGH</b></div></div></div>
+            <div class="gpio-controls">
+              <div><b>1. 模式</b><div class="button-row" id="modeBtns"><button class="mini-btn selected" data-mode="output">OUTPUT</button><button class="mini-btn" data-mode="input">INPUT</button><button class="mini-btn" data-mode="pullup">INPUT_PULLUP</button></div></div>
+              <div><b>2. 外部／輸出狀態</b><div class="button-row" id="levelBtns"><button class="mini-btn selected" data-level="high">HIGH／開路</button><button class="mini-btn" data-level="low">LOW／接地</button></div></div>
+              <div class="status" id="gpioStatus"><b>輸出 HIGH</b><br>輸出驅動器把接腳拉向 VCC。只能供應有限電流，不可直接驅動馬達。</div>
+            </div>
+          </div>
+        </div>
+        <div class="grid3" style="margin-top:18px">
+          <article class="card"><h3>HIGH／LOW</h3><p>是電壓範圍，不是永遠精確等於 5 V／0 V。datasheet 會用 V<sub>IH</sub>、V<sub>IL</sub>、V<sub>OH</sub>、V<sub>OL</sub> 定義可接受範圍。</p></article>
+          <article class="card"><h3>Pull-up／Pull-down</h3><p>弱電阻提供未被外部訊號驅動時的預設電位，避免輸入浮接。內建上拉常見，內建下拉則依 MCU 而異。</p></article>
+          <article class="card"><h3>Current Limit</h3><p>GPIO 是訊號輸出，不是電源供應器。LED 要有限流電阻；馬達、繼電器等負載需使用電晶體或 MOSFET 驅動。</p></article>
+        </div>
+        <div class="callout danger"><b>!</b><div><strong>絕對最大額定值不是建議工作值</strong><p>超過 GPIO 電壓範圍、單腳電流或整個封裝的總電流限制，可能造成永久損壞。設計時要看 datasheet 的 Recommended Operating Conditions 與 DC Characteristics。</p></div></div>
+        <h3 style="margin-top:34px;font-size:30px">三種最重要的 GPIO 搭配電路</h3>
+        <div class="grid3">
+          <article class="card"><span class="eyebrow">OUTPUT</span><h3>LED＋限流電阻</h3><div class="circuit"><b>GPIO</b><i></i><span class="part">330 Ω</span><i></i><span class="ledpart">LED</span><i></i><b>GND</b></div><p>電阻限制 LED 電流。估算式為 R = (V<sub>GPIO</sub> − V<sub>F</sub>) / I；還要同時確認 GPIO 與 LED 額定值。</p></article>
+          <article class="card"><span class="eyebrow">INPUT</span><h3>按鍵＋內建上拉</h3><div class="circuit"><b>VCC</b><i></i><span class="part">內建 R</span><i></i><b>GPIO</b><i></i><span class="switch">按鍵</span><i></i><b>GND</b></div><p>放開時由上拉讀到 HIGH；按下時接地讀到 LOW。這稱為 active-low：動作發生時訊號為 LOW。</p></article>
+          <article class="card"><span class="eyebrow">POWER LOAD</span><h3>馬達＋MOSFET驅動</h3><div class="circuit"><b>GPIO</b><i></i><span class="part">MOSFET</span><i></i><b>Motor</b></div><p>GPIO 只控制 MOSFET 的開關，馬達電流由外部電源提供。感性負載通常還需續流二極體，且控制端與電源端要有共同參考地。</p></article>
+        </div>
+        <div class="mux" style="margin-top:30px">
+          <div class="mux-options" id="muxOptions"><div class="mux-option active">GPIO 數位輸出</div><div class="mux-option">Timer PWM 輸出</div><div class="mux-option">UART TX</div><div class="mux-option">SPI SCK</div></div>
+          <div class="physical-pin"><div><small>同一實體腳位</small><br><b>PIN 3</b></div></div>
+          <div class="mux-note"><h3>Pin Multiplexing｜接腳複用</h3><p>晶片內部有切換器，把多個周邊功能連到同一實體腳位。設定某功能後，該腳位可能不再受一般 GPIO 暫存器控制。不同 MCU 的可映射方式不同，必須查 pinout 與 alternate-function table。</p></div>
+        </div>
+      </section>
+
+      <section class="section" id="pwm" data-title="PWM">
+        <header class="section-head"><div class="section-no">08</div><div><span class="eyebrow">PULSE-WIDTH MODULATION</span><h2>PWM 用開關時間比例，控制平均效果</h2><p class="section-intro"><span class="term" title="Pulse-Width Modulation，脈衝寬度調變">PWM</span> 讓接腳快速在 HIGH 與 LOW 之間切換。每一週期中 HIGH 所占比例稱為 Duty Cycle；Timer 通常負責準確產生這個波形。</p></div></header>
+        <div class="interactive">
+          <div class="range-row"><label for="dutySlider">Duty Cycle</label><input id="dutySlider" type="range" min="0" max="100" value="50"><output id="dutyOut">50%</output></div>
+          <div class="pwm-lab" style="margin-top:18px">
+            <div class="pwm-wave"><svg viewBox="0 0 600 180" preserveAspectRatio="none"><polyline id="pwmWave" fill="none" stroke="#ffd34e" stroke-width="5"/></svg></div>
+            <div class="led-demo"><div><div class="led-bulb" id="ledBulb"></div><b id="avgOut">平均效果 ≈ 50%</b></div></div>
+          </div>
+        </div>
+        <div class="grid3" style="margin-top:18px">
+          <article class="card"><h3>Duty Cycle｜占空比</h3><p>D = t<sub>HIGH</sub> / T。50% 表示每個週期一半時間為 HIGH。它改變平均能量，不一定改變 PWM 頻率。</p></article>
+          <article class="card"><h3>Frequency｜頻率</h3><p>一秒內重複幾個 PWM 週期。太低可能造成 LED 閃爍或馬達噪音；太高則受 Timer 解析度與負載特性限制。</p></article>
+          <article class="card"><h3>PWM ≠ 真正 DAC</h3><p>接腳瞬時仍只有 HIGH 或 LOW。若需要平滑電壓，可加入低通濾波器；精密類比輸出則使用 DAC。</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="bus" data-title="通訊介面">
+        <header class="section-head"><div class="section-no">09</div><div><span class="eyebrow">SERIAL COMMUNICATION</span><h2>UART、I²C、SPI 是三種不同的對話規則</h2><p class="section-intro">通訊介面不只是一組腳位名稱。雙方必須對訊號方向、傳送節奏、資料格式與誰可以說話達成相同規則，才能把位元解讀成同一筆資料。</p></div></header>
+        <div class="bus-tabs" role="tablist"><button class="active" data-bus="uart">UART</button><button data-bus="i2c">I²C</button><button data-bus="spi">SPI</button></div>
+        <div class="diagram">
+          <div class="bus-panel active" id="uart">
+            <div class="wire-diagram"><div class="device"><b>MCU</b><br><small>UART Controller</small></div><div class="wires"><div class="wire-row"><span>TX</span><i></i><span>RX</span></div><div class="wire-row back"><span>RX</span><i></i><span>TX</span></div><div class="wire-row"><span>GND</span><i style="background:#71858c"></i><span>GND</span></div></div><div class="device"><b>GPS／PC</b><br><small>另一個 UART</small></div></div>
+            <div class="protocol-grid"><article><h4>UART</h4><p>Universal Asynchronous Receiver/Transmitter。非同步表示沒有另外一條 Clock 線，雙方先約定 baud rate。</p></article><article><h4>TX／RX</h4><p>TX 是送出，RX 是接收，所以通常交叉連接：A.TX → B.RX。</p></article><article><h4>Frame</h4><p>一筆資料通常含起始位、資料位、可選同位位元與停止位。</p></article></div>
+            <div class="frame" style="margin-top:18px"><span class="bit start">Start<br>0</span><span class="bit data">D0<br>1</span><span class="bit data">D1<br>0</span><span class="bit data">D2<br>1</span><span class="bit data">D3<br>0</span><span class="bit data">D4<br>0</span><span class="bit data">D5<br>0</span><span class="bit data">D6<br>1</span><span class="bit data">D7<br>0</span><span class="bit stop">Stop<br>1</span></div>
+          </div>
+          <div class="bus-panel" id="i2c">
+            <div class="wire-diagram"><div class="device"><b>Controller</b><br><small>MCU</small></div><div class="wires"><div class="wire-row"><span>SCL</span><i></i><span>SCL</span></div><div class="wire-row"><span>SDA</span><i></i><span>SDA</span></div><div class="wire-row"><span>GND</span><i style="background:#71858c"></i><span>GND</span></div></div><div class="device"><b>Target</b><br><small>Sensor 0x68</small></div></div>
+            <div class="protocol-grid"><article><h4>SCL</h4><p>Serial Clock。通常由 Controller 產生節拍，讓各裝置知道何時讀取 SDA。</p></article><article><h4>SDA</h4><p>Serial Data。資料可雙向傳送；裝置依位址決定是否回應。</p></article><article><h4>為何需要上拉？</h4><p>I²C 通常使用 open-drain：裝置只主動拉 LOW，釋放時由上拉電阻回到 HIGH，讓多裝置安全共享線路。</p></article></div>
+            <div class="callout good"><b>↕</b><div><strong>一次 I²C 傳輸</strong><p>START → 7-bit 位址＋R/W → ACK → 資料 byte → ACK／NACK → STOP。I²C 用「位址」選裝置，因此一般不需要每個裝置各一條 CS。</p></div></div>
+          </div>
+          <div class="bus-panel" id="spi">
+            <div class="wire-diagram"><div class="device"><b>Controller</b><br><small>MCU</small></div><div class="wires"><div class="wire-row"><span>SCK</span><i></i><span>SCK</span></div><div class="wire-row"><span>MOSI</span><i></i><span>MOSI</span></div><div class="wire-row back"><span>MISO</span><i></i><span>MISO</span></div><div class="wire-row"><span>CS</span><i></i><span>CS</span></div></div><div class="device"><b>Peripheral</b><br><small>SD Card／Display</small></div></div>
+            <div class="protocol-grid"><article><h4>SCK／SCLK</h4><p>Serial Clock，由 Controller 提供。不同資料表可能寫 SCK 或 SCLK，意義相同。</p></article><article><h4>MOSI／MISO</h4><p>MOSI：Controller 到 Peripheral；MISO：Peripheral 到 Controller。新文件也可能寫 COPI／CIPO。</p></article><article><h4>CS／SS</h4><p>Chip Select／Slave Select。通常以 LOW 選中某個周邊；每增加一個周邊，常需要多一條 CS。</p></article></div>
+            <div class="callout"><b>⇄</b><div><strong>SPI 可同時送與收</strong><p>每個 Clock 邊緣，兩端的 shift register 同時移出與移入一個 bit，因此是全雙工。雙方還必須使用相同的 Clock polarity 與 phase（SPI mode）。</p></div></div>
+          </div>
+        </div>
+        <div style="overflow:auto;margin-top:18px"><table class="compare"><thead><tr><th>介面</th><th>主要線路</th><th>裝置選擇</th><th>同步方式</th><th>典型優勢</th></tr></thead><tbody>
+          <tr><td><strong>UART</strong></td><td>TX、RX、GND</td><td>通常點對點</td><td>無 Clock；約定 baud</td><td>簡單、適合 GPS 與序列監控</td></tr>
+          <tr><td><strong>I²C</strong></td><td>SDA、SCL、GND</td><td>7-bit／10-bit 位址</td><td>SCL</td><td>兩條訊號線共享多個感測器</td></tr>
+          <tr><td><strong>SPI</strong></td><td>SCK、MOSI、MISO、CS、GND</td><td>每裝置常有獨立 CS</td><td>SCK</td><td>速度快、全雙工、協定簡潔</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section class="section" id="datasheet" data-title="Datasheet">
+        <header class="section-head"><div class="section-no">10</div><div><span class="eyebrow">READ THE DATASHEET</span><h2>看 datasheet，不必從第一頁讀到最後一頁</h2><p class="section-intro">資料表是晶片設計者提供的規格文件。初學者先學會帶著問題找表格與章節：這根腳可做什麼？電壓能否相容？Timer 有幾位元？通訊功能能映射到哪裡？</p></div></header>
+        <div class="grid3">
+          <article class="card"><span class="eyebrow">STEP 1</span><h3>先確認型號與封裝</h3><p>同系列可能有不同腳數與封裝。先找完整料號，再對照正確 pinout。</p></article>
+          <article class="card"><span class="eyebrow">STEP 2</span><h3>找 Pin Functions</h3><p>確認電源、Reset、GPIO、ADC 與 Alternate Functions。不要只看開發板絲印。</p></article>
+          <article class="card"><span class="eyebrow">STEP 3</span><h3>查電氣規格</h3><p>Operating Conditions、DC Characteristics 與 Absolute Maximum Ratings 是三種不同概念。</p></article>
+          <article class="card"><span class="eyebrow">STEP 4</span><h3>找周邊章節</h3><p>Timer、ADC、UART、I²C、SPI 章節會說明功能、限制與設定順序。</p></article>
+          <article class="card"><span class="eyebrow">STEP 5</span><h3>查 Clock Tree</h3><p>周邊頻率可能不是 CPU 頻率。Timer 與通訊速度計算前，先找它實際使用的 Clock。</p></article>
+          <article class="card"><span class="eyebrow">STEP 6</span><h3>回到開發板原理圖</h3><p>MCU 腳位可能已接 LED、USB 或其他元件。開發板 schematic 才能說明板上實際連線。</p></article>
+        </div>
+        <div class="callout good"><b>任務</b><div><strong>五分鐘資料表尋寶</strong><p>分組選 UNO R3 或 UNO R4：找出主 MCU、Clock、Flash、SRAM、GPIO 電壓、UART 腳位、I²C 的 SDA/SCL，以及 SPI 的 SCK/MOSI/MISO/CS。最後由每組說出一項「不能只看 Arduino 腳位編號就知道」的資訊。</p></div></div>
+      </section>
+
+      <section class="section" id="check" data-title="檢核與術語表">
+        <header class="section-head"><div class="section-no">11</div><div><span class="eyebrow">CHECK & GLOSSARY</span><h2>能說出「為什麼」，才算真的認識這些接腳</h2><p class="section-intro">先用下面的檢核表確認學習成果，再利用可搜尋術語表回顧英文縮寫。教師可隨機點名，每題以一句完整因果句回答。</p></div></header>
+        <div class="grid2">
+          <div class="checklist">
+            <label class="check"><input type="checkbox"><span>我能區分 MCU、CPU 與開發板。</span></label>
+            <label class="check"><input type="checkbox"><span>我能說明 Flash 與 SRAM 在斷電後的差異。</span></label>
+            <label class="check"><input type="checkbox"><span>我能依序說明編譯、傳輸、寫入 Flash 與 Reset。</span></label>
+            <label class="check"><input type="checkbox"><span>我能解釋 Clock 如何驅動 CPU 與 Timer。</span></label>
+            <label class="check"><input type="checkbox"><span>我能說明 GPIO 浮接、上拉與輸出電流限制。</span></label>
+            <label class="check"><input type="checkbox"><span>我能比較 PWM、UART、I²C 與 SPI。</span></label>
+          </div>
+          <div class="grid2">
+            <div class="question"><span class="eyebrow">Q1</span><h3>為何燒錄後拔掉 USB，程式仍能再次執行？</h3><button class="reveal">顯示答案</button><div class="answer">機器碼已寫入非揮發性的 Flash；USB 只是常見的供電與傳輸路徑。重新供電後 MCU Reset，再從 Flash 取指令。</div></div>
+            <div class="question"><span class="eyebrow">Q2</span><h3>I²C 為何有 SDA 和 SCL，卻通常沒有 CS？</h3><button class="reveal">顯示答案</button><div class="answer">SDA 傳資料、SCL 提供節拍；Controller 在資料中傳送裝置位址來選擇 Target，因此多個裝置可共享兩條訊號線。</div></div>
+            <div class="question"><span class="eyebrow">Q3</span><h3>PWM 50% 為何不是固定輸出一半電壓？</h3><button class="reveal">顯示答案</button><div class="answer">接腳仍快速切換完整 HIGH 與 LOW，只是兩者時間各半；負載或濾波器看到的是平均效果。</div></div>
+            <div class="question"><span class="eyebrow">Q4</span><h3>為何 SPI 的 CS 不可和 I²C 位址混為一談？</h3><button class="reveal">顯示答案</button><div class="answer">CS 是一條實體選擇線，Controller 以電位選中 SPI 周邊；I²C 則把位址放在 SDA 傳輸內容中。</div></div>
+          </div>
+        </div>
+        <h3 style="margin-top:45px;font-size:30px">專有名詞快速查詢</h3>
+        <div class="glossary-tools"><input id="glossSearch" type="search" placeholder="輸入 GPIO、時脈、SDA、燒錄……" aria-label="搜尋專有名詞"></div>
+        <div class="glossary" id="glossary">
+          <div class="gloss-item" data-key="mcu 微控制器"><b>MCU</b><span>Microcontroller Unit；整合 CPU、記憶體與周邊的微控制器。</span></div>
+          <div class="gloss-item" data-key="cpu 中央處理器 核心"><b>CPU</b><span>Central Processing Unit；取指令、解碼並執行運算的核心。</span></div>
+          <div class="gloss-item" data-key="alu arithmetic logic unit 算術邏輯單元"><b>ALU</b><span>Arithmetic Logic Unit；CPU 內執行加減、比較與位元邏輯運算的電路。</span></div>
+          <div class="gloss-item" data-key="stack 堆疊 函式 呼叫"><b>Stack</b><span>依後進先出方式保存函式呼叫、返回位置與區域資料的 SRAM 區域。</span></div>
+          <div class="gloss-item" data-key="bit 位元 二進位 0 1"><b>bit</b><span>最小資料單位，只有 0 或 1 兩種狀態。</span></div>
+          <div class="gloss-item" data-key="byte 位元組 8 bits"><b>byte</b><span>通常由 8 bits 組成；一個 unsigned byte 可表示 0–255。</span></div>
+          <div class="gloss-item" data-key="binary 二進位 base 2"><b>Binary</b><span>以 2 為基底的表示法，只使用數字 0 與 1。</span></div>
+          <div class="gloss-item" data-key="hex hexadecimal 十六進位 0x"><b>Hexadecimal</b><span>十六進位；常以 0x 開頭，一個 hex digit 對應 4 bits。</span></div>
+          <div class="gloss-item" data-key="logic gate 邏輯閘 and or not"><b>Logic Gate</b><span>依 AND、OR、NOT 等邏輯規則處理二值訊號的電子電路。</span></div>
+          <div class="gloss-item" data-key="bus 匯流排 data address control"><b>Bus</b><span>模組間共享的資料、位址與控制訊號通道。</span></div>
+          <div class="gloss-item" data-key="register 暫存器"><b>Register</b><span>CPU 或周邊內的小型高速儲存位置；各 bit 常直接控制硬體功能。</span></div>
+          <div class="gloss-item" data-key="peripheral 周邊 adc timer uart"><b>Peripheral</b><span>MCU 內執行特定功能的硬體模組，如 Timer、ADC 或 UART。</span></div>
+          <div class="gloss-item" data-key="flash 快閃 非揮發 程式"><b>Flash</b><span>斷電後保留，通常存放韌體機器碼。</span></div>
+          <div class="gloss-item" data-key="sram ram 揮發 變數"><b>SRAM</b><span>高速揮發性記憶體，存放執行中的變數與 stack。</span></div>
+          <div class="gloss-item" data-key="eeprom data flash 設定"><b>EEPROM</b><span>適合保存少量、需要斷電保留的設定資料。</span></div>
+          <div class="gloss-item" data-key="clock 時脈 頻率 oscillator"><b>Clock</b><span>週期性節拍訊號，協調 CPU 與同步周邊更新狀態。</span></div>
+          <div class="gloss-item" data-key="timer counter 計時器 計數器"><b>Timer / Counter</b><span>依 Clock 或外部脈衝自動計數的硬體周邊。</span></div>
+          <div class="gloss-item" data-key="prescaler 預除頻"><b>Prescaler</b><span>先降低輸入 Clock 頻率，再送進 Timer。</span></div>
+          <div class="gloss-item" data-key="interrupt irq 中斷"><b>Interrupt</b><span>重要事件請 CPU 暫停主流程、先執行服務程式的機制。</span></div>
+          <div class="gloss-item" data-key="gpio 通用 輸入 輸出 pin"><b>GPIO</b><span>General-Purpose Input/Output；可設定為數位輸入或輸出的接腳。</span></div>
+          <div class="gloss-item" data-key="vcc vdd 電源 power"><b>VCC / VDD</b><span>晶片的正電源接腳名稱；實際電壓與每個電源域的接法必須查資料表。</span></div>
+          <div class="gloss-item" data-key="gnd vss ground 接地"><b>GND / VSS</b><span>電路的共同電位參考與電流回流路徑。</span></div>
+          <div class="gloss-item" data-key="pull-up pull-down 上拉 下拉 浮接"><b>Pull-up / Pull-down</b><span>以較大電阻把輸入連向 VCC 或 GND，提供未驅動時的穩定預設狀態。</span></div>
+          <div class="gloss-item" data-key="active low 低有效"><b>Active-low</b><span>訊號在 LOW 時代表啟用、按下或成立；名稱上方常以橫線或尾碼 n 表示。</span></div>
+          <div class="gloss-item" data-key="mosfet 電晶體 馬達 驅動"><b>MOSFET</b><span>可用小控制訊號切換較大負載電流的電晶體，常作為馬達或燈條驅動開關。</span></div>
+          <div class="gloss-item" data-key="flyback diode 續流 二極體 馬達 線圈"><b>Flyback Diode</b><span>跨接在線圈負載兩端，關閉時為感應電流提供路徑，降低高壓突波。</span></div>
+          <div class="gloss-item" data-key="vih vil voh vol high low 電壓"><b>V<sub>IH</sub> / V<sub>IL</sub></b><span>輸入保證判為 HIGH 的最低電壓，以及保證判為 LOW 的最高電壓；V<sub>OH</sub>／V<sub>OL</sub> 則描述輸出。</span></div>
+          <div class="gloss-item" data-key="pwm 脈衝 寬度 調變 duty cycle"><b>PWM</b><span>以 HIGH 時間比例控制平均效果的脈衝寬度調變。</span></div>
+          <div class="gloss-item" data-key="uart 非同步 序列 tx rx"><b>UART</b><span>非同步序列通訊；常用 TX、RX 與 GND。</span></div>
+          <div class="gloss-item" data-key="tx transmit 傳送"><b>TX</b><span>Transmit；資料送出端，通常接對方 RX。</span></div>
+          <div class="gloss-item" data-key="rx receive 接收"><b>RX</b><span>Receive；資料接收端，通常接對方 TX。</span></div>
+          <div class="gloss-item" data-key="i2c i²c two wire 位址"><b>I²C</b><span>使用 SDA、SCL 與位址，讓多裝置共享匯流排。</span></div>
+          <div class="gloss-item" data-key="sda serial data 資料"><b>SDA</b><span>Serial Data；I²C 的雙向資料線。</span></div>
+          <div class="gloss-item" data-key="scl serial clock 時脈"><b>SCL</b><span>Serial Clock；I²C 的時脈線，通常由 Controller 產生。</span></div>
+          <div class="gloss-item" data-key="spi 同步 序列"><b>SPI</b><span>以 SCK、資料線與 CS 連接高速周邊的同步序列介面。</span></div>
+          <div class="gloss-item" data-key="sck sclk serial clock"><b>SCK / SCLK</b><span>SPI 的 Serial Clock。</span></div>
+          <div class="gloss-item" data-key="cs ss chip select slave select"><b>CS / SS</b><span>選中某個 SPI 周邊的實體控制線，常為低電位有效。</span></div>
+          <div class="gloss-item" data-key="mosi copi"><b>MOSI / COPI</b><span>SPI 中 Controller 傳給 Peripheral 的資料線。</span></div>
+          <div class="gloss-item" data-key="miso cipo"><b>MISO / CIPO</b><span>SPI 中 Peripheral 傳回 Controller 的資料線。</span></div>
+          <div class="gloss-item" data-key="adc 類比 數位 轉換"><b>ADC</b><span>Analog-to-Digital Converter；把輸入電壓量化成數值。</span></div>
+          <div class="gloss-item" data-key="bootloader 開機 載入 燒錄"><b>Bootloader</b><span>Reset 後先運行、可接收新韌體並跳到使用者程式的小程式。</span></div>
+          <div class="gloss-item" data-key="firmware 韌體"><b>Firmware</b><span>控制嵌入式硬體行為並儲存在裝置中的程式。</span></div>
+          <div class="gloss-item" data-key="compiler compile 編譯"><b>Compiler</b><span>把高階語言原始碼翻譯成目標處理器指令的工具。</span></div>
+          <div class="gloss-item" data-key="linker link 連結"><b>Linker</b><span>合併程式與函式庫、解析符號並安排最終記憶體位址的工具。</span></div>
+          <div class="gloss-item" data-key="machine code 機器碼 指令"><b>Machine Code</b><span>依特定 CPU 指令集編碼，可由 CPU 直接取出與執行的位元內容。</span></div>
+          <div class="gloss-item" data-key="hex bin file 燒錄 檔案"><b>HEX / BIN File</b><span>承載已編譯機器碼的檔案格式；BIN 是原始位元組，Intel HEX 另含位址與檢查資訊。</span></div>
+          <div class="gloss-item" data-key="isp in system programming avr 燒錄"><b>ISP</b><span>In-System Programming；晶片留在電路板上即可使用專用接腳燒錄。</span></div>
+          <div class="gloss-item" data-key="swd serial wire debug arm 除錯"><b>SWD</b><span>Serial Wire Debug；Arm MCU 常用的雙訊號燒錄與除錯介面。</span></div>
+          <div class="gloss-item" data-key="jtag debug scan 除錯"><b>JTAG</b><span>標準化的晶片測試與除錯介面，可控制核心並觀察內部狀態。</span></div>
+          <div class="gloss-item" data-key="baud rate uart 鮑率 symbol"><b>Baud Rate</b><span>UART 雙方約定的符號傳送速率；常見設定如 9600、115200 baud。</span></div>
+          <div class="gloss-item" data-key="open drain 開漏 上拉 i2c"><b>Open-drain</b><span>輸出只能主動拉 LOW，HIGH 由外部上拉電阻產生，便於多裝置共享線路。</span></div>
+          <div class="gloss-item" data-key="duty cycle 占空比 pwm"><b>Duty Cycle</b><span>一個週期中訊號處於 HIGH 的時間比例。</span></div>
+          <div class="gloss-item" data-key="reset 重置"><b>Reset</b><span>讓 CPU 與關鍵周邊回到已知狀態，程式從重置入口重新開始。</span></div>
+          <div class="gloss-item" data-key="upload programming flash 燒錄"><b>燒錄／Programming</b><span>把編譯後的機器碼寫入 MCU 程式記憶體。</span></div>
+        </div>
+        <div class="sources" style="margin-top:42px">
+          <h3>延伸資料與規格來源</h3>
+          <ul>
+            <li><a href="https://docs.arduino.cc/hardware/uno-rev3" target="_blank" rel="noreferrer">Arduino UNO R3 官方文件</a></li>
+            <li><a href="https://docs.arduino.cc/hardware/uno-r4-minima" target="_blank" rel="noreferrer">Arduino UNO R4 Minima 官方文件</a></li>
+            <li><a href="https://documentation.espressif.com/esp32-s3_datasheet_en.pdf" target="_blank" rel="noreferrer">Espressif ESP32-S3 Datasheet</a></li>
+            <li><a href="https://pip.raspberrypi.com/documents/RP-008371-DS-rp2040-datasheet.pdf" target="_blank" rel="noreferrer">Raspberry Pi RP2040 Datasheet</a></li>
+          </ul>
+        </div>
+      </section>
+      <footer><span>國立屏東大學應用物理系｜劉宗哲</span><span>微控制器原理與 Arduino 應用・MCU 基礎三小時</span></footer>
+    </main>
+  </div>
+  <script>
+    const navLinks=[...document.querySelectorAll('#sideNav a')];
+    const mobileMenu=document.getElementById('mobileMenu');
+    navLinks.forEach(a=>{const c=a.cloneNode(true);c.addEventListener('click',()=>mobileMenu.classList.remove('open'));mobileMenu.appendChild(c)});
+    document.getElementById('menuBtn').addEventListener('click',e=>{const open=mobileMenu.classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',open)});
+    const sections=[...document.querySelectorAll('section[data-title]')];
+    const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+entry.target.id))}})},{rootMargin:'-30% 0px -60% 0px'});
+    sections.forEach(s=>observer.observe(s));
+    addEventListener('scroll',()=>{const max=document.documentElement.scrollHeight-innerHeight;const p=max?Math.round(scrollY/max*100):0;document.getElementById('progressBar').style.width=p+'%';document.getElementById('progressText').textContent=p+'%'},{passive:true});
+
+    document.querySelectorAll('.reveal').forEach(b=>b.addEventListener('click',()=>{const q=b.closest('.question');q.classList.toggle('open');b.textContent=q.classList.contains('open')?'隱藏答案':'顯示教師參考'}));
+    const cpuData=[
+      ['從 Flash 取得指令','Program Counter 指向下一個指令位址。CPU 讀到「把 LED 腳位設為 HIGH」所對應的機器碼。'],
+      ['解讀指令欄位','控制單元辨識操作種類、來源資料和目的地。它知道接下來要寫入 GPIO 周邊暫存器。'],
+      ['執行硬體動作','CPU 經內部 Bus 寫入 GPIO 暫存器；GPIO 輸出驅動器據此改變接腳電位。'],
+      ['前往下一筆指令','Program Counter 更新。CPU 繼續下一個循環；這個過程在 Clock 節拍下高速重複。']
+    ];let cpuI=0;
+    document.getElementById('cpuNext').addEventListener('click',()=>{cpuI=(cpuI+1)%4;document.querySelectorAll('.cycle').forEach((x,i)=>x.classList.toggle('on',i===cpuI));document.getElementById('cpuTitle').textContent=cpuData[cpuI][0];document.getElementById('cpuText').textContent=cpuData[cpuI][1]});
+    const uploadData=[
+      ['原始碼：人看得懂，CPU還看不懂','例如 digitalWrite(13, HIGH)，必須依目標晶片和核心函式庫轉成真正的機器指令。'],
+      ['編譯：翻譯成目標架構指令','ATmega328P 與 RA4M1 的指令集不同，所以必須選對 Board／MCU。'],
+      ['連結：把需要的程式片段接起來','Linker 合併你的程式、Arduino core 與使用到的函式庫，並安排記憶體位址。'],
+      ['產生可燒錄檔案','IDE 產生 HEX 或 BIN 等映像，內容是機器碼與資料，不再是原始 C++ 文字。'],
+      ['傳輸：把位元送到開發板','USB 可能先到 USB-to-serial 晶片，也可能直接進 MCU 的 USB；路徑依開發板而異。'],
+      ['寫入 Flash','Bootloader 或 programmer 依規則擦除並寫入 Flash，之後再驗證資料是否正確。'],
+      ['Reset 並開始執行','MCU 從重置入口啟動；Bootloader 若沒有更新任務，就跳到新的使用者程式。']
+    ];let uploadI=0;
+    document.getElementById('uploadNext').addEventListener('click',()=>{uploadI=(uploadI+1)%7;document.querySelectorAll('#uploadFlow .step').forEach((x,i)=>x.classList.toggle('on',i===uploadI));document.getElementById('uploadTitle').textContent=uploadData[uploadI][0];document.getElementById('uploadText').textContent=uploadData[uploadI][1]});
+
+    function drawClock(){const f=+document.getElementById('clockSlider').value;const pts=[];const cycles=f;const w=600/cycles;for(let i=0;i<cycles;i++){const x=i*w;pts.push(x+',120',x+',30',(x+w/2)+',30',(x+w/2)+',120',(x+w)+',120')}document.getElementById('clockWave').setAttribute('points',pts.join(' '));document.getElementById('clockOut').textContent=f+' MHz';const ns=1000/f;document.getElementById('periodOut').textContent=(Number.isInteger(ns)?ns:ns.toFixed(1))+' ns';document.getElementById('edgeOut').textContent=(f*1000000).toLocaleString()}
+    document.getElementById('clockSlider').addEventListener('input',drawClock);drawClock();
+    const pres=[1,8,64,256,1024];function timerCalc(){const d=pres[+document.getElementById('preSlider').value],hz=16000000/d,tick=1e6/hz,ov=65536/hz*1000;document.getElementById('preOut').textContent='÷'+d;document.getElementById('timerClock').textContent=hz>=1e6?(hz/1e6)+' MHz':(hz/1000).toFixed(hz%1000?3:0)+' kHz';document.getElementById('tickTime').textContent=tick<1?(tick*1000).toFixed(1)+' ns':tick.toFixed(tick<10?2:0)+' μs';document.getElementById('overflowTime').textContent=ov>=1000?(ov/1000).toFixed(3)+' s':ov.toFixed(3)+' ms'}
+    document.getElementById('preSlider').addEventListener('input',timerCalc);timerCalc();
+    let gpioMode='output',gpioLevel='high';function gpioRender(){const node=document.getElementById('pinNode'),val=document.getElementById('pinValue'),st=document.getElementById('gpioStatus');node.className='pin-node';if(gpioMode==='output'){const high=gpioLevel==='high';if(high)node.classList.add('high');val.textContent=high?'HIGH':'LOW';st.className='status';st.innerHTML='<b>輸出 '+(high?'HIGH':'LOW')+'</b><br>輸出驅動器把接腳拉向 '+(high?'VCC':'GND')+'。只能提供有限電流，不可直接驅動馬達。'}else if(gpioMode==='pullup'){const low=gpioLevel==='low';if(!low)node.classList.add('high');val.textContent=low?'LOW':'HIGH';st.className='status';st.innerHTML='<b>輸入＋內建上拉</b><br>'+(low?'外部按鍵接地，讀到 LOW。':'外部開路時，弱上拉電阻提供穩定 HIGH。')}else{if(gpioLevel==='high'){node.classList.add('floating');val.textContent='FLOAT';st.className='status warn';st.innerHTML='<b>輸入浮接</b><br>沒有外部驅動，也沒有上拉／下拉，電位容易受雜訊影響。'}else{val.textContent='LOW';st.className='status';st.innerHTML='<b>輸入 LOW</b><br>外部電路把接腳明確連向 GND，輸入緩衝器可穩定判讀。'}}}
+    document.querySelectorAll('#modeBtns button').forEach(b=>b.addEventListener('click',()=>{gpioMode=b.dataset.mode;document.querySelectorAll('#modeBtns button').forEach(x=>x.classList.toggle('selected',x===b));gpioRender()}));
+    document.querySelectorAll('#levelBtns button').forEach(b=>b.addEventListener('click',()=>{gpioLevel=b.dataset.level;document.querySelectorAll('#levelBtns button').forEach(x=>x.classList.toggle('selected',x===b));gpioRender()}));
+    document.querySelectorAll('#muxOptions .mux-option').forEach(x=>x.addEventListener('click',()=>document.querySelectorAll('#muxOptions .mux-option').forEach(y=>y.classList.toggle('active',x===y))));
+    function drawPwm(){const d=+document.getElementById('dutySlider').value,pts=[],cycles=5,w=120,hi=w*d/100;for(let i=0;i<cycles;i++){const x=i*w;pts.push(x+',145',x+',35',(x+hi)+',35',(x+hi)+',145',(x+w)+',145')}document.getElementById('pwmWave').setAttribute('points',pts.join(' '));document.getElementById('dutyOut').textContent=d+'%';const bulb=document.getElementById('ledBulb');bulb.style.opacity=.08+.92*d/100;bulb.style.boxShadow='0 0 '+(8+d*.55)+'px rgba(255,211,78,'+(.15+d*.007)+')';document.getElementById('avgOut').textContent='平均效果 ≈ '+d+'%'}
+    document.getElementById('dutySlider').addEventListener('input',drawPwm);drawPwm();
+    document.querySelectorAll('.bus-tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.bus-tabs button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.bus-panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.bus))}));
+    document.getElementById('glossSearch').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();document.querySelectorAll('.gloss-item').forEach(x=>x.classList.toggle('hide',q&&!x.dataset.key.toLowerCase().includes(q)&&!x.textContent.toLowerCase().includes(q)))});
+    function resetAll(){document.querySelectorAll('input[type=checkbox]').forEach(x=>x.checked=false);document.querySelectorAll('.question').forEach(x=>x.classList.remove('open'));document.querySelectorAll('.reveal').forEach(x=>x.textContent='顯示教師參考');document.getElementById('clockSlider').value=4;document.getElementById('preSlider').value=2;document.getElementById('dutySlider').value=50;drawClock();timerCalc();drawPwm();scrollTo({top:0,behavior:'smooth'})}
+  </script>
+</body>
+</html>
