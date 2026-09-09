@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>高中 STEM｜太陽能旋轉衛星工程實驗（8 小時版）</title>
+<style>
+:root{
+  --navy:#071a31; --blue:#0b69b7; --cyan:#28c0e6; --sky:#eef9ff;
+  --gold:#f2b62d; --orange:#f07831; --green:#269b68; --red:#d74b4b;
+  --ink:#17324a; --muted:#5e7285; --line:#d7e7f2; --card:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  color:var(--ink);background:linear-gradient(#eef8ff,#fff 20%);
+}
+.hero{
+  background:
+   radial-gradient(circle at 16% 18%,rgba(255,215,70,.46),transparent 13%),
+   radial-gradient(circle at 82% 14%,rgba(45,195,230,.18),transparent 18%),
+   linear-gradient(160deg,#031226,#0b365f 62%,#096484);
+  color:#fff;padding:60px 20px 48px;position:relative;overflow:hidden
+}
+.hero:after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,.9) 0 1px,transparent 1.2px);
+  background-size:74px 74px;opacity:.16
+}
+.hero-inner{position:relative;z-index:1;width:min(1220px,95vw);margin:auto;display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center}
+.eyebrow{font-weight:900;letter-spacing:.08em;color:#a8ecff}
+h1{font-size:clamp(42px,6vw,76px);line-height:1.05;margin:9px 0 14px}
+.hero p{font-size:20px;line-height:1.72;color:#e9f8ff}
+.badges{display:flex;gap:9px;flex-wrap:wrap;margin:20px 0}
+.badge{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);padding:8px 12px;border-radius:999px;font-weight:800}
+.hero svg{width:100%;filter:drop-shadow(0 18px 26px rgba(0,0,0,.28))}
+nav{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .inner{width:min(1220px,96vw);margin:auto;display:flex;gap:4px;overflow:auto;padding:10px 0}
+nav a{text-decoration:none;color:#34566f;font-weight:800;padding:9px 11px;border-radius:9px;white-space:nowrap}
+nav a:hover{background:#e8f5ff;color:#075ba6}
+main{width:min(1220px,94vw);margin:auto}
+section{padding:68px 0 8px;scroll-margin-top:68px}
+.title{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+.num{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#0a6ec3,#25c4e9);color:#fff;font-weight:900;font-size:22px}
+h2{font-size:clamp(28px,4vw,44px);margin:0;color:#0d3559}
+h3{margin:0 0 10px;color:#0b5e98}
+.lead{font-size:19px;line-height:1.8;color:#3c5e78}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 10px 26px rgba(34,89,130,.065)}
+.card p,.card li{line-height:1.74}
+.eq{background:#082b4a;color:#fff;border-radius:14px;padding:15px 18px;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:clamp(21px,2.6vw,34px);margin:15px 0}
+.callout{border-left:6px solid var(--cyan);background:#edfaff;border-radius:12px;padding:15px 17px;margin:15px 0;line-height:1.72;font-weight:700}
+.good{border-left-color:#27a56d;background:#effcf7}.warn{border-left-color:#f1a328;background:#fff7e8}.danger{border-left-color:#d94747;background:#fff1f1}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}
+th,td{border-bottom:1px solid var(--line);padding:11px 12px;text-align:left;vertical-align:top}
+th{background:#eaf6ff;color:#0c5f9a}
+.module{border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}
+.module .head{padding:14px 18px;background:#0d5f9a;color:white;font-weight:900;font-size:20px}
+.module .body{padding:16px 18px;line-height:1.7}
+.timeline{display:grid;grid-template-columns:160px 1fr;gap:12px;margin:12px 0}
+.time{background:#0b6dbb;color:white;border-radius:12px;padding:12px;font-weight:900;text-align:center}
+.topic{background:white;border:1px solid var(--line);border-radius:12px;padding:12px 15px}
+.canvas-wrap{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+canvas{width:100%;height:290px;display:block}
+.spectrumbar{height:34px;border-radius:10px;background:linear-gradient(90deg,#7d3cff,#355cff,#1d9cff,#24d8c2,#48d72e,#e4dc23,#ff9b22,#ee452f,#9e2020);position:relative;margin:18px 0}
+.marker{position:absolute;top:-28px;font-size:12px;font-weight:800;color:#203b53;transform:translateX(-50%)}
+.band{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.band .b{padding:14px;border-radius:14px;color:#fff;font-weight:800}
+.uv{background:#6c4bbf}.vis{background:linear-gradient(90deg,#3566c8,#22a16f,#d4b52c)}.ir{background:#a9453d}
+.flow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:22px 0}
+.flow span{background:white;border:2px solid #c9e7f7;border-radius:14px;padding:12px 16px;font-weight:900}.flow b{color:#1293cf;font-size:24px}
+.calc{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.field label{display:block;font-weight:800;font-size:14px;margin-bottom:5px}
+.field input,.field select{width:100%;padding:11px;border:1px solid #bfd4e2;border-radius:10px;font-size:16px}
+.result{background:#072f53;color:white;border-radius:12px;padding:14px 16px;font-weight:900;min-height:52px}
+.btn{border:0;background:#0b6fbd;color:#fff;font-weight:900;border-radius:10px;padding:11px 15px;cursor:pointer}
+.steps{counter-reset:n}.step{counter-increment:n;position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px 18px 17px 66px;margin:13px 0}
+.step:before{content:counter(n);position:absolute;left:16px;top:16px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#0b70c1;color:#fff;font-weight:900}
+.challenge{background:linear-gradient(135deg,#082b4a,#0d5f88);color:#fff;border-radius:20px;padding:25px}.challenge h3{color:#ffd56b;font-size:28px}.challenge li{line-height:1.8}
+.pill{display:inline-block;padding:5px 10px;border-radius:999px;background:#eaf6ff;color:#0b5e9a;font-weight:800;margin:3px}
+details{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin:10px 0}summary{font-weight:900;cursor:pointer;color:#0b5f9d}
+.footer{margin-top:60px;background:#061a31;color:#fff;padding:32px 20px;text-align:center}.small{font-size:14px;color:var(--muted)}
+@media(max-width:940px){.hero-inner,.grid2,.grid3,.grid4,.calc,.band{grid-template-columns:1fr}.timeline{grid-template-columns:1fr}.hero{text-align:center}}
+@media print{nav,.btn{display:none!important}section{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="hero-inner">
+  <div>
+    <div class="eyebrow">高中 STEM｜Space Power × Photovoltaics × Motor × Rotational Dynamics</div>
+    <h1>太陽能旋轉衛星<br>工程實驗</h1>
+    <p>8 小時完整高中版：從太陽光的功率與光譜、半導體光伏效應、I–V / P–V 曲線，到 N20 馬達、Back EMF、齒輪、力矩、轉動慣量、RPM 與工程最佳化。</p>
+    <div class="badges">
+      <span class="badge">總時數 8 hr</span><span class="badge">3V 太陽能板 ×2</span><span class="badge">53×52 mm</span>
+      <span class="badge">約125 mA / 片</span><span class="badge">N20 減速馬達</span><span class="badge">1 mm 黃銅線</span>
+    </div>
+  </div>
+  <svg viewBox="0 0 520 370" aria-label="太陽能旋轉衛星示意圖">
+    <defs>
+      <linearGradient id="p" x1="0" x2="1"><stop stop-color="#102f6e"/><stop offset="1" stop-color="#071632"/></linearGradient>
+      <linearGradient id="m" x1="0" x2="1"><stop stop-color="#999"/><stop offset=".48" stop-color="#f3f3f3"/><stop offset="1" stop-color="#777"/></linearGradient>
+    </defs>
+    <rect x="20" y="112" width="170" height="122" rx="8" fill="url(#p)" stroke="#65d4ff" stroke-width="4"/>
+    <rect x="330" y="112" width="170" height="122" rx="8" fill="url(#p)" stroke="#65d4ff" stroke-width="4"/>
+    <g stroke="#557bc4" stroke-width="2"><path d="M54 112v122M88 112v122M122 112v122M156 112v122"/><path d="M364 112v122M398 112v122M432 112v122M466 112v122"/><path d="M20 153h170M20 194h170M330 153h170M330 194h170"/></g>
+    <g stroke="#e4ad3e" stroke-width="8" fill="none" stroke-linecap="round"><path d="M190 173h45M285 173h45"/><path d="M230 92v165h60V92"/></g>
+    <rect x="235" y="120" width="50" height="103" rx="12" fill="url(#m)" stroke="#555" stroke-width="3"/>
+    <rect x="243" y="95" width="34" height="28" rx="6" fill="#d0aa4e" stroke="#997625" stroke-width="3"/>
+    <path d="M260 75v20" stroke="#eee" stroke-width="8" stroke-linecap="round"/>
+    <path d="M212 284c28 24 66 24 96 0" stroke="#ffd052" stroke-width="7" fill="none"/><polygon points="306,275 316,285 301,290" fill="#ffd052"/>
+    <text x="260" y="330" text-anchor="middle" fill="#dff8ff" font-size="22" font-weight="800">Solar Spectrum → PV → Motor → Rotation</text>
+  </svg>
+</div>
+</header>
+
+<nav><div class="inner">
+<a href="#schedule">8小時課程</a><a href="#sun">太陽功率</a><a href="#spectrum">太陽光譜</a><a href="#pvprinciple">材料發電原理</a>
+<a href="#solarcell">單晶/多晶</a><a href="#iv">I–V / MPP</a><a href="#motor">馬達</a><a href="#gear">齒輪</a>
+<a href="#rotation">轉動力學</a><a href="#build">製作</a><a href="#measure">量測</a><a href="#challenge">挑戰</a>
+</div></nav>
+
+<main>
+
+<section id="schedule">
+<div class="title"><div class="num">1</div><h2>建議課程時數：8 小時</h2></div>
+<p class="lead">這套內容已經超過一般 3 小時手作課。若希望高中生真正理解物理、完成定量量測並進行工程最佳化，建議採 <b>2 次 × 4 小時</b>，或 <b>4 次 × 2 小時</b>。</p>
+
+<div class="timeline"><div class="time">第 1 小時</div><div class="topic"><b>太陽能與太陽光</b><br>衛星能源、太陽常數、光譜、光子能量、AM0 / AM1.5 的概念。</div></div>
+<div class="timeline"><div class="time">第 2 小時</div><div class="topic"><b>太陽能材料與光伏效應</b><br>半導體、能隙、電子—電洞對、PN 接面、單晶矽與多晶矽。</div></div>
+<div class="timeline"><div class="time">第 3 小時</div><div class="topic"><b>太陽能板工程特性</b><br>I–V、P–V、VOC、ISC、MPP、串聯與並聯、遮蔽與入射角。</div></div>
+<div class="timeline"><div class="time">第 4 小時</div><div class="topic"><b>直流馬達與減速機構</b><br>洛倫茲力、Back EMF、啟動電流、減速比、扭力—轉速與效率。</div></div>
+<div class="timeline"><div class="time">第 5 小時</div><div class="topic"><b>轉動力學</b><br>τ=Iα、轉動慣量、重心、平衡、摩擦與太陽翼位置。</div></div>
+<div class="timeline"><div class="time">第 6 小時</div><div class="topic"><b>製作與組裝</b><br>1 mm 黃銅線骨架、N20、兩片太陽能板、並聯接線；焊接由助教完成。</div></div>
+<div class="timeline"><div class="time">第 7 小時</div><div class="topic"><b>定量量測</b><br>V、I、P、RPM、啟動時間、入射角、太陽翼距離、配重與效率。</div></div>
+<div class="timeline"><div class="time">第 8 小時</div><div class="topic"><b>Engineering Challenge</b><br>在固定材料下最佳化啟動、轉速、穩定度與效率，最後比較各組設計。</div></div>
+
+<div class="callout good"><b>推薦教學安排：</b>Day 1（4 hr）完成太陽能與馬達理論；Day 2（4 hr）完成轉動力學、製作、量測與工程挑戰。若學生物理基礎較強，也可把第 1–5 小時拆成課前教材，現場專注在實驗。</div>
+</section>
+
+<section id="sun">
+<div class="title"><div class="num">2</div><h2>太陽光到底有多少功率？</h2></div>
+<div class="grid2">
+  <div class="card">
+    <h3>太陽輻照度 Solar Irradiance</h3>
+    <p>在地球大氣層外、距太陽約 1 AU 的位置，單位面積接收到的太陽功率約為：</p>
+    <div class="eq">G<sub>SC</sub> ≈ 1361 W/m²</div>
+    <p>這個數值常被稱為太陽常數。真正衛星上的太陽能板接近 <b>AM0</b> 條件；地面量測則會受到大氣吸收與散射影響。</p>
+  </div>
+  <div class="card">
+    <h3>我們的小太陽能板能接到多少光？</h3>
+    <p>一片 53 mm × 52 mm 面板面積約：</p>
+    <div class="eq">A ≈ 0.053 × 0.052 = 2.76×10⁻³ m²</div>
+    <p>若放在大氣層外、完全正對太陽，入射光功率約：</p>
+    <div class="eq">P<sub>sun</sub> ≈ 1361A ≈ 3.75 W</div>
+    <p>但其中只有一部分能轉成電能。</p>
+  </div>
+</div>
+
+<div class="card" style="margin-top:18px">
+  <h3>光照角度</h3>
+  <p>若平面與太陽光方向不垂直，投影面積下降。簡化模型：</p>
+  <div class="eq">P(θ) = P(0) cosθ</div>
+  <div class="calc">
+    <div class="field"><label>入射功率 P(0)（W）</label><input id="p0" type="number" step="0.01" value="3.75"></div>
+    <div class="field"><label>偏離正對角度 θ（degree）</label><input id="theta" type="number" value="45"></div>
+    <div class="field"><label>轉換效率 η（%）</label><input id="etaPV" type="number" step="0.1" value="15"></div>
+  </div>
+  <button class="btn" onclick="solarAngleCalc()">估算</button>
+  <div id="solarAngleResult" class="result" style="margin-top:10px"></div>
+</div>
+</section>
+
+<section id="spectrum">
+<div class="title"><div class="num">3</div><h2>太陽光譜：不是所有陽光都一樣</h2></div>
+<p class="lead">太陽表面溫度約 5800 K，光譜接近黑體輻射。太陽輸出的能量分布在紫外光、可見光與紅外光；太陽能材料能不能吸收某個波長，取決於材料的能隙（band gap）。</p>
+
+<div class="spectrumbar">
+  <div class="marker" style="left:5%">UV</div>
+  <div class="marker" style="left:43%">Visible</div>
+  <div class="marker" style="left:83%">IR</div>
+</div>
+<div class="band">
+  <div class="b uv">紫外光 UV<br><span style="font-weight:400">約 &lt; 400 nm</span></div>
+  <div class="b vis">可見光 Visible<br><span style="font-weight:400">約 400–700 nm</span></div>
+  <div class="b ir">紅外光 IR<br><span style="font-weight:400">約 &gt; 700 nm</span></div>
+</div>
+
+<div class="grid2" style="margin-top:18px">
+  <div class="card">
+    <h3>光子的能量</h3>
+    <div class="eq">E = hν = hc/λ</div>
+    <p>波長越短，單一光子的能量越高。半導體必須吸收能量足夠大的光子，才能把電子激發到導帶。</p>
+  </div>
+  <div class="card">
+    <h3>為什麼矽不能把所有光都變成電？</h3>
+    <p>低能量光子可能無法跨越能隙；高能量光子雖能產生載子，但多出的能量常以熱的形式損失。因此太陽能轉換一定有物理極限與材料限制。</p>
+  </div>
+</div>
+
+<div class="canvas-wrap" style="margin-top:18px">
+  <h3>簡化太陽光譜與矽吸收區域示意</h3>
+  <canvas id="spectrumCanvas" width="900" height="300"></canvas>
+</div>
+</section>
+
+<section id="pvprinciple">
+<div class="title"><div class="num">4</div><h2>太陽能材料如何發電？</h2></div>
+<div class="grid2">
+  <div class="card">
+    <h3>Step 1｜半導體能帶</h3>
+    <p>矽不是完全導體，也不是完全絕緣體。電子需要獲得足夠能量，才能從價帶跨越能隙到導帶。</p>
+    <div class="eq">E<sub>g,Si</sub> ≈ 1.12 eV</div>
+  </div>
+  <div class="card">
+    <h3>Step 2｜吸收光子</h3>
+    <p>若光子能量滿足：</p>
+    <div class="eq">E<sub>photon</sub> ≥ E<sub>g</sub></div>
+    <p>就可能產生一對電子—電洞（electron-hole pair）。</p>
+  </div>
+  <div class="card">
+    <h3>Step 3｜PN 接面分離載子</h3>
+    <p>P 型與 N 型半導體交界形成內建電場，把電子與電洞往不同方向推，避免它們立刻復合。</p>
+  </div>
+  <div class="card">
+    <h3>Step 4｜外部電路形成電流</h3>
+    <p>當外部負載接上後，電子經由外部電路流動，形成可用的電壓、電流與功率。</p>
+  </div>
+</div>
+
+<div class="flow">
+  <span>光子</span><b>→</b><span>電子被激發</span><b>→</b><span>電子—電洞對</span><b>→</b><span>PN 接面分離</span><b>→</b><span>外部電流</span>
+</div>
+
+<div class="callout warn"><b>重要：</b>太陽能電池不是「把熱變成電」，主要機制是光伏效應。雖然溫度會影響太陽能板性能，但發電核心是光子與半導體載子的交互作用。</div>
+</section>
+
+<section id="solarcell">
+<div class="title"><div class="num">5</div><h2>單晶矽、多晶矽與其他光伏材料</h2></div>
+<div class="grid3">
+  <div class="card"><h3>單晶矽 Monocrystalline</h3><p>晶體方向較一致、載子移動路徑較理想，商用模組效率通常較高，外觀常偏深黑或均勻深藍。</p></div>
+  <div class="card"><h3>多晶矽 Polycrystalline</h3><p>由多個晶粒組成，晶界會增加載子散射與復合機會。傳統上成本較低，外觀常呈藍色晶粒紋理。</p></div>
+  <div class="card"><h3>薄膜 / 其他材料</h3><p>如 CdTe、CIGS、鈣鈦礦等，可提供不同光譜響應、柔性或製程優勢。高中課程可作為延伸閱讀。</p></div>
+</div>
+<div class="callout">本課程不把「單晶一定比較好、多晶一定比較差」當成絕對結論。真正工程選擇還要考慮效率、成本、重量、面積、溫度特性與任務需求。</div>
+</section>
+
+<section id="iv">
+<div class="title"><div class="num">6</div><h2>I–V、P–V 曲線與最大功率點</h2></div>
+<div class="grid2">
+  <div class="canvas-wrap"><h3>I–V 曲線示意</h3><canvas id="ivCanvas" width="560" height="280"></canvas></div>
+  <div class="canvas-wrap"><h3>P–V 曲線與 MPP</h3><canvas id="pvCanvas" width="560" height="280"></canvas></div>
+</div>
+<div class="grid2" style="margin-top:18px">
+  <div class="card"><h3>關鍵參數</h3><ul><li>V<sub>OC</sub>：開路電壓</li><li>I<sub>SC</sub>：短路電流</li><li>V<sub>MP</sub>、I<sub>MP</sub>：最大功率點</li><li>P<sub>MAX</sub>=V<sub>MP</sub>I<sub>MP</sub></li></ul></div>
+  <div class="card"><h3>MPPT</h3><p>Maximum Power Point Tracking 透過電力電子控制讓太陽能板工作在接近最大功率點。真正衛星 EPS 常需要類似概念，而不是直接把太陽能板接到所有負載。</p></div>
+</div>
+<div class="callout good"><b>實驗：</b>以 10 Ω、22 Ω、47 Ω、100 Ω、220 Ω 負載量 V 與 I，算 P=VI，畫出自己的 I–V 與 P–V 曲線。</div>
+</section>
+
+<section id="motor">
+<div class="title"><div class="num">7</div><h2>直流馬達與 Back EMF</h2></div>
+<div class="grid2">
+  <div class="card"><h3>電流產生電磁力矩</h3><p>馬達內部利用磁場與通電線圈的交互作用產生力矩。</p><div class="eq">τ<sub>motor</sub> ∝ I</div></div>
+  <div class="card"><h3>反電動勢</h3><div class="eq">V = IR + E<sub>b</sub></div><div class="eq">E<sub>b</sub> = k<sub>e</sub>ω</div><p>啟動時 ω≈0，所以 Back EMF 幾乎為零、電流最大；轉快後 Back EMF 增加，電流下降。</p></div>
+</div>
+<div class="callout warn">因此「太陽能板能讓馬達持續轉」不代表「一定能讓馬達自己啟動」。高中版應量測 I<sub>start</sub> 與 I<sub>run</sub>。</div>
+</section>
+
+<section id="gear">
+<div class="title"><div class="num">8</div><h2>N20 減速馬達：轉速、扭力與效率</h2></div>
+<div class="grid2">
+  <div class="card"><h3>減速比</h3><div class="eq">G = ω<sub>motor</sub>/ω<sub>out</sub></div><div class="eq">τ<sub>out</sub> ≈ ηGτ<sub>motor</sub></div></div>
+  <div class="card"><h3>機械功率</h3><div class="eq">P<sub>mech</sub> = τω</div><div class="eq">η = P<sub>mech</sub>/P<sub>electrical</sub></div></div>
+</div>
+<div class="card" style="margin-top:18px">
+  <h3>減速比快速估算</h3>
+  <div class="calc">
+    <div class="field"><label>馬達本體轉速 RPM</label><input id="rpmMotor" type="number" value="12000"></div>
+    <div class="field"><label>減速比 G</label><input id="gearRatio" type="number" value="100"></div>
+    <div class="field"><label>效率 η（0~1）</label><input id="gearEff" type="number" step="0.01" value="0.65"></div>
+  </div>
+  <button class="btn" onclick="gearCalc()">計算</button>
+  <div id="gearResult" class="result" style="margin-top:10px"></div>
+</div>
+</section>
+
+<section id="rotation">
+<div class="title"><div class="num">9</div><h2>轉動力學：太陽翼位置會改變加速能力</h2></div>
+<div class="grid2">
+  <div class="card"><h3>角加速度</h3><div class="eq">τ = Iα</div><p>同一顆馬達提供相近扭力時，I 越大，α 越小。</p></div>
+  <div class="card"><h3>轉動慣量</h3><div class="eq">I = Σm<sub>i</sub>r<sub>i</sub>²</div><p>太陽能板越遠離旋轉軸，轉動慣量以 r² 增加。</p></div>
+</div>
+<div class="card" style="margin-top:18px">
+  <h3>轉動慣量估算器</h3>
+  <div class="calc">
+    <div class="field"><label>單片太陽能板質量 g</label><input id="massPanel" type="number" value="20"></div>
+    <div class="field"><label>面板中心離軸距離 cm</label><input id="radiusPanel" type="number" value="7"></div>
+    <div class="field"><label>馬達輸出扭力 N·m</label><input id="torqueMotor" type="number" step="0.0001" value="0.002"></div>
+  </div>
+  <button class="btn" onclick="rotCalc()">估算</button>
+  <div id="rotResult" class="result" style="margin-top:10px"></div>
+</div>
+</section>
+
+<section id="build">
+<div class="title"><div class="num">10</div><h2>製作與組裝</h2></div>
+<div class="steps">
+  <div class="step"><h3>先量測元件</h3><p>量兩片太陽能板的 V<sub>OC</sub>、近似 I<sub>SC</sub>，以及 N20 在 3 V 電源下的 I<sub>start</sub>、I<sub>run</sub>。</p></div>
+  <div class="step"><h3>決定串並聯</h3><p>若使用 3 V N20，通常建議兩片 3 V 太陽能板並聯，以維持約 3 V 並增加可供電流。</p></div>
+  <div class="step"><h3>彎折 1 mm 黃銅線骨架</h3><p>左右尺寸一致，先決定太陽翼中心距旋轉軸的 r 值。</p></div>
+  <div class="step"><h3>固定 N20 減速馬達</h3><p>馬達輸出軸與模型旋轉軸對齊，避免偏心。</p></div>
+  <div class="step"><h3>安裝兩片太陽能板</h3><p>保持質量、角度與距離盡量對稱。</p></div>
+  <div class="step"><h3>助教完成焊接</h3><p>學生不操作烙鐵；助教完成並聯、絕緣與導線固定。</p></div>
+  <div class="step"><h3>摩擦與平衡測試</h3><p>手動輕轉，確認沒有卡住，重心沒有明顯偏向一側。</p></div>
+  <div class="step"><h3>光照啟動</h3><p>比較強光燈、戶外陽光與不同角度下的啟動狀況。</p></div>
+</div>
+<div class="callout danger"><b>安全：</b>焊接、熱熔膠與裸線處理由教師/助教完成；旋轉時避免頭髮、袖口和手指進入旋轉區域；不使用明顯高於馬達額定值的電壓直接驅動。</div>
+</section>
+
+<section id="measure">
+<div class="title"><div class="num">11</div><h2>定量量測實驗</h2></div>
+<div class="grid2">
+  <div class="card">
+    <h3>實驗 A｜入射角</h3>
+    <table><tr><th>角度</th><th>V</th><th>I</th><th>P</th><th>RPM</th></tr>
+    <tr><td>0°</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>30°</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>45°</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>60°</td><td></td><td></td><td></td><td></td></tr></table>
+  </div>
+  <div class="card">
+    <h3>實驗 B｜啟動與穩態</h3>
+    <table><tr><th>項目</th><th>量測值</th></tr><tr><td>Istart</td><td></td></tr><tr><td>Irun</td><td></td></tr><tr><td>啟動時間</td><td></td></tr><tr><td>穩態 RPM</td><td></td></tr></table>
+  </div>
+  <div class="card"><h3>實驗 C｜太陽翼距離</h3><p>設定 r=3、5、7、9 cm，量啟動時間與 RPM，檢查 I∝r² 的趨勢。</p></div>
+  <div class="card"><h3>實驗 D｜Mass Balance</h3><p>單側增加 2 g、5 g 配重，觀察振動、摩擦與啟動能力。</p></div>
+</div>
+</section>
+
+<section id="challenge">
+<div class="title"><div class="num">12</div><h2>Engineering Challenge</h2></div>
+<div class="challenge">
+  <h3>固定材料下，設計最佳的太陽能旋轉衛星</h3>
+  <ul>
+    <li>固定：兩片 3 V、53 × 52 mm 太陽能板。</li>
+    <li>固定：同一款 N20 減速馬達。</li>
+    <li>固定：1 mm 黃銅線骨架。</li>
+    <li>可調：太陽翼距離、骨架形狀、配重、導線整理與減速比。</li>
+    <li>評分：啟動成功率、啟動時間、穩態 RPM、振動、電功率與工程整潔度。</li>
+  </ul>
+</div>
+</section>
+
+<section>
+<div class="title"><div class="num">13</div><h2>真正衛星的延伸</h2></div>
+<div class="grid3">
+  <div class="card"><h3>Satellite EPS</h3><p>Solar Array → MPPT / Power Regulation → Battery → Loads。</p></div>
+  <div class="card"><h3>Reaction Wheel</h3><div class="eq">L = Iω</div><p>利用角動量交換控制姿態。</p></div>
+  <div class="card"><h3>Magnetorquer</h3><div class="eq">τ⃗ = m⃗ × B⃗</div><p>利用磁矩與地磁場交互作用。</p></div>
+</div>
+<div class="callout good">可直接銜接下一個高中 STEM 專題：<b>Raspberry Pi Pico W + QMC5883L + 雙磁力矩器方位角閉迴路控制</b>。</div>
+</section>
+
+<section>
+<div class="title"><div class="num">14</div><h2>課堂思考題</h2></div>
+<details><summary>為什麼 1361 W/m² 的太陽光，面板卻只能輸出幾百 mW？</summary><p>面板面積很小，而且只有一部分光子可有效產生載子；還有反射、復合、串聯電阻、溫度與光譜失配等損失。</p></details>
+<details><summary>為什麼光子能量低於矽的能隙時幾乎不能產生光電流？</summary><p>因為能量不足以把電子從價帶激發到導帶，無法形成可被 PN 接面分離的電子—電洞對。</p></details>
+<details><summary>為什麼光子能量遠高於能隙時，也不能把所有多出的能量變成電？</summary><p>超過能隙的部分通常快速轉成晶格振動與熱，因此不會全部轉換成可用電能。</p></details>
+<details><summary>為什麼 N20 啟動時比穩態更需要電流？</summary><p>剛啟動時 Back EMF 幾乎為零，而且要克服靜摩擦與轉動慣量，因此啟動電流最大。</p></details>
+</section>
+
+</main>
+
+<footer class="footer">
+<h3>高中 STEM｜太陽能旋轉衛星工程實驗（8 小時版）</h3>
+<p>Solar Irradiance｜Solar Spectrum｜Band Gap｜Photovoltaic Effect｜I–V / MPP｜Back EMF｜Gear Ratio｜Torque｜Moment of Inertia｜Engineering Optimization</p>
+</footer>
+
+<script>
+function solarAngleCalc(){
+  const p0=+document.getElementById('p0').value||0;
+  const th=(+document.getElementById('theta').value||0)*Math.PI/180;
+  const eta=(+document.getElementById('etaPV').value||0)/100;
+  const pin=p0*Math.max(0,Math.cos(th));
+  const pout=pin*eta;
+  document.getElementById('solarAngleResult').textContent=`有效入射光功率 ≈ ${pin.toFixed(2)} W；若轉換效率為 ${(eta*100).toFixed(1)}%，理想電功率約 ${pout.toFixed(2)} W。`;
+}
+function drawSpectrum(){
+  const c=document.getElementById('spectrumCanvas'),x=c.getContext('2d'),W=c.width,H=c.height;
+  x.clearRect(0,0,W,H); x.strokeStyle='#18324b';x.lineWidth=2;
+  x.beginPath();x.moveTo(55,20);x.lineTo(55,H-45);x.lineTo(W-20,H-45);x.stroke();
+  x.fillStyle='#18324b';x.font='16px sans-serif';x.fillText('相對強度',8,25);x.fillText('波長 λ (nm)',W-110,H-16);
+  // simple normalized Planck-like curve peaking near 500 nm
+  const pts=[]; let max=0;
+  for(let l=280;l<=1800;l+=5){
+    let val=1/(Math.pow(l/500,5)*(Math.exp(4.965*(500/l))-1));
+    pts.push([l,val]); if(val>max)max=val;
+  }
+  x.strokeStyle='#f07831';x.lineWidth=4;x.beginPath();
+  pts.forEach((p,i)=>{let px=55+(W-85)*(p[0]-280)/(1800-280);let py=(H-45)-(H-75)*(p[1]/max);if(i===0)x.moveTo(px,py);else x.lineTo(px,py)});x.stroke();
+  // silicon cutoff ~1100 nm
+  let cut=55+(W-85)*(1100-280)/(1800-280);
+  x.strokeStyle='#0b69b7';x.setLineDash([8,6]);x.beginPath();x.moveTo(cut,28);x.lineTo(cut,H-45);x.stroke();x.setLineDash([]);
+  x.fillStyle='#0b69b7';x.fillText('Si 能隙對應截止約 1100 nm',cut-85,48);
+  ['400','700','1100','1500'].forEach(v=>{let px=55+(W-85)*(+v-280)/(1800-280);x.fillStyle='#4a6276';x.fillText(v,px-13,H-23)});
+}
+function drawIV(){
+  const c=document.getElementById('ivCanvas'),x=c.getContext('2d'),W=c.width,H=c.height;
+  x.clearRect(0,0,W,H);x.strokeStyle='#18324b';x.lineWidth=2;x.beginPath();x.moveTo(55,20);x.lineTo(55,H-40);x.lineTo(W-20,H-40);x.stroke();
+  x.fillStyle='#18324b';x.font='16px sans-serif';x.fillText('I',25,28);x.fillText('V',W-28,H-15);
+  x.strokeStyle='#0b70c1';x.lineWidth=4;x.beginPath();
+  for(let i=0;i<=100;i++){let V=3.7*i/100;let I=.15*Math.max(0,1-Math.pow(V/3.7,7));let px=55+(W-85)*(V/3.7);let py=(H-40)-(H-70)*(I/.15);if(i===0)x.moveTo(px,py);else x.lineTo(px,py)}x.stroke();
+}
+function drawPV(){
+  const c=document.getElementById('pvCanvas'),x=c.getContext('2d'),W=c.width,H=c.height;
+  x.clearRect(0,0,W,H);x.strokeStyle='#18324b';x.lineWidth=2;x.beginPath();x.moveTo(55,20);x.lineTo(55,H-40);x.lineTo(W-20,H-40);x.stroke();
+  x.fillStyle='#18324b';x.font='16px sans-serif';x.fillText('P',25,28);x.fillText('V',W-28,H-15);
+  let pts=[],maxP=0,maxV=0;
+  for(let i=0;i<=100;i++){let V=3.7*i/100;let I=.15*Math.max(0,1-Math.pow(V/3.7,7));let P=V*I;pts.push([V,P]);if(P>maxP){maxP=P;maxV=V}}
+  x.strokeStyle='#27a56e';x.lineWidth=4;x.beginPath();
+  pts.forEach((p,i)=>{let px=55+(W-85)*(p[0]/3.7);let py=(H-40)-(H-70)*(p[1]/maxP);if(i===0)x.moveTo(px,py);else x.lineTo(px,py)});x.stroke();
+  let px=55+(W-85)*(maxV/3.7);x.fillStyle='#f07831';x.beginPath();x.arc(px,30,7,0,Math.PI*2);x.fill();x.fillText('MPP',px+10,35);
+}
+function gearCalc(){
+  const rpm=+document.getElementById('rpmMotor').value||0,G=+document.getElementById('gearRatio').value||1,eta=+document.getElementById('gearEff').value||0;
+  document.getElementById('gearResult').textContent=`理想輸出轉速 ≈ ${(rpm/G).toFixed(1)} RPM；若輸入扭力為 τ，估計輸出扭力約 ηGτ = ${(eta*G).toFixed(1)}τ。`;
+}
+function rotCalc(){
+  const m=(+document.getElementById('massPanel').value||0)/1000,r=(+document.getElementById('radiusPanel').value||0)/100,tau=+document.getElementById('torqueMotor').value||0;
+  const I=2*m*r*r,alpha=I>0?tau/I:0;
+  document.getElementById('rotResult').textContent=`兩片面板以點質量近似：I ≈ ${I.toExponential(3)} kg·m²；α ≈ ${alpha.toFixed(3)} rad/s²。若 r 加倍，此部分 I 約變成 4 倍。`;
+}
+drawSpectrum();drawIV();drawPV();solarAngleCalc();gearCalc();rotCalc();
+</script>
+</body>
+</html>
