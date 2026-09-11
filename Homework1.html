@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Physics: Kinematics & Vectors / 普通物理：運動學與向量</title>
+    
+    <!-- 設定 MathJax 3.0 以支援 LaTeX 雙語渲染 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+        h1, h2, h3 {
+            color: #34495e;
+            border-bottom: 2px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        .screen {
+            display: none; /* 控制畫面切換 */
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .active-screen {
+            display: block;
+        }
+        /* 教學區塊與設定區塊 */
+        .concept-box {
+            background: #e8f4f8;
+            border-left: 4px solid #2980b9;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .setup-box {
+            background: #fdfdfd;
+            border: 1px solid #dcdde1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        /* 測驗區塊 */
+        #timer-bar {
+            position: sticky;
+            top: 0;
+            background: #34495e;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 4px;
+            z-index: 100;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .question-block {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ecf0f1;
+        }
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            background: #fdfdfd;
+            border: 1px solid #eaeaea;
+            transition: background 0.2s;
+        }
+        .options label:hover {
+            background: #ecf0f1;
+        }
+        /* 檢討頁面區塊 */
+        .report-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        /* 修正標題顏色對比度問題 */
+        .report-header h2, .report-header h3 {
+            color: #ffffff;
+            border-bottom: none;
+        }
+        .review-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 5px solid;
+            background: #f9f9f9;
+        }
+        .review-correct {
+            border-left-color: #27ae60;
+            background: #eafaf1;
+        }
+        .review-incorrect {
+            border-left-color: #e74c3c;
+            background: #fdedec;
+        }
+        .user-ans, .correct-ans {
+            margin-top: 8px;
+            font-size: 0.95em;
+        }
+        /* 按鈕 */
+        button {
+            background-color: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 15px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #1c5980;
+        }
+        .btn-outline {
+            background-color: transparent;
+            color: #2980b9;
+            border: 2px solid #2980b9;
+        }
+        .btn-outline:hover {
+            background-color: #2980b9;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>General Physics: Kinematics & Vectors <br><small>普通物理：運動學與向量</small></h1>
+
+    <!-- 畫面 1：開始畫面與教學 -->
+    <div id="start-screen" class="screen active-screen">
+        <h2>Teaching Summary / 課程重點教學</h2>
+
+        <div class="concept-box">
+            <h3>1. Displacement, Path, and Distance / 位移、路徑與距離</h3>
+            <p><strong>Distance (距離):</strong> 純量，表示物體移動軌跡的總長度，恆為正值。</p>
+            <p><strong>Path (路徑):</strong> 物體在兩點之間移動的實際軌跡。</p>
+            <p><strong>Displacement (位移):</strong> 向量，表示位置的變化，為起點指向終點的直線向量 $\Delta \vec{r} = \vec{r}_f - \vec{r}_i$。</p>
+        </div>
+
+        <div class="concept-box">
+            <h3>2. Average & Instantaneous Velocity / 平均速度與瞬時速度</h3>
+            <p><strong>Average Velocity (平均速度):</strong> 位移除以時間間隔 $\vec{v}_{avg} = \frac{\Delta \vec{r}}{\Delta t}$。</p>
+            <p><strong>Instantaneous Velocity (瞬時速度):</strong> 位置對時間的微分 $\vec{v} = \frac{d\vec{r}}{dt}$。</p>
+        </div>
+
+        <div class="concept-box">
+            <h3>3. Vectors, Angles & Unit Vectors / 向量、特殊角與單位向量</h3>
+            <p>直角坐標系中以 $\hat{i}, \hat{j}, \hat{k}$ 代表 x, y, z 軸單位向量。$\vec{V} = V_x\hat{i} + V_y\hat{j} + V_z\hat{k}$</p>
+            <p><strong>Special Angles (特殊角提醒):</strong> <br>除了常見的 $30^\circ, 45^\circ, 60^\circ$ 之外，物理中也會利用到對稱性，例如拋體運動中，發射角 $\theta$ 與 $90^\circ - \theta$ (如 $15^\circ$ 與 $75^\circ$) 在相同初速下具有完全相同的水平射程！</p>
+        </div>
+
+        <div class="setup-box">
+            <h3>Exam Setup / 測驗設定</h3>
+            <div class="form-group">
+                <label for="studentName">Student Name / 學生姓名：</label>
+                <input type="text" id="studentName" placeholder="Please enter your name / 請輸入姓名..." required>
+            </div>
+            <button onclick="startQuiz()">Start Quiz / 開始測驗</button>
+        </div>
+    </div>
+
+    <!-- 畫面 2：測驗畫面 -->
+    <div id="quiz-screen" class="screen">
+        <div id="timer-bar">Time Elapsed / 作答耗時: <span id="time-display">00:00</span></div>
+        <form id="quizForm">
+            <div id="questions-container"></div>
+            <button type="submit">Submit Answers / 提交考卷</button>
+        </form>
+    </div>
+
+    <!-- 畫面 3：檢討報告畫面 -->
+    <div id="review-screen" class="screen">
+        <div class="report-header">
+            <h2 id="report-title">Review Report</h2>
+            <h3 id="report-score"></h3>
+            <p id="report-time"></p>
+        </div>
+        <div id="review-container"></div>
+        <button class="btn-outline" onclick="location.reload()">Back to Home / 回首頁重新測驗</button>
+    </div>
+
+    <script>
+        const questionsData = [
+            {
+                q: String.raw`1. Which of the following best defines Displacement, Path, and Distance? <br>(下列何者最能準確定義位移、路徑與距離？)`,
+                options: [
+                    String.raw`Distance is a vector; Displacement is a scalar. (距離是向量；位移是純量。)`,
+                    String.raw`Displacement is the total path traveled. (位移是移動的總路徑。)`,
+                    String.raw`Path is the trajectory; Distance is the path length (scalar); Displacement is the change in position (vector). (路徑為軌跡；距離是路徑長度[純量]；位移是位置變化[向量]。)`,
+                    String.raw`They are exactly the same quantity. (三者為完全相同的物理量。)`
+                ],
+                answer: 2
+            },
+            {
+                q: String.raw`2. What is the definition of Average Velocity and Instantaneous Velocity? <br>(平均速度與瞬時速度的定義為何？)`,
+                options: [
+                    String.raw`Avg Velocity = displacement / time; Inst Velocity = derivative of position $d\vec{r}/dt$. (平均速度=位移/時間；瞬時速度=位置對時間的微分 $d\vec{r}/dt$。)`,
+                    String.raw`Avg Velocity = total distance / time; Inst Velocity = limit of average speed. (平均速度=總距離/時間；瞬時速度=平均速率的極限。)`,
+                    String.raw`Avg Velocity is a scalar; Inst Velocity is a vector. (平均速度為純量；瞬時速度為向量。)`,
+                    String.raw`Both are defined as distance divided by time. (兩者皆定義為距離除以時間。)`
+                ],
+                answer: 0
+            },
+            {
+                q: String.raw`3. What is the definition of Acceleration? <br>(加速度的定義為何？)`,
+                options: [
+                    String.raw`The rate of change of position with respect to time. (位置對時間的變化率。)`,
+                    String.raw`The rate of change of velocity with respect to time $d\vec{v}/dt$. (速度對時間的變化率 $d\vec{v}/dt$。)`,
+                    String.raw`The product of mass and velocity. (質量與速度的乘積。)`,
+                    String.raw`The total displacement divided by total time squared. (總位移除以總時間的平方。)`
+                ],
+                answer: 1
+            },
+            {
+                q: String.raw`4. If $x(t) = 3t^2$, what are its position, instantaneous velocity, and acceleration at $t = 3$? <br>(當位置 $x(t) = 3t^2$，在 $t=3$ 時的位置、瞬時速度與加速度為何？)`,
+                options: [
+                    String.raw`$x = 9, v = 6, a = 3$`,
+                    String.raw`$x = 27, v = 18, a = 6$`,
+                    String.raw`$x = 27, v = 9, a = 6$`,
+                    String.raw`$x = 18, v = 27, a = 3$`
+                ],
+                answer: 1
+            },
+            {
+                q: String.raw`5. What is a unit vector? <br>(什麼是單位向量？)`,
+                options: [
+                    String.raw`A vector with a magnitude of zero. (大小為零的向量。)`,
+                    String.raw`A vector with a magnitude of exactly 1, used to indicate direction. (大小精確為 1 的向量，用以指出方向。)`,
+                    String.raw`A vector that only exists on the x-axis. (只存在於 x 軸上的向量。)`,
+                    String.raw`A scalar quantity measuring 1 unit. (測量值為 1 單位的純量。)`
+                ],
+                answer: 1
+            },
+            {
+                q: String.raw`6. What are the lengths (magnitudes) of the vectors $V = (3,4)$ and $V = (3,4,5)$? <br>(向量 $(3,4)$ 與 $(3,4,5)$ 的長度為何？)`,
+                options: [
+                    String.raw`$5$ and $12$`,
+                    String.raw`$7$ and $12$`,
+                    String.raw`$5$ and $5\sqrt{2}$`,
+                    String.raw`$25$ and $50$`
+                ],
+                answer: 2
+            },
+            {
+                q: String.raw`7. Which of the following correctly shows the unit vectors of $V = (3,4)$, $V = (3,4,5)$, and $V = (1,2,3)$? <br>(下列何者正確表示了這三個向量的單位向量？)`,
+                options: [
+                    String.raw`$(3,4), (3,4,5), (1,2,3)$`,
+                    String.raw`$(\frac{3}{5}, \frac{4}{5}), (\frac{3}{5\sqrt{2}}, \frac{4}{5\sqrt{2}}, \frac{5}{5\sqrt{2}}), (\frac{1}{\sqrt{14}}, \frac{2}{\sqrt{14}}, \frac{3}{\sqrt{14}})$`,
+                    String.raw`$(\frac{3}{25}, \frac{4}{25}), (\frac{3}{50}, \frac{4}{50}, \frac{5}{50}), (\frac{1}{14}, \frac{2}{14}, \frac{3}{14})$`,
+                    String.raw`$(1,1), (1,1,1), (1,1,1)$`
+                ],
+                answer: 1
+            },
+            {
+                q: String.raw`8. A man departs from $(0,2,0)$ and walks along the position vector $\vec{r}(t) = t\hat{i} + 2\hat{j} + 2t\hat{k}$. What is his average velocity between $t = 0$ to $3$ seconds? <br>(某人從 $(0,2,0)$ 出發，位置向量如上，在 $0$ 到 $3$ 秒間的平均速度為何？)`,
+                options: [
+                    String.raw`$\hat{i} + 2\hat{k}$`,
+                    String.raw`$3\hat{i} + 2\hat{j} + 6\hat{k}$`,
+                    String.raw`$\hat{i} + \frac{2}{3}\hat{j} + 2\hat{k}$`,
+                    String.raw`$3\hat{i} + 6\hat{k}$`
+                ],
+                answer: 0
+            },
+            {
+                q: String.raw`9. A projectile launched at $15^\circ$ above the horizontal reaches a certain horizontal range. Assuming level ground and no air resistance, which other launch angle yields the exact same horizontal range? <br>(以 $15^\circ$ 拋出的物體有一特定水平射程。在無空氣阻力下，哪一個拋射角會產生完全相同的水平射程？)`,
+                options: [String.raw`$30^\circ$`, String.raw`$45^\circ$`, String.raw`$60^\circ$`, String.raw`$75^\circ$`],
+                answer: 3
+            },
+            {
+                q: String.raw`10. Vector $\vec{A}$ points at $15^\circ$ from the $+x$-axis, and Vector $\vec{B}$ points at $75^\circ$ from the $+x$-axis. Both have a magnitude of 2. What is their scalar (dot) product $\vec{A} \cdot \vec{B}$? <br>(向量 $\vec{A}$ 與 $\vec{B}$ 長度皆為 2，分別指向 $15^\circ$ 與 $75^\circ$。兩者的內積為何？)`,
+                options: [String.raw`$0$`, String.raw`$2$`, String.raw`$4$`, String.raw`$2\sqrt{3}$`],
+                answer: 1
+            },
+            {
+                q: String.raw`11. How many nanoseconds does it take light to travel $0.3\text{ m}$ in vacuum? (Speed of light $c \approx 3 \times 10^8\text{ m/s}$) <br>(光在真空中行進 $0.3\text{ m}$ 需要多少奈秒？)`,
+                options: [String.raw`$0.1\text{ ns}$`, String.raw`$1\text{ ns}$`, String.raw`$10\text{ ns}$`, String.raw`$100\text{ ns}$`],
+                answer: 1
+            },
+            {
+                q: String.raw`12. The density of silver is $10.5\text{ g/cm}^3$. What is this value in $\text{kg/m}^3$? <br>(銀的密度為 $10.5\text{ g/cm}^3$，轉換為 $\text{kg/m}^3$ 為何？)`,
+                options: [String.raw`$10.5\text{ kg/m}^3$`, String.raw`$105\text{ kg/m}^3$`, String.raw`$1050\text{ kg/m}^3$`, String.raw`$10500\text{ kg/m}^3$`],
+                answer: 3
+            },
+            {
+                q: String.raw`13. Find the angle $\theta$ (counterclockwise from $+x$-axis) for $\vec{A} = \sqrt{3}\hat{i} + 1\hat{j}$. <br>(求向量 $\vec{A}$ 與 $+x$ 軸的逆時針夾角 $\theta$)`,
+                options: [String.raw`$30^\circ$`, String.raw`$60^\circ$`, String.raw`$120^\circ$`, String.raw`$150^\circ$`],
+                answer: 0
+            },
+            {
+                q: String.raw`14. Find the angle $\theta$ for $\vec{A} = -1\hat{i} + \sqrt{3}\hat{j}$. <br>(求向量 $\vec{A}$ 的夾角 $\theta$)`,
+                options: [String.raw`$60^\circ$`, String.raw`$120^\circ$`, String.raw`$240^\circ$`, String.raw`$300^\circ$`],
+                answer: 1
+            },
+            {
+                q: String.raw`15. Find the angle $\theta$ for $\vec{A} = -1\hat{i} - 1\hat{j}$. <br>(求向量 $\vec{A}$ 的夾角 $\theta$)`,
+                options: [String.raw`$45^\circ$`, String.raw`$135^\circ$`, String.raw`$225^\circ$`, String.raw`$315^\circ$`],
+                answer: 2
+            },
+            {
+                q: String.raw`16. Find the angle $\theta$ for $\vec{A} = \sqrt{3}\hat{i} - 1\hat{j}$. <br>(求向量 $\vec{A}$ 的夾角 $\theta$)`,
+                options: [String.raw`$30^\circ$`, String.raw`$150^\circ$`, String.raw`$210^\circ$`, String.raw`$330^\circ$`],
+                answer: 3
+            },
+            {
+                q: String.raw`17. Find the angle between vectors $\vec{A} = \sqrt{3}\hat{i} + 1\hat{j}$ and $\vec{B} = 0\hat{i} + 2\hat{j}$. <br>(求兩向量的夾角)`,
+                options: [String.raw`$30^\circ$`, String.raw`$45^\circ$`, String.raw`$60^\circ$`, String.raw`$90^\circ$`],
+                answer: 2
+            },
+            {
+                q: String.raw`18. What is the fundamental SI unit of mass? <br>(國際單位制中，質量的基本單位為何？)`,
+                options: [String.raw`Gram / 克 (g)`, String.raw`Kilogram / 公斤 (kg)`, String.raw`Newton / 牛頓 (N)`, String.raw`Pound / 磅 (lb)`],
+                answer: 1
+            },
+            {
+                q: String.raw`19. How many significant figures are in the measurement $0.0030\text{ m}$? <br>(測量值 $0.0030\text{ m}$ 有幾位有效數字？)`,
+                options: [String.raw`1`, String.raw`2`, String.raw`3`, String.raw`4`],
+                answer: 1
+            },
+            {
+                q: String.raw`20. When multiplying two numbers, the result's significant figures are determined by: <br>(兩數相乘時，結果的有效數字由何決定？)`,
+                options: [
+                    String.raw`The factor with the most sig figs. (最多有效數字的乘數)`,
+                    String.raw`The factor with the fewest sig figs. (最少有效數字的乘數)`,
+                    String.raw`The sum of both. (兩者相加)`,
+                    String.raw`Always 3. (固定為 3 位)`
+                ],
+                answer: 1
+            },
+            // 第 21 題：替換為課本經典向量方向判斷題
+            {
+                q: String.raw`21. If both the x- and y-components of vector $\vec{A}$ are negative, and $A_y / A_x = 1$, what is the angle of $\vec{A}$ measured counterclockwise from the $+x$-axis? <br>(若向量 $\vec{A}$ 的 x 與 y 分量皆為負值，且 $\tan\theta = A_y / A_x = 1$，則 $\vec{A}$ 與 $+x$ 軸的逆時針夾角為何？)`,
+                options: [String.raw`$45^\circ$`, String.raw`$135^\circ$`, String.raw`$225^\circ$`, String.raw`$315^\circ$`],
+                answer: 2
+            },
+            {
+                q: String.raw`22. Which of the following is a purely scalar quantity? <br>(下列何者為純量？)`,
+                options: [String.raw`Displacement (位移)`, String.raw`Velocity (速度)`, String.raw`Temperature (溫度)`, String.raw`Acceleration (加速度)`],
+                answer: 2
+            },
+            {
+                q: String.raw`23. Vector addition obeys the commutative law. This means: <br>(向量加法遵守交換律，即：)`,
+                options: [
+                    String.raw`$\vec{A} + \vec{B} = \vec{A} - \vec{B}$`, 
+                    String.raw`$\vec{A} + \vec{B} = \vec{B} + \vec{A}$`, 
+                    String.raw`$\vec{A} + (\vec{B} + \vec{C}) = (\vec{A} + \vec{B}) + \vec{C}$`, 
+                    String.raw`$\vec{A} \times \vec{B} = \vec{B} \times \vec{A}$`
+                ],
+                answer: 1
+            },
+            {
+                q: String.raw`24. Vector addition obeys the associative law. This means: <br>(向量加法遵守結合律，即：)`,
+                options: [
+                    String.raw`$\vec{A} + \vec{B} = \vec{B} + \vec{A}$`, 
+                    String.raw`$\vec{A} + (\vec{B} + \vec{C}) = (\vec{A} + \vec{B}) + \vec{C}$`, 
+                    String.raw`$c(\vec{A} + \vec{B}) = c\vec{A} + c\vec{B}$`, 
+                    String.raw`$\vec{A} - \vec{B} = -(\vec{B} - \vec{A})$`
+                ],
+                answer: 1
+            },
+            {
+                q: String.raw`25. The negative of a vector $\vec{A}$ ($-\vec{A}$) is defined as a vector that has: <br>(負向量 $-\vec{A}$ 的定義為何？)`,
+                options: [
+                    String.raw`Negative magnitude and same direction. (負的長度與同方向)`, 
+                    String.raw`Same magnitude and same direction. (同長度與同方向)`, 
+                    String.raw`Same magnitude and opposite direction. (同長度與反方向)`, 
+                    String.raw`Reciprocal magnitude and opposite direction. (倒數長度與反方向)`
+                ],
+                answer: 2
+            },
+            {
+                q: String.raw`26. What is the magnitude of the vector $\vec{A} = 3\hat{i} - 4\hat{j}$? <br>(向量 $\vec{A} = 3\hat{i} - 4\hat{j}$ 的長度為何？)`,
+                options: [String.raw`$-1$`, String.raw`$5$`, String.raw`$7$`, String.raw`$25$`],
+                answer: 1
+            },
+            {
+                q: String.raw`27. For unit vectors, what is the value of the scalar product (dot product) $\hat{i} \cdot \hat{i}$? <br>(單位向量的內積 $\hat{i} \cdot \hat{i}$ 為何？)`,
+                options: [String.raw`$0$`, String.raw`$1$`, String.raw`$-1$`, String.raw`$\hat{k}$`],
+                answer: 1
+            },
+            {
+                q: String.raw`28. For unit vectors, what is the value of the scalar product $\hat{i} \cdot \hat{j}$? <br>(單位向量的內積 $\hat{i} \cdot \hat{j}$ 為何？)`,
+                options: [String.raw`$0$`, String.raw`$1$`, String.raw`$\hat{k}$`, String.raw`Undefined (無定義)`],
+                answer: 0
+            },
+            {
+                q: String.raw`29. For right-handed unit vectors, what is the vector product (cross product) $\hat{i} \times \hat{j}$? <br>(右手定則中，外積 $\hat{i} \times \hat{j}$ 為何？)`,
+                options: [String.raw`$0$`, String.raw`$1$`, String.raw`$\hat{k}$`, String.raw`$-\hat{k}$`],
+                answer: 2
+            },
+            {
+                q: String.raw`30. For right-handed unit vectors, what is the vector product $\hat{j} \times \hat{i}$? <br>(右手定則中，外積 $\hat{j} \times \hat{i}$ 為何？)`,
+                options: [String.raw`$0$`, String.raw`$1$`, String.raw`$\hat{k}$`, String.raw`$-\hat{k}$`],
+                answer: 3
+            },
+            {
+                q: String.raw`31. The scalar product $\vec{A} \cdot \vec{B}$ is mathematically defined as: <br>(純量積/內積的定義為何？)`,
+                options: [String.raw`$AB \sin(\theta)$`, String.raw`$AB \cos(\theta)$`, String.raw`$(A/B) \tan(\theta)$`, String.raw`$|\vec{A}||\vec{B}|$`],
+                answer: 1
+            },
+            {
+                q: String.raw`32. The magnitude of the vector product $|\vec{A} \times \vec{B}|$ is defined as: <br>(向量積/外積的大小的定義為何？)`,
+                options: [String.raw`$AB \sin(\theta)$`, String.raw`$AB \cos(\theta)$`, String.raw`$A/B$`, String.raw`$0$`],
+                answer: 0
+            },
+            {
+                q: String.raw`33. If an object moves with constant acceleration $a$, the velocity $v(t)$ is given by: <br>(等加速度運動中，速度公式為何？)`,
+                options: [String.raw`$v = v_0 + at^2$`, String.raw`$v = v_0 + at$`, String.raw`$v = \frac{1}{2}at^2$`, String.raw`$v = \frac{dx}{dt} + a$`],
+                answer: 1
+            },
+            {
+                q: String.raw`34. The area under a velocity-time ($v-t$) graph represents: <br>($v-t$ 圖底下的面積代表什麼？)`,
+                options: [String.raw`Instantaneous acceleration (瞬時加速度)`, String.raw`Average acceleration (平均加速度)`, String.raw`Displacement (位移)`, String.raw`Jerk (加加速度)`],
+                answer: 2
+            },
+            {
+                q: String.raw`35. The area under an acceleration-time ($a-t$) graph represents: <br>($a-t$ 圖底下的面積代表什麼？)`,
+                options: [String.raw`Displacement (位移)`, String.raw`Change in velocity $\Delta v$ (速度變化量)`, String.raw`Average velocity (平均速度)`, String.raw`Position (位置)`],
+                answer: 1
+            },
+            {
+                q: String.raw`36. The equation for position with constant acceleration is $x = x_0 + v_0t + \dots$ <br>(等加速度位置公式為 $x = x_0 + v_0t + \dots$ 後面接什麼？)`,
+                options: [String.raw`$at^2$`, String.raw`$\frac{1}{2}at^2$`, String.raw`$2at^2$`, String.raw`$\frac{1}{2}at$`],
+                answer: 1
+            },
+            {
+                q: String.raw`37. Which constant acceleration equation relates velocity, acceleration, and position without explicitly using time $t$? <br>(哪個等加速度公式在不使用時間 $t$ 的情況下關聯了速度、加速度與位置？)`,
+                options: [String.raw`$v = v_0 + at$`, String.raw`$x = x_0 + \frac{1}{2}(v_0 + v)t$`, String.raw`$v^2 = v_0^2 + 2a(x - x_0)$`, String.raw`$x = vt$`],
+                answer: 2
+            },
+            {
+                q: String.raw`38. A car accelerates from rest at $2\text{ m/s}^2$ for $4\text{ s}$. What is its final velocity? <br>(車子從靜止以 $2\text{ m/s}^2$ 加速 $4\text{ s}$，末速為何？)`,
+                options: [String.raw`$4\text{ m/s}$`, String.raw`$6\text{ m/s}$`, String.raw`$8\text{ m/s}$`, String.raw`$16\text{ m/s}$`],
+                answer: 2
+            },
+            {
+                q: String.raw`39. A car brakes from $10\text{ m/s}$ to rest in $5\text{ s}$. What is its acceleration? <br>(車子在 $5\text{ s}$ 內從 $10\text{ m/s}$ 煞車至靜止，加速度為何？)`,
+                options: [String.raw`$2\text{ m/s}^2$`, String.raw`$-2\text{ m/s}^2$`, String.raw`$5\text{ m/s}^2$`, String.raw`$-5\text{ m/s}^2$`],
+                answer: 1
+            },
+            {
+                q: String.raw`40. An object travels $20\text{ m}$ in $4\text{ s}$ at constant velocity. What is its speed? <br>(物體以等速在 $4\text{ s}$ 內移動了 $20\text{ m}$，速率為何？)`,
+                options: [String.raw`$4\text{ m/s}$`, String.raw`$5\text{ m/s}$`, String.raw`$10\text{ m/s}$`, String.raw`$80\text{ m/s}$`],
+                answer: 1
+            },
+            {
+                q: String.raw`41. A ball is dropped from a height of $5\text{ m}$. Ignoring air resistance ($g=10\text{ m/s}^2$), how long does it take to hit the ground? <br>(球從 $5\text{ m}$ 高處落下，忽略空氣阻力並設 $g=10\text{ m/s}^2$，需時多久落地？)`,
+                options: [String.raw`$0.5\text{ s}$`, String.raw`$1\text{ s}$`, String.raw`$2\text{ s}$`, String.raw`$5\text{ s}$`],
+                answer: 1
+            },
+            {
+                q: String.raw`42. A ball is thrown straight up at $10\text{ m/s}$ ($g=10\text{ m/s}^2$). How long does it take to reach the highest point? <br>(球以 $10\text{ m/s}$ 垂直上拋，需時多久到達最高點？)`,
+                options: [String.raw`$0.5\text{ s}$`, String.raw`$1\text{ s}$`, String.raw`$2\text{ s}$`, String.raw`$10\text{ s}$`],
+                answer: 1
+            },
+            {
+                q: String.raw`43. For the ball in the previous question, what is the maximum height it reaches? <br>(承上題，球到達的最大高度為何？)`,
+                options: [String.raw`$5\text{ m}$`, String.raw`$10\text{ m}$`, String.raw`$15\text{ m}$`, String.raw`$20\text{ m}$`],
+                answer: 0
+            },
+            {
+                q: String.raw`44. A projectile is launched horizontally at $3\text{ m/s}$. How far does it travel horizontally in $2\text{ s}$? <br>(物體以 $3\text{ m/s}$ 水平拋出，在 $2\text{ s}$ 內的水平移動距離為何？)`,
+                options: [String.raw`$3\text{ m}$`, String.raw`$5\text{ m}$`, String.raw`$6\text{ m}$`, String.raw`$10\text{ m}$`],
+                answer: 2
+            },
+            {
+                q: String.raw`45. When an object is moving in the $+x$-direction but slowing down, its acceleration is: <br>(物體向 $+x$ 方向移動但減速時，其加速度為：)`,
+                options: [String.raw`Positive (正)`, String.raw`Negative (負)`, String.raw`Zero (零)`, String.raw`Increasing (增加中)`],
+                answer: 1
+            },
+            {
+                q: String.raw`46. On a position-time ($x-t$) graph, a curve that is concave up (curves upward) indicates that: <br>(在 $x-t$ 圖中，開口向上的曲線代表什麼？)`,
+                options: [String.raw`Acceleration is negative. (加速度為負)`, String.raw`Acceleration is zero. (加速度為零)`, String.raw`Acceleration is positive. (加速度為正)`, String.raw`Velocity is constant. (速度為定值)`],
+                answer: 2
+            },
+            {
+                q: String.raw`47. On a velocity-time ($v-t$) graph, a horizontal straight line indicates: <br>(在 $v-t$ 圖中，水平直線代表什麼？)`,
+                options: [String.raw`Zero velocity. (速度為零)`, String.raw`Constant positive acceleration. (恆定正加速度)`, String.raw`Constant negative acceleration. (恆定負加速度)`, String.raw`Zero acceleration. (加速度為零)`],
+                answer: 3
+            },
+            {
+                q: String.raw`48. Convert $60\text{ miles/hour}$ to $\text{feet/second}$ ($1\text{ mi} = 5280\text{ ft}, 1\text{ h} = 3600\text{ s}$). <br>(將 $60\text{ mph}$ 轉換為 $\text{ft/s}$，數字完美對消)`,
+                options: [String.raw`$44\text{ ft/s}$`, String.raw`$60\text{ ft/s}$`, String.raw`$88\text{ ft/s}$`, String.raw`$120\text{ ft/s}$`],
+                answer: 2
+            },
+            {
+                q: String.raw`49. Is it possible for an object to have zero velocity but non-zero acceleration? <br>(物體可能具有零速度但加速度不為零嗎？)`,
+                options: [
+                    String.raw`No. (不可能)`,
+                    String.raw`Yes, e.g., a ball exactly at the peak of its vertical flight. (可能，例如垂直上拋的最高點。)`,
+                    String.raw`Yes, but only in circular motion. (可能，但只在圓周運動中。)`,
+                    String.raw`No, acceleration requires motion. (不可能，加速度需要有運動。)`
+                ],
+                answer: 1
+            },
+            {
+                q: String.raw`50. If an equation is dimensionally consistent, it guarantees that: <br>(若方程式的因次/單位一致，這保證了：)`,
+                options: [
+                    String.raw`The equation is physically correct. (物理上絕對正確。)`,
+                    String.raw`Both sides have the same units. (等式兩邊的單位相同。)`,
+                    String.raw`There are no numerical errors. (數字係數沒有錯誤。)`,
+                    String.raw`It is derived from Newton's Laws. (它是從牛頓定律推導出來的。)`
+                ],
+                answer: 1
+            }
+        ];
+
+        // 全局變數
+        let studentName = "";
+        let timerInterval = null;
+        let startTime = null;
+
+        // 初始化將題目渲染進測驗容器
+        function loadQuestions() {
+            const container = document.getElementById("questions-container");
+            container.innerHTML = "";
+            questionsData.forEach((qObj, index) => {
+                let questionHTML = `<div class="question-block" id="qblock-${index}">
+                    <div class="question-text">${qObj.q}</div>
+                    <div class="options">`;
+                
+                qObj.options.forEach((opt, optIndex) => {
+                    questionHTML += `
+                        <label>
+                            <input type="radio" name="q${index}" value="${optIndex}">
+                            ${opt}
+                        </label>
+                    `;
+                });
+                
+                questionHTML += `</div></div>`;
+                container.innerHTML += questionHTML;
+            });
+        }
+
+        // 開始測驗
+        function startQuiz() {
+            const nameInput = document.getElementById("studentName").value.trim();
+            if (!nameInput) {
+                alert("Please enter your name. (請輸入姓名)");
+                return;
+            }
+            studentName = nameInput;
+
+            // 畫面切換
+            document.getElementById("start-screen").classList.remove("active-screen");
+            document.getElementById("quiz-screen").classList.add("active-screen");
+            
+            // 載入題目
+            loadQuestions();
+
+            // 正向計時邏輯 (從 0 秒開始)
+            startTime = Date.now();
+            document.getElementById("timer-bar").style.display = "block";
+            updateTimerDisplay(); // 初次顯示 00:00
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+
+            // 重啟 MathJax 渲染
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch((err) => console.error('MathJax 渲染失敗：', err));
+            }
+        }
+
+        // 更新正向計時器顯示 (Stopwatch)
+        function updateTimerDisplay() {
+            const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+            const m = Math.floor(elapsedSeconds / 60).toString().padStart(2, '0');
+            const s = (elapsedSeconds % 60).toString().padStart(2, '0');
+            document.getElementById("time-display").innerText = `${m}:${s}`;
+        }
+
+        // 提交表單與計分邏輯
+        document.getElementById("quizForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            submitQuiz();
+        });
+
+        function submitQuiz() {
+            // 停止計時
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // 計算總耗時
+            const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+            const m = Math.floor(elapsedSeconds / 60);
+            const s = elapsedSeconds % 60;
+
+            let score = 0;
+            let reviewHTML = "";
+            
+            questionsData.forEach((qObj, index) => {
+                const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                let isCorrect = false;
+                let userAnsText = "No answer (未作答)";
+
+                if (selectedOption) {
+                    const selectedValue = parseInt(selectedOption.value);
+                    userAnsText = qObj.options[selectedValue];
+                    if (selectedValue === qObj.answer) {
+                        score++;
+                        isCorrect = true;
+                    }
+                }
+
+                // 生成該題的檢討區塊
+                reviewHTML += `
+                    <div class="review-item ${isCorrect ? 'review-correct' : 'review-incorrect'}">
+                        <div class="question-text">${qObj.q}</div>
+                        <div class="user-ans"><strong>Your Answer:</strong> ${userAnsText} ${isCorrect ? '<span class="correct">✔ Correct</span>' : '<span class="incorrect">✘ Incorrect</span>'}</div>
+                        ${!isCorrect ? `<div class="correct-ans"><strong>Correct Answer:</strong> ${qObj.options[qObj.answer]}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            // 畫面切換至檢討頁
+            document.getElementById("quiz-screen").classList.remove("active-screen");
+            document.getElementById("review-screen").classList.add("active-screen");
+
+            // 填寫報告內容
+            document.getElementById("report-title").innerText = `${studentName}'s Review Report (檢討報告)`;
+            document.getElementById("report-score").innerText = `Final Score (最終成績): ${score} / 50 (${(score / 50 * 100).toFixed(1)}%)`;
+            document.getElementById("report-time").innerText = `Time Taken (作答耗時): ${m} min ${s} sec`;
+            document.getElementById("review-container").innerHTML = reviewHTML;
+
+            // 對解答出現的新公式重新啟動 MathJax 渲染
+            window.scrollTo(0, 0);
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch((err) => console.error('MathJax 渲染失敗：', err));
+            }
+        }
+    </script>
+</body>
+</html>
