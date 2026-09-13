@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>USB Type-C 與 Power Delivery 原理｜Type-C Advanced Lesson</title>
+<meta name="description" content="獨立介紹 USB Type-C 與 USB Power Delivery：接頭、腳位、CC1/CC2、Source/Sink、VBUS、電流宣告、PDO、協商流程與教學建議。">
+<style>
+:root{
+  --bg:#f5f7f4;--card:#fff;--ink:#18201c;--muted:#607068;--line:#dbe2dd;
+  --green:#175c42;--green2:#eaf4ee;--blue:#285493;--blue2:#eef4ff;--amber:#8a5c12;--max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.72}
+a{color:inherit}
+nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{max-width:var(--max);margin:auto;display:flex;gap:18px;align-items:center;padding:12px 20px;overflow:auto;white-space:nowrap}
+.brand{font-weight:800;margin-right:auto}
+.nav a{text-decoration:none;color:#36433c;font-size:.93rem}.nav a:hover{color:var(--green)}
+.hero{max-width:var(--max);margin:auto;padding:62px 20px 34px;display:grid;grid-template-columns:1.14fr .86fr;gap:26px;align-items:center}
+.hero-card,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 7px 26px rgba(26,43,34,.05);padding:22px}
+.eyebrow{font-size:.85rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}
+h1{font-size:clamp(2.1rem,5vw,4.2rem);line-height:1.08;margin:.25rem 0 .9rem;letter-spacing:-.04em}
+h2{font-size:2rem;line-height:1.2;margin:0 0 12px}
+h3{font-size:1.22rem;margin:0 0 10px}
+.lead,.sub,.small{color:var(--muted)}
+section{max-width:var(--max);margin:0 auto;padding:48px 20px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kpi{padding:14px 16px;border-radius:14px;background:var(--green2)}
+.kpi b{display:block;font-size:1.35rem;color:var(--green)}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:5px 10px;margin:4px 6px 4px 0;background:#fff;font-size:.88rem}
+.eq{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f0f4f1;border-left:4px solid var(--green);padding:13px 15px;border-radius:8px;margin:12px 0;overflow:auto}
+.note{padding:14px 16px;border:1px solid #e3d3b9;background:#fff9ef;border-radius:12px;color:#5e431e}
+.good{padding:14px 16px;border:1px solid #cce1d4;background:#f3faf6;border-radius:12px}
+.warn{padding:14px 16px;border:1px solid #efc2c2;background:#fff4f4;border-radius:12px;color:#7c2d2d}
+.spec{display:grid;grid-template-columns:180px 1fr;gap:8px 18px}
+.spec>div{padding:8px 0;border-bottom:1px solid var(--line)}
+.spec .k{font-weight:800}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;overflow:hidden}
+.diagram svg{display:block;width:100%;height:auto}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+th,td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+th{background:#eef4f0} tr:last-child td{border-bottom:0}
+ol,ul{padding-left:1.2rem}
+.btn{display:inline-block;text-decoration:none;background:var(--green);color:#fff;padding:11px 16px;border-radius:10px;font-weight:800}
+footer{border-top:1px solid var(--line);padding:28px 20px;text-align:center;color:var(--muted)}
+@media(max-width:900px){
+  .hero,.grid-2,.grid-3{grid-template-columns:1fr}
+  .spec{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<nav><div class="nav">
+  <div class="brand">USB Type-C Physics</div>
+  <a href="solarpowercourse_n.html">← 回主課程</a>
+  <a href="#basic">Type-C 基礎</a>
+  <a href="#pins">腳位</a>
+  <a href="#cc">CC 通道</a>
+  <a href="#source">真正 Source</a>
+  <a href="#pd">Power Delivery</a>
+  <a href="#teaching">教學建議</a>
+</div></nav>
+
+<header class="hero">
+  <div>
+    <div class="eyebrow">ADVANCED LESSON</div>
+    <h1>USB Type-C 與 Power Delivery 原理</h1>
+    <p class="lead">這一頁把 USB Type-C 與 USB Power Delivery 從太陽能主課程中獨立出來，目的是讓學員先分清楚「接頭」、「供電角色」、「CC 通道」與「PD 協商」四個層次。只有把 5 V 接到 Type-C 母座，還不等於真正的 Type-C Source；而 Type-C 也不等於 PD 快充。</p>
+    <div>
+      <span class="tag">USB Type-C</span>
+      <span class="tag">Source / Sink</span>
+      <span class="tag">VBUS / GND</span>
+      <span class="tag">CC1 / CC2</span>
+      <span class="tag">USB PD</span>
+      <span class="tag">PDO</span>
+    </div>
+  </div>
+  <div class="hero-card">
+    <h3>本頁學習目標</h3>
+    <div class="kpis">
+      <div class="kpi"><b>1</b>知道 Type-C 是接頭與介面，不等於 PD</div>
+      <div class="kpi"><b>2</b>理解 Source / Sink 與 CC1 / CC2 的用途</div>
+      <div class="kpi"><b>3</b>能描述固定 5 V 與 PD 協商的差異</div>
+      <div class="kpi"><b>4</b>知道進階 PD 實作需要額外硬體</div>
+    </div>
+  </div>
+</header>
+
+<section id="basic">
+  <h2>1. 先分清楚：USB Type-C 是什麼？</h2>
+  <p class="sub">USB Type-C 是一種連接器與介面規格。它定義了插頭形狀、可翻轉插入、腳位分配與某些角色偵測方式，但它本身不等於「一定支援快充」或「一定有資料傳輸」。</p>
+  <div class="grid-3">
+    <div class="card">
+      <h3>Type-C = 連接器 / 介面</h3>
+      <p>它規定的是接頭形式與腳位。裝置可以只拿它來供電，也可以同時拿來傳資料或支援更高階功能。</p>
+    </div>
+    <div class="card">
+      <h3>USB 5 V 供電 = 基本電力層</h3>
+      <p>最基本的情況下，只要有 VBUS 與 GND，就可以做固定 5 V 的電力輸出。但這仍然只是「供電」，不代表完整 Type-C Source 行為。</p>
+    </div>
+    <div class="card">
+      <h3>USB PD = 更高階協定</h3>
+      <p>PD 是在 CC 通道上進行的電壓 / 電流協商協定，用來決定 5 / 9 / 12 / 15 / 20 V 等不同的供電條件。</p>
+    </div>
+  </div>
+  <div class="good" style="margin-top:18px"><b>一句話：</b>Type-C 是「介面」，PD 是「協商協定」。兩者相關，但不是同一件事。</div>
+</section>
+
+<section id="pins">
+  <h2>2. Type-C 接頭有哪些重要腳位？</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>基礎課程會用到的腳位</h3>
+      <div class="spec">
+        <div class="k">VBUS</div><div>主要供電線。基礎班固定輸出約 5 V。</div>
+        <div class="k">GND</div><div>系統地端與回流路徑。</div>
+        <div class="k">CC1 / CC2</div><div>Configuration Channel。用來偵測方向、連接狀態、角色與電流能力宣告。</div>
+        <div class="k">D+ / D−</div><div>USB 2.0 資料線。若只是純供電，基礎課可不必使用。</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>進階課程會再介紹的腳位</h3>
+      <div class="spec">
+        <div class="k">SBU1 / SBU2</div><div>Sideband Use，給某些 alternate mode 或特殊用途使用。</div>
+        <div class="k">SuperSpeed pairs</div><div>高速資料傳輸腳位，例如 USB 3.x。</div>
+        <div class="k">VCONN</div><div>某些情況下由 Source 透過未使用的 CC 線供電給電子標記線材或配件。</div>
+      </div>
+      <div class="note">在太陽能自主電源基礎課程中，最重要的是先理解 <b>VBUS、GND、CC1、CC2</b>，不要一開始就把所有 USB 功能混在一起。</div>
+    </div>
+  </div>
+  <div class="diagram" style="margin-top:18px">
+    <svg viewBox="0 0 1200 540" xmlns="http://www.w3.org/2000/svg" aria-label="USB Type-C 重要腳位示意">
+      <style>
+        .h{font:700 28px 'Noto Sans TC','Microsoft JhengHei',sans-serif}
+        .t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#213129}
+        .s{font:700 18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#2b4e8a}
+      </style>
+      <text x="50" y="52" class="h" fill="#285493">USB Type-C 母座的重要概念腳位</text>
+      <rect x="120" y="110" width="950" height="270" rx="28" fill="#f9fbff" stroke="#355a9c" stroke-width="4"/>
+      <rect x="160" y="170" width="870" height="150" rx="18" fill="#fff" stroke="#c7d6ef" stroke-width="2"/>
+
+      <!-- Top labels -->
+      <g class="s">
+        <text x="210" y="160">VBUS</text>
+        <text x="330" y="160">D+</text>
+        <text x="420" y="160">D−</text>
+        <text x="515" y="160">CC1</text>
+        <text x="625" y="160">SBU</text>
+        <text x="730" y="160">CC2</text>
+        <text x="840" y="160">D+</text>
+        <text x="930" y="160">D−</text>
+        <text x="1010" y="160">VBUS</text>
+      </g>
+
+      <g>
+        <rect x="195" y="205" width="65" height="80" rx="10" fill="#e9f4ee" stroke="#2f6f54"/>
+        <rect x="305" y="205" width="50" height="80" rx="10" fill="#eef4ff" stroke="#355a9c"/>
+        <rect x="395" y="205" width="50" height="80" rx="10" fill="#eef4ff" stroke="#355a9c"/>
+        <rect x="495" y="205" width="55" height="80" rx="10" fill="#fff6e9" stroke="#b17a14"/>
+        <rect x="605" y="205" width="55" height="80" rx="10" fill="#f6f6f6" stroke="#777"/>
+        <rect x="715" y="205" width="55" height="80" rx="10" fill="#fff6e9" stroke="#b17a14"/>
+        <rect x="825" y="205" width="50" height="80" rx="10" fill="#eef4ff" stroke="#355a9c"/>
+        <rect x="915" y="205" width="50" height="80" rx="10" fill="#eef4ff" stroke="#355a9c"/>
+        <rect x="995" y="205" width="65" height="80" rx="10" fill="#e9f4ee" stroke="#2f6f54"/>
+      </g>
+
+      <text x="130" y="435" class="t">對供電教學最重要的不是記住全部 24 pin，而是知道：VBUS 提供電力、GND 回流、CC1 / CC2 負責連接與角色偵測。</text>
+    </svg>
+  </div>
+</section>
+
+<section id="cc">
+  <h2>3. CC1 / CC2 到底在做什麼？</h2>
+  <p class="sub">Type-C 與舊 USB 很不一樣的地方是：它不是只靠「有沒有 5 V」來判斷，而是透過 CC 通道來偵測裝置插入、方向與角色。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Source 與 Sink</h3>
+      <p><b>Source</b> 是提供電力的一端，<b>Sink</b> 是消耗電力的一端。例如行動電源通常是 Source，手機通常是 Sink。</p>
+      <p>在 Type-C 連接時，Source 與 Sink 需要先透過 CC 線確認彼此的存在與角色，再進一步決定供電行為。</p>
+    </div>
+    <div class="card">
+      <h3>為什麼有 CC1 與 CC2？</h3>
+      <p>因為 Type-C 可以正反插。實際插入後，只有其中一條 CC 線會成為有效通道；控制器可藉此知道插頭方向，並在需要時決定 VCONN 與其他功能。</p>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:18px">
+    <div class="card">
+      <h3>電流能力宣告</h3>
+      <p>Source 可透過 CC 線上的電阻或控制器邏輯，向 Sink 宣告自己可提供的電流等級，例如：</p>
+      <ul>
+        <li>預設 USB 電流能力</li>
+        <li>1.5 A</li>
+        <li>3.0 A</li>
+      </ul>
+      <div class="eq">CC 線不是主功率線，但它決定了供電角色與能力資訊。</div>
+    </div>
+    <div class="card">
+      <h3>沒有正確處理 CC，會怎樣？</h3>
+      <ul>
+        <li>有些裝置可能無法辨識這是一個合法的 Type-C 供電端</li>
+        <li>有些裝置可能不願意取電或只能以保守模式取電</li>
+        <li>更不能把這種做法稱為 PD</li>
+      </ul>
+      <div class="warn">所以把 Boost 5 V 直接焊到 Type-C 母座，只能算是簡化供電輸出，不應宣稱為「完整 Type-C PD」裝置。</div>
+    </div>
+  </div>
+
+  <div class="diagram" style="margin-top:18px">
+    <svg viewBox="0 0 1180 520" xmlns="http://www.w3.org/2000/svg" aria-label="Source 與 Sink 透過 CC 線連接">
+      <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#175c42"/></marker></defs>
+      <style>
+        .h{font:700 26px 'Noto Sans TC','Microsoft JhengHei',sans-serif}
+        .t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#213129}
+      </style>
+      <rect x="90" y="120" width="300" height="230" rx="24" fill="#f7fbff" stroke="#355a9c" stroke-width="4"/>
+      <text x="185" y="165" class="h" fill="#285493">Source</text>
+      <text x="165" y="210" class="t">提供 VBUS</text>
+      <text x="125" y="250" class="t">在 CC 線宣告角色與電流能力</text>
+
+      <rect x="790" y="120" width="300" height="230" rx="24" fill="#f7fbff" stroke="#355a9c" stroke-width="4"/>
+      <text x="905" y="165" class="h" fill="#285493">Sink</text>
+      <text x="880" y="210" class="t">消耗 VBUS</text>
+      <text x="820" y="250" class="t">透過 CC 線判斷可取電能力</text>
+
+      <line x1="390" y1="195" x2="790" y2="195" stroke="#355a9c" stroke-width="6"/>
+      <text x="555" y="178" class="t">VBUS / GND</text>
+
+      <line x1="390" y1="275" x2="790" y2="275" stroke="#b17a14" stroke-width="5" stroke-dasharray="10 9"/>
+      <text x="545" y="260" class="t">CC1 / CC2</text>
+
+      <path d="M655 325 H520" stroke="#175c42" stroke-width="5" marker-end="url(#arrow)"/>
+      <text x="500" y="370" class="t">角色與能力資訊</text>
+    </svg>
+  </div>
+</section>
+
+<section id="source">
+  <h2>4. 什麼才叫比較像真正的 Type-C Source？</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>基礎班的作法</h3>
+      <p>太陽能板 → 充電模組 → 18650 → 5 V Boost → USB 輸出。這個架構的重點是理解能量鏈與量測方法，最適合入門。</p>
+      <div class="note">這一層的教學重點是「固定 5 V 輸出」，不是完整 Type-C 規範。</div>
+    </div>
+    <div class="card">
+      <h3>較完整的 Type-C Source</h3>
+      <p>若要更接近規範，需要加入：</p>
+      <ul>
+        <li>穩定 5 V 電源級</li>
+        <li>Type-C source controller</li>
+        <li>CC1 / CC2 偵測與電流能力宣告</li>
+        <li>VBUS power switch / 保護電路</li>
+      </ul>
+      <div class="eq">5 V 電源級 + CC 控制 + VBUS 保護 = 較合理的 Type-C Source</div>
+    </div>
+  </div>
+
+  <div class="diagram" style="margin-top:18px">
+    <svg viewBox="0 0 1240 500" xmlns="http://www.w3.org/2000/svg" aria-label="真正的 Type-C Source 基本方塊圖">
+      <style>.h{font:700 24px 'Noto Sans TC','Microsoft JhengHei',sans-serif}.t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#213129}</style>
+      <rect x="50" y="155" width="210" height="150" rx="22" fill="#fff" stroke="#355a9c" stroke-width="4"/>
+      <text x="85" y="215" class="h">能源 / 電池端</text>
+      <text x="80" y="255" class="t">例如 18650 或更高級電源</text>
+
+      <rect x="320" y="155" width="220" height="150" rx="22" fill="#fff" stroke="#355a9c" stroke-width="4"/>
+      <text x="355" y="215" class="h">5 V 穩壓電源級</text>
+      <text x="370" y="255" class="t">Buck / Boost</text>
+
+      <rect x="605" y="125" width="260" height="210" rx="22" fill="#fff" stroke="#355a9c" stroke-width="4"/>
+      <text x="650" y="195" class="h">Type-C Source</text>
+      <text x="695" y="230" class="h">Controller</text>
+      <text x="635" y="275" class="t">處理 CC1 / CC2 與角色宣告</text>
+
+      <rect x="915" y="155" width="145" height="150" rx="22" fill="#fff" stroke="#355a9c" stroke-width="4"/>
+      <text x="948" y="215" class="h">VBUS</text>
+      <text x="935" y="255" class="t">Power Switch</text>
+
+      <rect x="1095" y="135" width="110" height="190" rx="20" fill="#fff" stroke="#355a9c" stroke-width="4"/>
+      <text x="1118" y="190" class="h">USB-C</text>
+      <text x="1118" y="230" class="t">VBUS</text>
+      <text x="1118" y="262" class="t">GND</text>
+      <text x="1118" y="294" class="t">CC1/2</text>
+
+      <line x1="260" y1="230" x2="320" y2="230" stroke="#355a9c" stroke-width="5"/>
+      <line x1="540" y1="230" x2="915" y2="230" stroke="#355a9c" stroke-width="5"/>
+      <line x1="1060" y1="230" x2="1095" y2="230" stroke="#355a9c" stroke-width="5"/>
+
+      <line x1="865" y1="205" x2="915" y2="205" stroke="#b17a14" stroke-width="4" stroke-dasharray="8 8"/>
+      <line x1="865" y1="255" x2="1095" y2="285" stroke="#b17a14" stroke-width="4" stroke-dasharray="8 8"/>
+      <text x="780" y="175" class="t">CC 控制</text>
+    </svg>
+  </div>
+</section>
+
+<section id="pd">
+  <h2>5. 什麼是 USB Power Delivery（PD）？</h2>
+  <p class="sub">PD 是在 Type-C 的 CC 通道上進行的進階協商協定。它不只是「接頭變成 Type-C」，而是 Source 與 Sink 必須交換資訊，決定可接受的供電電壓與電流。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h3>PDO 是什麼？</h3>
+      <p><b>PDO</b>（Power Data Object）可理解為 Source 願意提供、或 Sink 願意要求的供電選項。例如：</p>
+      <ul>
+        <li>5 V / 3 A</li>
+        <li>9 V / 2 A</li>
+        <li>12 V / 1.5 A</li>
+        <li>15 V / 1.5 A</li>
+      </ul>
+      <p>Source 先公布自己可提供的 PDO，Sink 再從中選擇或請求最適合的一組。</p>
+    </div>
+    <div class="card">
+      <h3>PD 為什麼比較難？</h3>
+      <ul>
+        <li>需要 PD controller，而不只是一般 Type-C source controller</li>
+        <li>需要可依協商結果切換的電源級</li>
+        <li>需要更嚴格的保護：過流、過壓、放電、ESD、電源切換</li>
+        <li>高於 5 V 時，系統的熱、效率與安全要求都更高</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>PD 協商流程（簡化）</h3>
+    <ol>
+      <li>裝置插入，先由 CC1 / CC2 偵測連接與角色。</li>
+      <li>Source 在 CC 通道上公布自己可提供的 PDO。</li>
+      <li>Sink 讀取這些選項，挑選自己想要的電壓 / 電流組合。</li>
+      <li>Source 確認後，切換或設定電源級。</li>
+      <li>Source 提供對應 VBUS，Sink 開始取電。</li>
+    </ol>
+    <div class="eq">「先協商，再切換供電條件」是 PD 的核心精神。</div>
+  </div>
+
+  <div class="diagram" style="margin-top:18px">
+    <svg viewBox="0 0 1220 520" xmlns="http://www.w3.org/2000/svg" aria-label="PD 協商流程示意">
+      <defs><marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#175c42"/></marker></defs>
+      <style>
+        .h{font:700 24px 'Noto Sans TC','Microsoft JhengHei',sans-serif}
+        .t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#213129}
+      </style>
+      <rect x="85" y="120" width="240" height="240" rx="24" fill="#f8fbff" stroke="#355a9c" stroke-width="4"/>
+      <rect x="895" y="120" width="240" height="240" rx="24" fill="#f8fbff" stroke="#355a9c" stroke-width="4"/>
+      <text x="170" y="180" class="h" fill="#285493">PD Source</text>
+      <text x="980" y="180" class="h" fill="#285493">PD Sink</text>
+
+      <text x="120" y="225" class="t">公布可提供的 PDO</text>
+      <text x="145" y="260" class="t">5V / 3A</text>
+      <text x="145" y="292" class="t">9V / 2A</text>
+      <text x="145" y="324" class="t">12V / 1.5A</text>
+
+      <text x="925" y="225" class="t">選擇合適的 PDO</text>
+      <text x="930" y="260" class="t">例如要求 9V / 2A</text>
+
+      <line x1="325" y1="215" x2="895" y2="215" stroke="#b17a14" stroke-width="5" stroke-dasharray="10 9" marker-end="url(#m)"/>
+      <line x1="895" y1="265" x2="325" y2="265" stroke="#175c42" stroke-width="5" stroke-dasharray="10 9" marker-end="url(#m)"/>
+      <line x1="325" y1="325" x2="895" y2="325" stroke="#355a9c" stroke-width="6" marker-end="url(#m)"/>
+
+      <text x="510" y="193" class="t">1. 發布 PDO</text>
+      <text x="515" y="250" class="t">2. 回覆需求</text>
+      <text x="468" y="310" class="t">3. 協商完成後送出對應 VBUS</text>
+    </svg>
+  </div>
+</section>
+
+<section id="teaching">
+  <h2>6. 為什麼太陽能主課程不先直接做 PD？</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>基礎班最重要的是能量觀念</h3>
+      <ul>
+        <li>太陽能板能提供多少功率？</li>
+        <li>18650 可儲存多少能量？</li>
+        <li>Boost 後固定 5 V 可帶多大負載？</li>
+        <li>續航時間如何估算？</li>
+      </ul>
+      <p>如果一開始就加入 PD，學員很容易把注意力全部放在接頭與協商，而忽略最核心的能源概念。</p>
+    </div>
+    <div class="card">
+      <h3>PD 適合獨立進階課</h3>
+      <ul>
+        <li>先學固定 5 V 輸出，再學完整 Type-C Source</li>
+        <li>最後才進一步進入 PD controller 與 PDO</li>
+        <li>較適合高中後段、大專與已有電子基礎的學員</li>
+      </ul>
+      <div class="good">這也是本網站將 Type-C / PD 從太陽能主課程獨立出來的原因。</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>建議的進階課程分層</h3>
+    <table>
+      <tr><th>層級</th><th>主題</th><th>學習目標</th></tr>
+      <tr><td>Level 1</td><td>固定 5 V USB 輸出</td><td>理解 VBUS、GND、功率與量測</td></tr>
+      <tr><td>Level 2</td><td>真正的 Type-C Source</td><td>加入 CC1 / CC2、電流能力宣告與保護</td></tr>
+      <tr><td>Level 3</td><td>USB PD</td><td>理解 PDO、協商、切換電壓與 PD controller</td></tr>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>7. 與太陽能課程的連結</h2>
+  <div class="card">
+    <p>完成本頁後，學員應能回答：</p>
+    <ul>
+      <li>Type-C 為什麼不只是「換一個接頭」？</li>
+      <li>CC1 / CC2 的功能是什麼？</li>
+      <li>為什麼直接把 5 V 焊到 Type-C 母座，不應宣稱為 PD？</li>
+      <li>若要做真正 PD，系統中還需要哪些元件？</li>
+    </ul>
+    <a class="btn" href="solarpowercourse_n.html">回到太陽能自主電源主課程</a>
+  </div>
+</section>
+
+<footer>USB Type-C 與 Power Delivery 原理｜獨立進階教學頁</footer>
+</body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>太陽能板工作原理｜Solar Cell Advanced Lesson v2</title>
+<meta name="description" content="太陽能板工作原理進階教學：光伏效應、p-n 接面、I-V/P-V 曲線、Voc、Isc、MPP、光照、角度、溫度、遮蔽、串並聯與互動模擬。">
+<style>
+:root{
+  --bg:#f5f7f4;--card:#fff;--ink:#18201c;--muted:#607068;--line:#dbe2dd;
+  --green:#175c42;--green2:#eaf4ee;--blue:#285493;--amber:#8a5c12;
+  --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.72}
+a{color:inherit}
+nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{max-width:var(--max);margin:auto;display:flex;gap:18px;align-items:center;padding:12px 20px;overflow:auto;white-space:nowrap}
+.brand{font-weight:800;margin-right:auto}
+.nav a{text-decoration:none;color:#36433c;font-size:.93rem}.nav a:hover{color:var(--green)}
+.hero{max-width:var(--max);margin:auto;padding:64px 20px 36px;display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center}
+.hero-card,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 7px 26px rgba(26,43,34,.05);padding:22px}
+.eyebrow{font-size:.85rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}
+h1{font-size:clamp(2.1rem,5vw,4.2rem);line-height:1.08;margin:.25rem 0 .9rem;letter-spacing:-.04em}
+h2{font-size:2rem;line-height:1.2;margin:0 0 12px}
+h3{font-size:1.22rem;margin:0 0 10px}
+.lead,.sub{color:var(--muted)}
+section{max-width:var(--max);margin:0 auto;padding:48px 20px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.stack-2{display:grid;grid-template-columns:1fr;gap:18px}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:5px 10px;margin:4px 6px 4px 0;background:#fff;font-size:.88rem}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kpi{padding:14px 16px;border-radius:14px;background:var(--green2)}
+.kpi b{display:block;font-size:1.35rem;color:var(--green)}
+.eq{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f0f4f1;border-left:4px solid var(--green);padding:13px 15px;border-radius:8px;margin:12px 0;overflow:auto}
+.note{padding:14px 16px;border:1px solid #e3d3b9;background:#fff9ef;border-radius:12px;color:#5e431e}
+.good{padding:14px 16px;border:1px solid #cce1d4;background:#f3faf6;border-radius:12px}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;overflow:hidden}
+.diagram svg{display:block;width:100%;height:auto;min-width:0}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+th,td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+th{background:#eef4f0}tr:last-child td{border-bottom:0}
+.spec{display:grid;grid-template-columns:190px 1fr;gap:8px 18px}
+.spec>div{padding:8px 0;border-bottom:1px solid var(--line)} .spec .k{font-weight:800}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+input[type=range]{width:100%}
+.metric{font-size:1.35rem;font-weight:800;color:var(--green)}
+canvas{width:100%;height:330px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.btn{display:inline-block;text-decoration:none;background:var(--green);color:#fff;padding:11px 16px;border-radius:10px;font-weight:800}
+.small{font-size:.9rem;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:28px 20px;text-align:center;color:var(--muted)}
+@media(max-width:1200px){
+  .grid-2{grid-template-columns:1fr}
+}
+@media(max-width:900px){
+  .hero,.grid-3,.controls{grid-template-columns:1fr}
+  .spec{grid-template-columns:1fr}
+  .hero{padding-top:44px}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="nav">
+  <div class="brand">Solar Cell Physics</div>
+  <a href="solarpowercourse_n.html">← 回主課程</a>
+  <a href="#semiconductor">半導體</a>
+  <a href="#doping">n / p 型</a>
+  <a href="#junction">p-n 接面形成</a>
+  <a href="#field">內建電場</a>
+  <a href="#photon">光伏效應</a>
+  <a href="#pn">p-n 接面</a>
+  <a href="#iv">I–V / P–V</a>
+  <a href="#factors">環境效應</a>
+  <a href="#array">串並聯</a>
+  <a href="#sim">互動模擬</a>
+</div></nav>
+
+<header class="hero">
+  <div>
+    <div class="eyebrow">ADVANCED LESSON</div>
+    <h1>太陽能板為什麼會發電？</h1>
+    <p class="lead">先從「什麼是半導體」開始，理解矽晶格、價帶與導帶，再進入摻雜形成 n 型與 p 型半導體；接著追蹤 p-n 接面形成時載子的擴散、復合、空乏區與內建電場。最後再理解光子如何產生電子—電洞對，並由內建電場分離而形成可利用的電流。</p>
+    <div>
+      <span class="tag">Semiconductor</span>
+      <span class="tag">Doping</span>
+      <span class="tag">n-type / p-type</span>
+      <span class="tag">p-n Junction</span>
+      <span class="tag">Built-in Electric Field</span>
+      <span class="tag">Photovoltaic Effect</span>
+      <span class="tag">p-n Junction</span>
+      <span class="tag">Voc / Isc</span>
+      <span class="tag">MPP</span>
+      <span class="tag">I–V / P–V</span>
+      <span class="tag">Series / Parallel</span>
+    </div>
+  </div>
+  <div class="hero-card">
+    <h3>本頁學習目標</h3>
+    <div class="kpis">
+      <div class="kpi"><b>1</b>知道導體、絕緣體與半導體的差異</div>
+      <div class="kpi"><b>2</b>理解摻雜如何形成 n 型與 p 型</div>
+      <div class="kpi"><b>3</b>能說明空乏區與內建電場如何形成</div>
+      <div class="kpi"><b>4</b>能把內建電場連到太陽能發電機制</div>
+    </div>
+  </div>
+</header>
+
+
+<section id="semiconductor">
+  <h2>0.1 什麼是半導體？</h2>
+  <p class="sub">半導體的導電能力介於導體與絕緣體之間，而且可以透過溫度、光照與摻雜大幅改變。這個「可控制的導電性」正是二極體、電晶體與太陽能電池能工作的基礎。</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <h3>導體 Conductor</h3>
+      <p>例如銅、鋁。大量電子很容易參與導電，因此電阻通常很小。</p>
+      <div class="eq">價帶與導帶重疊，或存在大量自由載子</div>
+    </div>
+    <div class="card">
+      <h3>半導體 Semiconductor</h3>
+      <p>例如矽 Si、鍺 Ge。常溫下只有部分電子能進入導帶，因此導電性可受外界條件控制。</p>
+      <div class="eq">小但非零的 band gap</div>
+    </div>
+    <div class="card">
+      <h3>絕緣體 Insulator</h3>
+      <p>價帶電子很難跨越很大的能隙，因此一般電場下幾乎沒有可移動載子。</p>
+      <div class="eq">較大的 band gap</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:18px">
+    <div class="card">
+      <h3>以矽 Silicon 為例</h3>
+      <p>矽有四個價電子。在理想晶格中，每一個矽原子會與四個鄰近矽原子形成共價鍵。低溫時，大部分電子被束縛在鍵結中；當獲得足夠熱能或光子能量時，電子可以離開鍵結並進入導帶。</p>
+      <p>電子離開後，原本的位置留下可以視為正電載子的「<b>電洞 hole</b>」。</p>
+      <div class="note"><b>電洞不是一顆真正的正粒子。</b>它代表價帶中缺少一個電子的位置；當鄰近電子依序移動填補空位時，看起來就像電洞往相反方向移動。</div>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 920 500" xmlns="http://www.w3.org/2000/svg" aria-label="矽晶格與共價鍵示意">
+        <style>
+          .h{font:700 25px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#244f8b}
+          .t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#203029}
+        </style>
+        <text x="42" y="48" class="h">矽晶格：每個 Si 以四個價電子形成共價鍵</text>
+
+        <g stroke="#7b8d85" stroke-width="4">
+          <line x1="240" y1="155" x2="455" y2="155"/>
+          <line x1="455" y1="155" x2="670" y2="155"/>
+          <line x1="240" y1="155" x2="240" y2="345"/>
+          <line x1="455" y1="155" x2="455" y2="345"/>
+          <line x1="670" y1="155" x2="670" y2="345"/>
+          <line x1="240" y1="345" x2="455" y2="345"/>
+          <line x1="455" y1="345" x2="670" y2="345"/>
+        </g>
+
+        <g fill="#eaf1fb" stroke="#315b99" stroke-width="4">
+          <circle cx="240" cy="155" r="48"/><circle cx="455" cy="155" r="48"/><circle cx="670" cy="155" r="48"/>
+          <circle cx="240" cy="345" r="48"/><circle cx="455" cy="345" r="48"/><circle cx="670" cy="345" r="48"/>
+        </g>
+        <g class="h" text-anchor="middle">
+          <text x="240" y="164">Si</text><text x="455" y="164">Si</text><text x="670" y="164">Si</text>
+          <text x="240" y="354">Si</text><text x="455" y="354">Si</text><text x="670" y="354">Si</text>
+        </g>
+
+        <g fill="#2e609f">
+          <circle cx="348" cy="145" r="7"/><circle cx="348" cy="165" r="7"/>
+          <circle cx="562" cy="145" r="7"/><circle cx="562" cy="165" r="7"/>
+          <circle cx="230" cy="250" r="7"/><circle cx="250" cy="250" r="7"/>
+          <circle cx="445" cy="250" r="7"/><circle cx="465" cy="250" r="7"/>
+          <circle cx="660" cy="250" r="7"/><circle cx="680" cy="250" r="7"/>
+          <circle cx="348" cy="335" r="7"/><circle cx="348" cy="355" r="7"/>
+          <circle cx="562" cy="335" r="7"/><circle cx="562" cy="355" r="7"/>
+        </g>
+
+        <text x="42" y="455" class="t">藍點代表參與共價鍵的價電子。獲得足夠能量後，電子可離開鍵結並形成可移動載子。</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="doping">
+  <h2>0.2 什麼是 n 型與 p 型半導體？</h2>
+  <p class="sub">純矽稱為本質半導體 intrinsic semiconductor。實際元件通常會加入極少量其他元素，稱為「摻雜 doping」，用來改變自由電子或電洞的數量。</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>n 型：增加自由電子</h3>
+      <p>在矽中加入五價元素，例如磷 P。磷有五個價電子，其中四個與鄰近矽形成鍵結，剩下的一個電子較容易成為可移動自由電子。</p>
+      <div class="eq">主要載子：電子 e−</div>
+      <p>這類雜質稱為 <b>donor 施體</b>，因為它容易提供電子。</p>
+      <div class="note"><b>n 型材料整體仍然是電中性的。</b>「n 型」表示電子是主要載子，不表示整塊材料帶負電。</div>
+    </div>
+    <div class="card">
+      <h3>p 型：增加電洞</h3>
+      <p>在矽中加入三價元素，例如硼 B。硼只有三個價電子，無法完整形成四個鍵，因此留下缺少電子的位置，也就是電洞。</p>
+      <div class="eq">主要載子：電洞 h+</div>
+      <p>這類雜質稱為 <b>acceptor 受體</b>，因為它容易接受電子。</p>
+      <div class="note"><b>p 型材料整體也仍然是電中性的。</b>「p 型」表示電洞是主要載子，不表示整塊材料帶正電。</div>
+    </div>
+  </div>
+
+  <div class="diagram" style="margin-top:18px">
+    <svg viewBox="0 0 1150 520" xmlns="http://www.w3.org/2000/svg" aria-label="n型與p型半導體摻雜示意">
+      <style>
+        .h{font:700 27px 'Noto Sans TC','Microsoft JhengHei',sans-serif}
+        .t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#203029}
+      </style>
+      <rect x="55" y="80" width="500" height="360" rx="22" fill="#eaf1fb" stroke="#3d649d" stroke-width="3"/>
+      <rect x="595" y="80" width="500" height="360" rx="22" fill="#f9e9e6" stroke="#ab6b67" stroke-width="3"/>
+      <text x="225" y="55" class="h" fill="#285493">n-type：五價施體</text>
+      <text x="755" y="55" class="h" fill="#a94e49">p-type：三價受體</text>
+
+      <circle cx="300" cy="235" r="66" fill="#fff" stroke="#315b99" stroke-width="4"/>
+      <text x="282" y="246" class="h" fill="#285493">P</text>
+      <g class="t">
+        <text x="100" y="150">Si</text><text x="450" y="150">Si</text><text x="100" y="340">Si</text><text x="450" y="340">Si</text>
+      </g>
+      <g fill="#2e609f">
+        <circle cx="300" cy="145" r="8"/><circle cx="390" cy="235" r="8"/><circle cx="300" cy="325" r="8"/><circle cx="210" cy="235" r="8"/>
+        <circle cx="385" cy="130" r="11"/>
+      </g>
+      <text x="407" y="135" class="t">多出的電子 → 容易移動</text>
+
+      <circle cx="840" cy="235" r="66" fill="#fff" stroke="#a85650" stroke-width="4"/>
+      <text x="822" y="246" class="h" fill="#a94e49">B</text>
+      <g class="t">
+        <text x="640" y="150">Si</text><text x="990" y="150">Si</text><text x="640" y="340">Si</text><text x="990" y="340">Si</text>
+      </g>
+      <g fill="#c4524d">
+        <circle cx="840" cy="145" r="8"/><circle cx="930" cy="235" r="8"/><circle cx="840" cy="325" r="8"/>
+      </g>
+      <circle cx="750" cy="235" r="14" fill="none" stroke="#c4524d" stroke-width="5"/>
+      <text x="640" y="265" class="t">缺少一個電子 → hole</text>
+
+      <text x="95" y="410" class="t">主要載子：自由電子</text>
+      <text x="635" y="410" class="t">主要載子：電洞</text>
+    </svg>
+  </div>
+</section>
+
+<section id="junction">
+  <h2>0.3 p-n 接面如何形成？</h2>
+  <p class="sub">把 p 型與 n 型半導體接在一起之後，並不是立刻出現一道「牆」。真正發生的是兩側載子濃度不同，因此先出現擴散，再經過復合形成空乏區。</p>
+
+  <div class="card">
+    <h3>形成過程</h3>
+    <ol>
+      <li><b>接觸以前：</b>n 側自由電子多，p 側電洞多；兩邊各自近似電中性。</li>
+      <li><b>接觸後開始擴散：</b>電子由高濃度的 n 側往 p 側擴散；電洞則由 p 側往 n 側擴散。</li>
+      <li><b>界面附近發生復合：</b>跨過界面的電子填入電洞，使可移動電子與電洞減少。</li>
+      <li><b>固定離子留下：</b>n 側施體失去電子後留下固定正離子；p 側受體得到電子後留下固定負離子。</li>
+      <li><b>形成空乏區：</b>界面附近幾乎沒有自由多數載子，因此稱為 depletion region。</li>
+    </ol>
+  </div>
+
+  <div class="diagram" style="margin-top:18px">
+    <svg viewBox="0 0 1160 560" xmlns="http://www.w3.org/2000/svg" aria-label="pn接面形成步驟">
+      <defs>
+        <marker id="r" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#285493"/></marker>
+        <marker id="l" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c4524d"/></marker>
+      </defs>
+      <style>
+        .h{font:700 25px 'Noto Sans TC','Microsoft JhengHei',sans-serif}
+        .t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#203029}
+      </style>
+
+      <text x="70" y="52" class="h">接觸初期：載子因濃度差而擴散</text>
+      <rect x="70" y="90" width="475" height="300" fill="#f9e9e6" stroke="#ab6b67" stroke-width="3"/>
+      <rect x="545" y="90" width="475" height="300" fill="#eaf1fb" stroke="#3d649d" stroke-width="3"/>
+      <text x="260" y="125" class="h" fill="#a94e49">p-type</text>
+      <text x="730" y="125" class="h" fill="#285493">n-type</text>
+
+      <g fill="none" stroke="#c4524d" stroke-width="4">
+        <circle cx="160" cy="190" r="13"/><circle cx="240" cy="250" r="13"/><circle cx="350" cy="190" r="13"/><circle cx="440" cy="285" r="13"/>
+      </g>
+      <g fill="#285493">
+        <circle cx="650" cy="190" r="12"/><circle cx="750" cy="255" r="12"/><circle cx="850" cy="185" r="12"/><circle cx="930" cy="290" r="12"/>
+      </g>
+
+      <path d="M690 155 C625 155 590 165 515 180" stroke="#285493" stroke-width="5" fill="none" marker-end="url(#r)"/>
+      <text x="590" y="150" class="t">電子往 p 側擴散</text>
+
+      <path d="M405 340 C470 340 520 330 590 315" stroke="#c4524d" stroke-width="5" fill="none" marker-end="url(#l)"/>
+      <text x="395" y="378" class="t">電洞往 n 側擴散</text>
+
+      <rect x="490" y="90" width="110" height="300" fill="#eee" opacity="0.85"/>
+      <text x="458" y="435" class="h">界面附近逐漸形成空乏區</text>
+
+      <text x="70" y="500" class="t">擴散不是外加電源造成，而是因為兩側自由載子濃度不同。</text>
+    </svg>
+  </div>
+</section>
+
+<section id="field">
+  <h2>0.4 p-n 接面為什麼會形成內建電場？</h2>
+  <p class="sub">關鍵不是「p 型是正、n 型是負」，而是界面擴散與復合後留下了不能自由移動的固定離子。</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>空乏區中的固定電荷</h3>
+      <p>在 n 側界面附近，施體原子原本提供的自由電子擴散離開後，留下<b>固定正離子</b>。</p>
+      <p>在 p 側界面附近，受體原子捕捉電子後，留下<b>固定負離子</b>。</p>
+      <p>因此在空乏區內出現空間電荷分離：</p>
+      <div class="eq">n 側：固定正電　｜　p 側：固定負電</div>
+    </div>
+    <div class="card">
+      <h3>內建電場方向</h3>
+      <p>電場方向定義為「正測試電荷受力方向」，所以電場由正電指向負電：</p>
+      <div class="eq">E：n 側 → p 側</div>
+      <p>這個電場會阻止更多多數載子繼續擴散。當漂移與擴散達到平衡後，接面進入熱平衡。</p>
+      <div class="note">這個<b>內建電場</b>就是太陽能電池能把光生電子與電洞往不同方向分離的重要機制。</div>
+    </div>
+  </div>
+
+  <div class="diagram" style="margin-top:18px">
+    <svg viewBox="0 0 1160 560" xmlns="http://www.w3.org/2000/svg" aria-label="pn接面空乏區固定電荷與內建電場">
+      <defs>
+        <marker id="ef" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#175c42"/></marker>
+      </defs>
+      <style>
+        .h{font:700 25px 'Noto Sans TC','Microsoft JhengHei',sans-serif}
+        .t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#203029}
+      </style>
+
+      <rect x="70" y="100" width="465" height="280" fill="#f9e9e6" stroke="#ab6b67" stroke-width="3"/>
+      <rect x="535" y="100" width="465" height="280" fill="#eaf1fb" stroke="#3d649d" stroke-width="3"/>
+      <rect x="440" y="100" width="190" height="280" fill="#efefef" stroke="#999" stroke-width="2"/>
+
+      <text x="250" y="70" class="h" fill="#a94e49">p-type</text>
+      <text x="760" y="70" class="h" fill="#285493">n-type</text>
+      <text x="475" y="135" class="h">空乏區</text>
+
+      <g fill="#c4524d" font-size="34" font-weight="700">
+        <text x="465" y="205">−</text><text x="500" y="205">−</text><text x="465" y="265">−</text><text x="500" y="265">−</text>
+      </g>
+      <g fill="#285493" font-size="34" font-weight="700">
+        <text x="560" y="205">+</text><text x="595" y="205">+</text><text x="560" y="265">+</text><text x="595" y="265">+</text>
+      </g>
+
+      <text x="190" y="335" class="t">p 側空乏區：固定負受體離子</text>
+      <text x="675" y="335" class="t">n 側空乏區：固定正施體離子</text>
+
+      <path d="M650 440 H420" stroke="#175c42" stroke-width="7" marker-end="url(#ef)"/>
+      <text x="440" y="492" class="h" fill="#175c42">內建電場 E：n → p</text>
+
+      <text x="70" y="535" class="t">此電場是由接面自身的空間電荷形成，不需要外部電池才能存在。</text>
+    </svg>
+  </div>
+</section>
+
+<section id="photon">
+  <h2>1. 光伏效應：光如何產生電子—電洞對？</h2>
+  <p class="sub">太陽能電池不是「把光直接變成電壓」。第一步是材料先吸收具有足夠能量的光子，產生可移動的電荷載子。</p>
+  <div class="grid-2">
+    <div class="card">
+      <h3>光子能量</h3>
+      <p>單一光子的能量與頻率成正比、與波長成反比：</p>
+      <div class="eq">E = h f = h c / λ</div>
+      <p>若光子的能量大於半導體的能隙 <b>Eg</b>，電子可由價帶躍遷到導帶，留下電洞（hole）。這一對稱為電子—電洞對。</p>
+      <div class="note">能量小於 Eg 的光子通常無法直接產生電子—電洞對；能量遠高於 Eg 的部分能量則多以熱的形式耗散。</div>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg" aria-label="光子造成價帶電子跳到導帶">
+        <defs>
+          <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#285493"/></marker>
+          <marker id="p" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d99c25"/></marker>
+          <style>
+            .t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#1d2a24}
+            .b{font:700 20px 'Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#234f8d}
+          </style>
+        </defs>
+        <rect x="100" y="90" width="700" height="72" rx="16" fill="#e9edf5"/>
+        <text x="135" y="136" class="b">導帶 Conduction Band</text>
+
+        <rect x="100" y="355" width="700" height="72" rx="16" fill="#f5ece8"/>
+        <text x="135" y="401" class="b">價帶 Valence Band</text>
+
+        <line x1="100" y1="255" x2="800" y2="255" stroke="#aeb9c4" stroke-dasharray="8 8" stroke-width="2"/>
+        <text x="830" y="262" class="t">Eg</text>
+
+        <!-- photon -->
+        <path d="M260 55 Q395 125 432 320" stroke="#d99c25" stroke-width="8" fill="none" marker-end="url(#p)"/>
+        <text x="140" y="58" class="t">入射光子 hν</text>
+
+        <!-- original electron in valence band -->
+        <circle cx="430" cy="382" r="18" fill="#c0504d"/>
+        <text x="462" y="390" class="t">電子原本在價帶</text>
+
+        <!-- transition arrow -->
+        <path d="M430 350 L430 175" stroke="#285493" stroke-width="8" fill="none" marker-end="url(#a)"/>
+
+        <!-- excited electron in conduction band -->
+        <circle cx="430" cy="126" r="18" fill="#285493"/>
+        <text x="465" y="135" class="t">吸收光子後進入導帶</text>
+
+        <!-- hole left behind -->
+        <circle cx="430" cy="402" r="24" fill="none" stroke="#c0504d" stroke-width="5"/>
+        <text x="140" y="472" class="t">電子離開後留下 hole。若沒有內建電場把兩者分開，它們可能重新復合。</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="pn">
+  <h2>2. 光生載子如何被 p-n 接面的內建電場分離？</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>光照後的載子分離</h3>
+      <p><b>n 型</b>半導體有較多可移動電子；<b>p 型</b>半導體則有較多電洞。當兩者接觸時，界面附近的多數載子會互相擴散並復合，留下固定離子，形成<b>空乏區 depletion region</b>。</p>
+      <p>空乏區內因電荷分離形成一個<b>內建電場</b>。當光產生電子—電洞對時，這個內建電場會把電子推向 n 側，把電洞推向 p 側，因此兩端形成電位差。</p>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 980 560" xmlns="http://www.w3.org/2000/svg" aria-label="p-n 接面與空乏區示意">
+        <defs>
+          <marker id="e" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#175c42"/></marker>
+          <style>
+            .h{font:700 28px 'Noto Sans TC','Microsoft JhengHei',sans-serif}
+            .t{font:18px 'Noto Sans TC','Microsoft JhengHei',sans-serif}
+          </style>
+        </defs>
+        <rect x="80" y="105" width="305" height="235" fill="#f8e5e2" stroke="#a66" stroke-width="3"/>
+        <rect x="385" y="105" width="190" height="235" fill="#f2f2f2" stroke="#999" stroke-width="3"/>
+        <rect x="575" y="105" width="305" height="235" fill="#e5edf9" stroke="#6685b6" stroke-width="3"/>
+        <text x="190" y="70" class="h">p-type</text>
+        <text x="425" y="70" class="h">空乏區</text>
+        <text x="690" y="70" class="h">n-type</text>
+
+        <g font-size="22" font-weight="700">
+          <text x="115" y="175">○ ○ ○</text>
+          <text x="115" y="230">○ ○ ○</text>
+          <text x="115" y="285">○ ○ ○</text>
+        </g>
+        <g font-size="22" font-weight="700">
+          <text x="690" y="175">− − −</text>
+          <text x="690" y="230">− − −</text>
+          <text x="690" y="285">− − −</text>
+        </g>
+
+        <!-- carriers in depletion region -->
+        <circle cx="485" cy="195" r="14" fill="#285493"/>
+        <text x="520" y="203" class="t">e− 被推向 n 側</text>
+
+        <circle cx="452" cy="275" r="22" fill="none" stroke="#c0504d" stroke-width="5"/>
+        <text x="235" y="285" class="t">hole 被推向 p 側</text>
+
+        <!-- external path and load -->
+        <path d="M82 425 H878" stroke="#333" stroke-width="3"/>
+        <rect x="418" y="394" width="110" height="56" rx="16" fill="#fff" stroke="#333" stroke-width="2"/>
+        <text x="453" y="431" class="t">負載</text>
+
+        <!-- built-in field inside depletion region, clear of load -->
+        <path d="M545 365 H415" stroke="#175c42" stroke-width="5" marker-end="url(#e)"/>
+        <text x="360" y="492" class="t">內建電場方向</text>
+        <path d="M520 455 H445" stroke="#175c42" stroke-width="4" marker-end="url(#e)"/>
+
+        <text x="82" y="535" class="t">外部接上負載後，電子可經外部導線流動，形成可利用的電流。</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="iv">
+  <h2>3. 太陽能板不是固定 6 V：要看 I–V 與 P–V 曲線</h2>
+  <p class="sub">標示「6 V / 3 W」不代表它在任何狀況都同時輸出 6 V 與 0.5 A。輸出取決於負載工作點。</p>
+  <div class="grid-3">
+    <div class="card"><h3>Voc</h3><p><b>Open-circuit voltage</b>。負載斷開、電流約為 0 時的端電壓。它不是最大功率點。</p></div>
+    <div class="card"><h3>Isc</h3><p><b>Short-circuit current</b>。端電壓接近 0 時的電流。它也不是最大功率點。</p></div>
+    <div class="card"><h3>MPP</h3><p><b>Maximum Power Point</b>。在某一組 Vmp、Imp 下，乘積 V×I 最大，是最值得工作的區域。</p></div>
+  </div>
+  <div class="diagram" style="margin-top:18px">
+    <svg viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg">
+      <line x1="100" y1="430" x2="1000" y2="430" stroke="#333" stroke-width="3"/>
+      <line x1="100" y1="430" x2="100" y2="70" stroke="#333" stroke-width="3"/>
+      <text x="1005" y="438" font-size="18">Voltage</text>
+      <text x="42" y="78" font-size="18">Current / Power</text>
+      <path d="M105 105 C450 100 690 110 780 160 C850 205 900 300 955 426" fill="none" stroke="#285493" stroke-width="5"/>
+      <path d="M105 430 C280 360 500 260 690 170 C790 125 860 200 955 430" fill="none" stroke="#175c42" stroke-width="5"/>
+      <circle cx="690" cy="170" r="9" fill="#175c42"/>
+      <text x="712" y="160" font-size="19" font-weight="700" fill="#175c42">MPP</text>
+      <text x="110" y="94" font-size="18" fill="#285493">Isc</text>
+      <text x="930" y="462" font-size="18" fill="#285493">Voc</text>
+      <text x="400" y="80" font-size="20" fill="#285493">I–V curve</text>
+      <text x="500" y="290" font-size="20" fill="#175c42">P–V curve</text>
+      <line x1="690" y1="170" x2="690" y2="430" stroke="#888" stroke-dasharray="8 8" stroke-width="2"/>
+      <text x="660" y="463" font-size="18">Vmp</text>
+    </svg>
+  </div>
+  <div class="eq">P(V) = V × I(V)</div>
+  <div class="good">所以課堂上除了量「有沒有 6 V」，更好的做法是接一個已知負載或電子負載，量 V 與 I，再計算真正輸出的功率。</div>
+</section>
+
+<section id="factors">
+  <h2>4. 哪些因素會改變輸出？</h2>
+  <table>
+    <tr><th>因素</th><th>主要影響</th><th>工程解釋</th></tr>
+    <tr><td>光照強度</td><td>電流變化最明顯</td><td>光子數量增加，產生的電子—電洞對增加，因此 Isc 與 Imp 大致隨 irradiance 增加。</td></tr>
+    <tr><td>入射角</td><td>有效接收功率下降</td><td>理想幾何近似可用 cosθ 理解；板面法線若偏離太陽方向，投影面積變小。</td></tr>
+    <tr><td>溫度升高</td><td>Voc 通常下降</td><td>半導體能隙與載子行為改變，矽太陽能電池通常在高溫下電壓下降，最大功率也會降低。</td></tr>
+    <tr><td>局部遮蔽</td><td>可能造成大幅功率損失</td><td>串聯電池中某一部分電流受限，整串都可能被拖低；大型模組常使用 bypass diode 降低損失。</td></tr>
+    <tr><td>負載</td><td>決定工作點</td><td>不同負載阻抗會讓太陽能板落在不同 V–I 組合；最大功率點不是固定等於 Voc 或 Isc。</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>5. 入射角：為什麼正對太陽比較有利？</h2>
+  <div class="grid-2">
+    <div class="card">
+      <p>若先只考慮幾何投影，不考慮反射與材料效應，接收到的輻射功率可以用：</p>
+      <div class="eq">P_received ≈ P_normal × cos(θ)</div>
+      <p>θ 是太陽光方向與太陽能板法線的夾角。</p>
+      <ul>
+        <li>θ = 0°：正對太陽，cosθ = 1</li>
+        <li>θ = 60°：只剩幾何上約 50%</li>
+        <li>θ → 90°：投影面積趨近 0</li>
+      </ul>
+      <div class="note">實際輸出不會只由 cosθ 決定，還會受反射、天空散射光、溫度與充電模組工作點影響。</div>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 850 430" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d99c25"/></marker></defs>
+        <rect x="390" y="270" width="330" height="26" transform="rotate(-25 390 270)" fill="#314d75"/>
+        <line x1="510" y1="235" x2="440" y2="80" stroke="#175c42" stroke-width="4"/>
+        <text x="390" y="70" font-size="18">板面法線</text>
+        <path d="M120 70 L420 175" stroke="#d99c25" stroke-width="7" marker-end="url(#ar)"/>
+        <path d="M120 130 L410 225" stroke="#d99c25" stroke-width="7" marker-end="url(#ar)"/>
+        <path d="M120 190 L400 275" stroke="#d99c25" stroke-width="7" marker-end="url(#ar)"/>
+        <path d="M430 185 A95 95 0 0 1 476 123" fill="none" stroke="#c0504d" stroke-width="4"/>
+        <text x="455" y="175" font-size="22" fill="#c0504d">θ</text>
+        <text x="95" y="50" font-size="18">近似平行太陽光</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="array">
+  <h2>6. 太陽能電池的串聯與並聯</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>串聯 Series</h3>
+      <div class="eq">V_total ≈ V1 + V2 + ...</div>
+      <p>串聯主要提高電壓，電流能力受最弱的串聯單元限制。局部遮蔽對串聯系統特別重要。</p>
+    </div>
+    <div class="card">
+      <h3>並聯 Parallel</h3>
+      <div class="eq">I_total ≈ I1 + I2 + ...</div>
+      <p>並聯主要提高可提供的電流。各支路電壓應接近一致，實際系統還會考慮反灌電流與保護。</p>
+    </div>
+  </div>
+  <div class="diagram" style="margin-top:18px">
+    <svg viewBox="0 0 1100 450" xmlns="http://www.w3.org/2000/svg">
+      <text x="100" y="55" font-size="25" font-weight="700" fill="#285493">串聯：提高電壓</text>
+      <g transform="translate(90,90)">
+        <g fill="#e8eef7" stroke="#355a9c" stroke-width="3">
+          <rect x="0" y="0" width="150" height="90" rx="12"/><rect x="210" y="0" width="150" height="90" rx="12"/><rect x="420" y="0" width="150" height="90" rx="12"/>
+        </g>
+        <text x="45" y="55" font-size="20">Cell 1</text><text x="255" y="55" font-size="20">Cell 2</text><text x="465" y="55" font-size="20">Cell 3</text>
+        <line x1="150" y1="45" x2="210" y2="45" stroke="#333" stroke-width="4"/><line x1="360" y1="45" x2="420" y2="45" stroke="#333" stroke-width="4"/>
+        <text x="0" y="135" font-size="18">Vtotal 增加；同一串中的電流相同</text>
+      </g>
+      <text x="680" y="55" font-size="25" font-weight="700" fill="#175c42">並聯：提高電流</text>
+      <g transform="translate(700,90)">
+        <g fill="#e9f4ee" stroke="#2b6d52" stroke-width="3">
+          <rect x="0" y="0" width="150" height="70" rx="12"/><rect x="0" y="105" width="150" height="70" rx="12"/><rect x="0" y="210" width="150" height="70" rx="12"/>
+        </g>
+        <line x1="-35" y1="35" x2="0" y2="35" stroke="#333" stroke-width="4"/><line x1="-35" y1="140" x2="0" y2="140" stroke="#333" stroke-width="4"/><line x1="-35" y1="245" x2="0" y2="245" stroke="#333" stroke-width="4"/>
+        <line x1="-35" y1="35" x2="-35" y2="245" stroke="#333" stroke-width="4"/>
+        <line x1="150" y1="35" x2="195" y2="35" stroke="#333" stroke-width="4"/><line x1="150" y1="140" x2="195" y2="140" stroke="#333" stroke-width="4"/><line x1="150" y1="245" x2="195" y2="245" stroke="#333" stroke-width="4"/>
+        <line x1="195" y1="35" x2="195" y2="245" stroke="#333" stroke-width="4"/>
+        <text x="42" y="44" font-size="18">Cell 1</text><text x="42" y="149" font-size="18">Cell 2</text><text x="42" y="254" font-size="18">Cell 3</text>
+        <text x="-35" y="325" font-size="18">Itotal 增加；各支路電壓相同</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section id="sim">
+  <h2>7. 互動模擬：光照、角度與溫度如何改變輸出</h2>
+  <p class="sub">這是一個教學用近似模型，不是特定太陽能板的 datasheet 模型。它的用途是讓學生直觀看到趨勢。</p>
+  <div class="controls">
+    <div class="card">
+      <label>光照強度：<b id="irrV">1000</b> W/m²</label>
+      <input id="irr" type="range" min="100" max="1000" step="50" value="1000">
+      <label>入射角 θ：<b id="angV">0</b>°</label>
+      <input id="ang" type="range" min="0" max="85" step="1" value="0">
+      <label>電池片溫度：<b id="tempV">25</b> °C</label>
+      <input id="temp" type="range" min="0" max="75" step="1" value="25">
+      <p>估算有效光照：<span class="metric" id="geff">1000 W/m²</span></p>
+      <p>估算最大輸出功率：<span class="metric" id="pmax">3.00 W</span></p>
+      <p>估算 Voc：<span class="metric" id="voc">7.20 V</span></p>
+      <p>估算 Isc：<span class="metric" id="isc">0.55 A</span></p>
+    </div>
+    <div class="card">
+      <canvas id="chart" width="800" height="420"></canvas>
+      <p class="small">模型假設基準板為約 6 V / 3 W 級，Voc≈7.2 V、Isc≈0.55 A。Isc 主要隨有效光照變化，Voc 受溫度影響較明顯。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>8. 適合在課堂上做的四個實驗</h2>
+  <div class="grid-2">
+    <div class="card"><h3>實驗 A｜入射角</h3><p>固定同一光源與距離，改變板面角度，每 10° 或 15° 量一次工作電壓與電流，再畫 P(θ)。</p></div>
+    <div class="card"><h3>實驗 B｜局部遮蔽</h3><p>依序遮住約 0%、25%、50%、75% 面積，觀察電壓、電流與功率哪一個變化最大。</p></div>
+    <div class="card"><h3>實驗 C｜負載工作點</h3><p>更換不同電阻或電子負載，量 V、I 並畫出簡化 I–V / P–V 曲線，找出接近最大功率的位置。</p></div>
+    <div class="card"><h3>實驗 D｜溫度</h3><p>在安全溫度範圍內比較室溫與受熱後的 Voc，觀察「光很強但板子很熱」不一定讓電壓更高。</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>9. 與主課程的連結</h2>
+  <div class="card">
+    <p>完成本頁後，回到主課程時，學員應能回答：</p>
+    <ul>
+      <li>為什麼 6 V / 3 W 不代表永遠同時有 6 V 與 0.5 A？</li>
+      <li>為什麼太陽能板需要 charger，而不是直接接 18650？</li>
+      <li>為什麼光照角度與局部遮蔽會改變充電速度？</li>
+      <li>為什麼真正的自主電源系統需要 Energy Budget，而不是只看電池容量？</li>
+    </ul>
+    <a class="btn" href="solarpowercourse_n.html">回到太陽能自主電源主課程</a>
+  </div>
+</section>
+
+<footer>太陽能板工作原理進階教學 v4｜加入半導體、摻雜、p-n 接面形成與內建電場</footer>
+
+<script>
+const irr = document.getElementById('irr');
+const ang = document.getElementById('ang');
+const temp = document.getElementById('temp');
+
+const irrV = document.getElementById('irrV');
+const angV = document.getElementById('angV');
+const tempV = document.getElementById('tempV');
+
+const geff = document.getElementById('geff');
+const pmaxEl = document.getElementById('pmax');
+const vocEl = document.getElementById('voc');
+const iscEl = document.getElementById('isc');
+
+const canvas = document.getElementById('chart');
+const ctx = canvas.getContext('2d');
+
+function model(){
+  const G = +irr.value;
+  const a = +ang.value;
+  const T = +temp.value;
+
+  const c = Math.max(0, Math.cos(a * Math.PI / 180));
+  const Geff = G * c;
+  const gr = Geff / 1000;
+
+  let Isc = 0.55 * gr * (1 + 0.0005 * (T - 25));
+  let Voc = 7.2 + 0.12 * Math.log(Math.max(gr, 0.05)) - 0.014 * (T - 25);
+  Voc = Math.max(0.5, Voc);
+  const ff = Math.max(0.58, 0.72 - 0.001 * (T - 25));
+  const Pmax = Math.max(0, Voc * Isc * ff);
+
+  irrV.textContent = G;
+  angV.textContent = a;
+  tempV.textContent = T;
+  geff.textContent = Geff.toFixed(0) + ' W/m²';
+  pmaxEl.textContent = Pmax.toFixed(2) + ' W';
+  vocEl.textContent = Voc.toFixed(2) + ' V';
+  iscEl.textContent = Isc.toFixed(2) + ' A';
+
+  draw(Voc, Isc, Pmax);
+}
+
+function draw(Voc, Isc, Pmax){
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  const ml = 70, mr = 35, mt = 35, mb = 60;
+  const pw = w - ml - mr, ph = h - mt - mb;
+
+  ctx.strokeStyle = '#303a35';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(ml, mt);
+  ctx.lineTo(ml, h - mb);
+  ctx.lineTo(w - mr, h - mb);
+  ctx.stroke();
+
+  ctx.fillStyle = '#303a35';
+  ctx.font = '18px sans-serif';
+  ctx.fillText('Current (A) / Power (W)', 10, 24);
+  ctx.fillText('Voltage (V)', w - 120, h - 18);
+
+  const vmax = Math.max(8, Voc * 1.08);
+  const imax = Math.max(0.65, Isc * 1.15);
+  const pscale = Math.max(3.2, Pmax * 1.15);
+
+  ctx.strokeStyle = '#285493';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+
+  let mppX = 0, mppY = 0, mppP = -1;
+
+  for(let n = 0; n <= 160; n++){
+    const V = Voc * n / 160;
+    const x = V / vmax;
+    let I = Isc * (1 - Math.pow(Math.max(0, x), 7));
+    I = Math.max(0, I);
+    const X = ml + pw * (V / vmax);
+    const Y = mt + ph * (1 - I / imax);
+    if(n === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+
+    const P = V * I;
+    if(P > mppP){
+      mppP = P;
+      mppX = X;
+      mppY = mt + ph * (1 - P / pscale);
+    }
+  }
+  ctx.stroke();
+
+  ctx.strokeStyle = '#175c42';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  for(let n = 0; n <= 160; n++){
+    const V = Voc * n / 160;
+    const x = V / vmax;
+    let I = Isc * (1 - Math.pow(Math.max(0, x), 7));
+    I = Math.max(0, I);
+    const P = V * I;
+    const X = ml + pw * (V / vmax);
+    const Y = mt + ph * (1 - P / pscale);
+    if(n === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+  }
+  ctx.stroke();
+
+  ctx.setLineDash([6,6]);
+  ctx.strokeStyle = '#8a8f93';
+  ctx.beginPath();
+  ctx.moveTo(mppX, mt);
+  ctx.lineTo(mppX, h - mb);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#175c42';
+  ctx.beginPath();
+  ctx.arc(mppX, mppY, 7, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.font = '17px sans-serif';
+  ctx.fillText('MPP', mppX + 12, mppY - 8);
+  ctx.fillStyle = '#285493';
+  ctx.fillText('I–V', w - 100, 60);
+  ctx.fillStyle = '#175c42';
+  ctx.fillText('P–V', w - 100, 88);
+}
+
+[irr, ang, temp].forEach(el => el.addEventListener('input', model));
+model();
+</script>
+</body>
+</html>
