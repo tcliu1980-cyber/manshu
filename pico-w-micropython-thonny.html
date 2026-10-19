@@ -1,0 +1,158 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pico W MicroPython｜Thonny 零基礎互動講義</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#203047;background:#f5f8fc;line-height:1.8}header{background:linear-gradient(120deg,#12345a,#136a78);color:white;padding:48px max(22px,calc((100vw - 1120px)/2))}header h1{font-size:clamp(28px,4vw,46px);line-height:1.3;margin:12px 0}header p{max-width:760px}main{max-width:1120px;margin:auto;padding:25px 18px;display:grid;grid-template-columns:240px 1fr;gap:24px}nav{position:sticky;top:14px;align-self:start;background:white;border:1px solid #dce6f0;border-radius:14px;padding:14px;max-height:90vh;overflow:auto}nav a{display:block;padding:6px 10px;text-decoration:none;color:#31536d;border-radius:7px;font-size:14px}nav a:hover{background:#eaf4f8}section{background:white;border:1px solid #dce6f0;border-radius:15px;padding:26px;margin-bottom:20px;box-shadow:0 3px 14px #17334b0a}h2{color:#0e5968;margin:0 0 12px;font-size:25px}h3{margin-bottom:8px}pre{background:#172438;color:#e5f2ff;border-radius:10px;padding:18px;overflow-x:auto;font-size:14px;line-height:1.65;tab-size:4}code{font-family:Consolas,Monaco,monospace}.sample{margin:20px 0;padding-top:6px;border-top:1px solid #e4ebf3}.copy{float:right;border:0;border-radius:7px;background:#d7f2ec;color:#125e58;padding:6px 12px;cursor:pointer}.note{background:#eaf5fb;border-left:4px solid #2588b2;padding:13px 16px;border-radius:6px;margin:12px 0}.warn{background:#fff3e7;border-left:4px solid #e58a28;padding:13px 16px;border-radius:6px;margin:12px 0}.quiz{background:#f4f8ff;border-radius:9px;padding:14px;margin-top:15px}details{margin-top:10px}summary{cursor:pointer;font-weight:600}footer{text-align:center;padding:35px;color:#637487}.pill{display:inline-block;background:#ffffff26;padding:4px 12px;border-radius:30px;font-size:13px}a{color:#176b94}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #e0e8ee;padding:9px;text-align:left}@media(max-width:780px){main{display:block}nav{position:static;max-height:none;margin-bottom:20px}section{padding:18px}header{padding:35px 22px}}</style></head><body><header><span class="pill">國高中生零基礎教學｜Pico W 專用</span><h1>從 Python 到風扇船<br>Raspberry Pi Pico W × Thonny</h1><p>由第一行 print() 開始，學習變數、判斷、迴圈、函式、GPIO、PWM、DRV8833 與 Wi-Fi。每段程式都能複製到 Thonny 實際練習。</p></header><main><nav><strong>課程目錄</strong>
+<a href="#s01">01　認識 Pico W 與 MicroPython</a>
+<a href="#s02">02　Thonny 安裝、連線與上傳</a>
+<a href="#s03">03　變數與資料型態</a>
+<a href="#s04">04　判斷式 if / elif / else</a>
+<a href="#s05">05　迴圈 for 與 while</a>
+<a href="#s06">06　函式與模組</a>
+<a href="#s07">07　GPIO 與板載 LED</a>
+<a href="#s08">08　讀取按鈕與數位輸入</a>
+<a href="#s09">09　PWM：用占空比調整輸出</a>
+<a href="#s10">10　DRV8833 與空心杯馬達入門</a>
+<a href="#s11">11　Wi-Fi 網頁控制的準備</a>
+<a href="#practice">✓　練習與檢核</a><a href="#resources">↗　官方資料</a></nav><article><section><h2>課前準備</h2><p>需要 Pico W、具資料傳輸功能的 Micro-USB 線、電腦、Thonny，以及選配的麵包板、LED、330 Ω 電阻、按鈕。馬達實驗另外需要 DRV8833、空心杯馬達及符合規格的獨立馬達電源。</p><div class="warn"><strong>重要：</strong>本講義針對 Pico W 的 MicroPython，不是 Raspberry Pi Zero W 上的 Python 3。兩者不能直接交換 GPIO 程式。</div><table><tr><th>Thonny 操作</th><th>用途</th></tr><tr><td>F5</td><td>執行目前編輯區的程式</td></tr><tr><td>Ctrl+S</td><td>儲存到電腦或 Pico W</td></tr><tr><td>停止按鈕 / Ctrl+C</td><td>中斷執行</td></tr><tr><td>main.py</td><td>儲存在 Pico W 時，開機自動執行</td></tr></table></section>
+<section id="s01"><h2>01｜認識 Pico W 與 MicroPython</h2><p>Pico W 是微控制器，不需要安裝 Raspberry Pi OS。Thonny 在電腦上編輯程式，MicroPython 在 Pico W 上執行。</p>
+<div class="sample"><h3>認識第一行 Python</h3><button class="copy" data-code="code-01-0">複製程式</button><pre><code id="code-01-0">print(&quot;Hello, Pico W!&quot;)</code></pre><p><strong>逐步解釋：</strong>print 是顯示文字的指令；括號 () 放入要顯示的內容；引號代表字串。執行後在 Shell 看到 Hello, Pico W!。</p></div>
+<div class="sample"><h3>文字與數字</h3><button class="copy" data-code="code-01-1">複製程式</button><pre><code id="code-01-1">print(&quot;3 + 5&quot;)
+print(3 + 5)</code></pre><p><strong>逐步解釋：</strong>第一行有引號，顯示 3 + 5；第二行沒有引號，計算得到 8。</p></div>
+</section>
+<section id="s02"><h2>02｜Thonny 安裝、連線與上傳</h2><p>請使用可傳輸資料的 Micro-USB 線。首次安裝韌體：拔掉 USB → 按住 BOOTSEL → 插入 USB → 電腦出現 RPI-RP2 → 複製 Pico W 專用 MicroPython UF2。接著開啟 Thonny，於「執行 → 選擇直譯器」選擇 MicroPython (Raspberry Pi Pico)，並指定連接埠。</p>
+<div class="sample"><h3>第一支可執行程式</h3><button class="copy" data-code="code-02-0">複製程式</button><pre><code id="code-02-0">print(&quot;我的第一支 Pico W 程式&quot;)</code></pre><p><strong>逐步解釋：</strong>在編輯區輸入後按 F5 執行。按 Ctrl+S，選擇 Raspberry Pi Pico 儲存為 hello.py。若儲存為 main.py，Pico W 重新供電時會自動執行。</p></div>
+</section>
+<section id="s03"><h2>03｜變數與資料型態</h2><p>變數就像貼了名字的盒子，用 = 將右邊的資料存到左邊。Python 常見型態：int 整數、float 小數、str 文字、bool 布林值。</p>
+<div class="sample"><h3>變數</h3><button class="copy" data-code="code-03-0">複製程式</button><pre><code id="code-03-0">speed = 30
+name = &quot;風扇船&quot;
+running = True
+print(name)
+print(speed)</code></pre><p><strong>逐步解釋：</strong>speed 是整數；name 是字串；running 是布林值 True。變數名稱不能以數字開頭。</p></div>
+<div class="sample"><h3>數學運算</h3><button class="copy" data-code="code-03-1">複製程式</button><pre><code id="code-03-1">a = 10
+b = 3
+print(a + b)
+print(a * b)
+print(a / b)
+print(a // b)
+print(a % b)
+print(a ** b)</code></pre><p><strong>逐步解釋：</strong>+ 加、* 乘、/ 除、// 整數除法、% 餘數、** 次方。</p></div>
+</section>
+<section id="s04"><h2>04｜判斷式 if / elif / else</h2><p>條件判斷能讓程式依照情況採取不同動作。注意冒號 : 與縮排（建議 4 個空白）。== 是比較是否相等；= 是指定值。</p>
+<div class="sample"><h3>依速度判斷</h3><button class="copy" data-code="code-04-0">複製程式</button><pre><code id="code-04-0">speed = 60
+if speed &gt;= 80:
+    print(&quot;高速&quot;)
+elif speed &gt;= 40:
+    print(&quot;中速&quot;)
+else:
+    print(&quot;低速&quot;)</code></pre><p><strong>逐步解釋：</strong>程式由上而下檢查，符合條件的區塊才執行。這個例子顯示「中速」。</p></div>
+<div class="quiz"><strong>想一想：</strong>若 speed = 60，speed &gt;= 80 的結果是？<details><summary>顯示答案</summary>False；60 沒有大於或等於 80。</details></div>
+</section>
+<section id="s05"><h2>05｜迴圈 for 與 while</h2><p>for 適合已知重複次數；while 適合依條件持續重複。無限迴圈執行時可在 Thonny 按停止或 Ctrl+C。</p>
+<div class="sample"><h3>for 重複五次</h3><button class="copy" data-code="code-05-0">複製程式</button><pre><code id="code-05-0">for i in range(5):
+    print(i)</code></pre><p><strong>逐步解釋：</strong>range(5) 產生 0、1、2、3、4，不包含 5。</p></div>
+<div class="sample"><h3>while 倒數</h3><button class="copy" data-code="code-05-1">複製程式</button><pre><code id="code-05-1">count = 3
+while count &gt; 0:
+    print(count)
+    count = count - 1
+print(&quot;完成&quot;)</code></pre><p><strong>逐步解釋：</strong>每次迴圈都讓 count 減 1，避免無法結束的迴圈。</p></div>
+<div class="quiz"><strong>想一想：</strong>range(4) 會產生哪幾個數字？<details><summary>顯示答案</summary>0、1、2、3。</details></div>
+</section>
+<section id="s06"><h2>06｜函式與模組</h2><p>函式把一組動作命名，方便重複使用；import 可以載入別人寫好的功能。</p>
+<div class="sample"><h3>自訂函式</h3><button class="copy" data-code="code-06-0">複製程式</button><pre><code id="code-06-0">def greet(name):
+    print(&quot;你好，&quot; + name)
+
+greet(&quot;小明&quot;)
+greet(&quot;小華&quot;)</code></pre><p><strong>逐步解釋：</strong>def 用來定義函式；name 是參數；呼叫函式時將資料傳入。</p></div>
+<div class="sample"><h3>時間模組</h3><button class="copy" data-code="code-06-1">複製程式</button><pre><code id="code-06-1">from time import sleep
+print(&quot;開始&quot;)
+sleep(1)
+print(&quot;一秒後&quot;)</code></pre><p><strong>逐步解釋：</strong>sleep(1) 暫停約 1 秒，適合 LED 與馬達測試。</p></div>
+</section>
+<section id="s07"><h2>07｜GPIO 與板載 LED</h2><p>GPIO 是可由程式控制的腳位。Pico W GPIO 為 3.3 V 邏輯，不可直接連接馬達，也不可將 5 V 訊號直接送入 GPIO。Pico W 板載 LED 使用 Pin(&quot;LED&quot;)，與一般 Pico 的寫法不同。</p>
+<div class="sample"><h3>板載 LED 閃爍</h3><button class="copy" data-code="code-07-0">複製程式</button><pre><code id="code-07-0">from machine import Pin
+from time import sleep
+
+led = Pin(&quot;LED&quot;, Pin.OUT)
+while True:
+    led.on()
+    sleep(0.5)
+    led.off()
+    sleep(0.5)</code></pre><p><strong>逐步解釋：</strong>Pin 是腳位物件；Pin.OUT 表示輸出；on() 和 off() 切換 LED。此程式會一直閃爍。</p></div>
+<div class="sample"><h3>外接 LED：GP15</h3><button class="copy" data-code="code-07-1">複製程式</button><pre><code id="code-07-1">from machine import Pin
+led = Pin(15, Pin.OUT)
+led.on()</code></pre><p><strong>逐步解釋：</strong>外接 LED 必須串聯限流電阻，例如 330 Ω，並確認 LED 極性與 GND 接法。</p></div>
+<div class="quiz"><strong>想一想：</strong>Pico W 板載 LED 要寫 Pin(25) 還是 Pin(&quot;LED&quot;)？<details><summary>顯示答案</summary>使用 Pin(&quot;LED&quot;)。</details></div>
+</section>
+<section id="s08"><h2>08｜讀取按鈕與數位輸入</h2><p>輸入腳位可以讀取外部按鈕。使用內部上拉電阻時，按鈕接在 GPIO 與 GND 之間：未按下通常為 1，按下為 0。</p>
+<div class="sample"><h3>按鈕控制板載 LED</h3><button class="copy" data-code="code-08-0">複製程式</button><pre><code id="code-08-0">from machine import Pin
+from time import sleep
+
+button = Pin(14, Pin.IN, Pin.PULL_UP)
+led = Pin(&quot;LED&quot;, Pin.OUT)
+while True:
+    led.value(button.value() == 0)
+    sleep(0.02)</code></pre><p><strong>逐步解釋：</strong>GP14 讀取按鈕；Pin.PULL_UP 啟用上拉。按下時 button.value() 為 0，LED 亮起。</p></div>
+</section>
+<section id="s09"><h2>09｜PWM：用占空比調整輸出</h2><p>PWM 不是直接輸出可調的直流電壓，而是快速切換高低電位。占空比越大，高電位時間比例越高。duty_u16() 範圍 0～65535。</p>
+<div class="sample"><h3>GP15 輸出 PWM</h3><button class="copy" data-code="code-09-0">複製程式</button><pre><code id="code-09-0">from machine import Pin, PWM
+from time import sleep
+
+pwm = PWM(Pin(15))
+pwm.freq(1000)
+pwm.duty_u16(32768)  # 約 50%
+sleep(3)
+pwm.duty_u16(0)
+pwm.deinit()</code></pre><p><strong>逐步解釋：</strong>freq(1000) 表示每秒約 1000 個週期。這是控制訊號，不可以直接把馬達接在 GP15 上。</p></div>
+<div class="quiz"><strong>想一想：</strong>PWM 的 duty_u16(0) 代表什麼？<details><summary>顯示答案</summary>占空比為 0%，持續低電位。</details></div>
+</section>
+<section id="s10"><h2>10｜DRV8833 與空心杯馬達入門</h2><p>DRV8833 是雙 H 橋有刷直流馬達驅動器，能控制兩顆小型有刷空心杯馬達。注意：您先前提到 DRV8233，實作前請以模組上的晶片印字核對型號及接線圖；以下程式只適用於已確認為 DRV8833 的模組。</p>
+<div class="sample"><h3>單馬達方向與速度（示意接線）</h3><button class="copy" data-code="code-10-0">複製程式</button><pre><code id="code-10-0">from machine import Pin, PWM
+from time import sleep
+
+in1 = PWM(Pin(16))  # GP16 → AIN1
+in2 = PWM(Pin(17))  # GP17 → AIN2
+in1.freq(1000)
+in2.freq(1000)
+
+def motor(speed):
+    speed = max(-65535, min(65535, speed))
+    if speed &gt; 0:
+        in1.duty_u16(speed)
+        in2.duty_u16(0)
+    elif speed &lt; 0:
+        in1.duty_u16(0)
+        in2.duty_u16(-speed)
+    else:
+        in1.duty_u16(0)
+        in2.duty_u16(0)
+
+motor(20000)
+sleep(2)
+motor(0)</code></pre><p><strong>逐步解釋：</strong>GP16、GP17 連至 AIN1、AIN2；馬達接 AOUT1、AOUT2；馬達電源接 VM、GND，Pico W 與驅動器必須共地。若模組有 nSLEEP，依模組規格使其有效。先用低功率短時間測試，確認電源電壓、啟動電流與驅動器額定值。</p></div>
+</section>
+<section id="s11"><h2>11｜Wi-Fi 網頁控制的準備</h2><p>Pico W 可連上 Wi-Fi，執行簡易 HTTP 伺服器。先學會連線與查詢 IP，下一單元再製作手機網頁按鈕。</p>
+<div class="sample"><h3>連接 Wi-Fi</h3><button class="copy" data-code="code-11-0">複製程式</button><pre><code id="code-11-0">import network
+from time import sleep
+
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect(&quot;你的WiFi名稱&quot;, &quot;你的WiFi密碼&quot;)
+for i in range(20):
+    if wlan.isconnected():
+        break
+    sleep(1)
+if wlan.isconnected():
+    print(&quot;IP:&quot;, wlan.ifconfig()[0])
+else:
+    print(&quot;連線失敗，請檢查設定&quot;)</code></pre><p><strong>逐步解釋：</strong>STA_IF 是連線到現有 Wi-Fi 的模式；isconnected() 判斷是否連線成功。不要把真正的 Wi-Fi 密碼公開在網站或程式分享平台。</p></div>
+</section>
+<section id="practice"><h2>學生任務與自我檢核</h2><p>每完成一項就打勾。進度會保存在目前瀏覽器中（若瀏覽器允許）。</p>
+<p><label><input type="checkbox" class="task" data-id="0"> 能在 Thonny Shell 顯示 Hello, Pico W!</label></p>
+<p><label><input type="checkbox" class="task" data-id="1"> 會分辨字串與數字</label></p>
+<p><label><input type="checkbox" class="task" data-id="2"> 會用 if 判斷大小</label></p>
+<p><label><input type="checkbox" class="task" data-id="3"> 會寫 for 和 while 迴圈</label></p>
+<p><label><input type="checkbox" class="task" data-id="4"> 會建立並呼叫函式</label></p>
+<p><label><input type="checkbox" class="task" data-id="5"> 成功控制 Pico W 板載 LED</label></p>
+<p><label><input type="checkbox" class="task" data-id="6"> 成功讀取按鈕</label></p>
+<p><label><input type="checkbox" class="task" data-id="7"> 了解 PWM 占空比</label></p>
+<p><label><input type="checkbox" class="task" data-id="8"> 知道 GPIO 不能直接供電給馬達</label></p>
+<p><label><input type="checkbox" class="task" data-id="9"> 能將程式儲存為 main.py 並重新供電測試</label></p>
+<p id="progress"></p></section><section id="resources"><h2>官方參考資料</h2><p><a href="https://thonny.org/" target="_blank" rel="noopener">Thonny 官方網站</a>　｜　<a href="https://micropython.org/download/RPI_PICO_W/" target="_blank" rel="noopener">Pico W 專用 MicroPython 韌體</a>　｜　<a href="https://www.raspberrypi.com/documentation/microcontrollers/micropython.html" target="_blank" rel="noopener">Raspberry Pi MicroPython 文件</a>　｜　<a href="https://datasheets.raspberrypi.com/picow/PicoW-A4-Pinout.pdf" target="_blank" rel="noopener">Pico W 腳位圖</a>　｜　<a href="https://www.ti.com/product/DRV8833" target="_blank" rel="noopener">DRV8833 規格</a></p><div class="note">下一單元將把兩顆空心杯馬達與 Wi-Fi HTTP 伺服器結合，製作可用手機瀏覽器控制的風扇船。實作前須先核對驅動器型號、馬達額定電壓與電流。</div></section></article></main><footer>Pico W 智慧風扇船｜MicroPython 基礎講義 v1.0</footer>
+<script>document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{const t=document.getElementById(b.dataset.code).textContent;try{await navigator.clipboard.writeText(t)}catch(e){const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove()}b.textContent='已複製';setTimeout(()=>b.textContent='複製程式',1300)}));const checks=[...document.querySelectorAll('.task')];let saved=[];try{saved=JSON.parse(localStorage.getItem('pico-tasks')||'[]')}catch(e){}checks.forEach(c=>{c.checked=saved.includes(c.dataset.id);c.addEventListener('change',()=>{try{localStorage.setItem('pico-tasks',JSON.stringify(checks.filter(x=>x.checked).map(x=>x.dataset.id)))}catch(e){}update()})});function update(){document.getElementById('progress').textContent=`已完成 ${checks.filter(x=>x.checked).length} / ${checks.length} 項`};update();</script></body></html>
