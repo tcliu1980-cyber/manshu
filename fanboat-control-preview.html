@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>雙風扇遙控台</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:#0d1728;color:#f5f8ff;padding:18px 12px 25px}
+main{max-width:520px;margin:auto}h1{text-align:center;margin:8px 0 4px;font-size:1.65rem}
+.sub{text-align:center;color:#9db1c9;font-size:.86rem;margin:0 0 15px}
+.status{padding:11px 12px;border-radius:13px;background:#23324a;text-align:center;font-weight:700;margin-bottom:14px}
+.status.ok{background:#104b3a;color:#aef8dc}.status.bad{background:#5a222c;color:#ffe4e4}
+.motors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.motor{min-width:0;border:1px solid #304761;border-radius:18px;background:#142339;text-align:center;padding:14px 5px 12px}
+.motor h2{margin:0;font-size:1.1rem}.num{font-weight:850;font-size:2rem;color:#62e5cb;margin-top:8px}
+.track{height:292px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.track input{width:252px;height:48px;transform:rotate(-90deg);accent-color:#55dcbf;touch-action:none;cursor:pointer}
+.tick{font-size:.75rem;color:#95a9c0;margin-top:-5px}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+#stop{display:block;width:100%;margin-top:17px;border:none;background:#dd3143;color:white;padding:18px;border-radius:16px;font-size:1.45rem;font-weight:900}
+.help{font-size:.86rem;line-height:1.65;color:#b8c8dc;margin-top:15px}
+</style>
+</head>
+<body><main>
+<h1>🚤 雙風扇遙控台</h1>
+<p class="sub">目前船隻：<b>fan00</b> ｜ 向上加速、向下減速</p>
+<div class="status" id="status">離線預覽｜不會控制真實風扇</div>
+<div class="motors">
+  <section class="motor"><h2>左風扇</h2><div class="num" id="lv">0%</div>
+    <div class="track"><input id="left" aria-label="左風扇速度" type="range" min="0" max="100" value="0" step="1"></div>
+    <div class="tick">下方 0%　↑　上方 100%</div></section>
+  <section class="motor"><h2>右風扇</h2><div class="num" id="rv">0%</div>
+    <div class="track"><input id="right" aria-label="右風扇速度" type="range" min="0" max="100" value="0" step="1"></div>
+    <div class="tick">下方 0%　↑　上方 100%</div></section>
+</div>
+<button id="stop" type="button">■ 緊急停止｜兩顆歸零</button>
+<p class="help">兩根拉桿彼此獨立。數字是「控制百分比」，並非實際 RPM。<br>
+若連線中斷，Pico W 約 1.1 秒收不到指令就會停轉。<br>
+嚴禁觸碰旋轉螺旋槳；使用前請確認四周無人接近。</p>
+</main>
+<script>
+const fetch=async()=>({ok:true,status:200});
+const left=document.getElementById('left');
+const right=document.getElementById('right');
+const lv=document.getElementById('lv');
+const rv=document.getElementById('rv');
+const statusEl=document.getElementById('status');
+let busy=false, stopped=false;
+function values(){return [Number(left.value),Number(right.value)]}
+function refresh(){lv.textContent=left.value+'%';rv.textContent=right.value+'%'}
+function say(txt,kind){statusEl.textContent=txt;statusEl.className='status '+kind}
+async function send(){
+  if(busy||stopped||document.hidden)return;
+  busy=true;
+  const [l,r]=values();
+  try{
+    const res=await fetch('/api/set?l='+l+'&r='+r,{cache:'no-store'});
+    if(!res.ok)throw Error('HTTP '+res.status);
+    say('● 已連線｜左 '+l+'% ／右 '+r+'%','ok');
+  }catch(e){
+    say('● 連線中斷：Pico W 將自動停轉','bad');
+    left.value=0;right.value=0;refresh();
+  }finally{busy=false}
+}
+function emergency(){
+  stopped=true;left.value=0;right.value=0;refresh();
+  say('■ 已送出停止指令','bad');
+  fetch('/api/stop',{cache:'no-store',keepalive:true}).catch(()=>{}).finally(()=>{stopped=false});
+}
+[left,right].forEach(el=>el.addEventListener('input',()=>{refresh();send()}));
+document.getElementById('stop').addEventListener('click',emergency);
+window.addEventListener('pagehide',emergency);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)emergency()});
+refresh();
+// 固定送心跳，否則 Pico W 看門狗會自動停轉。
+setInterval(send,300);
+send();
+</script>
+</body></html>
