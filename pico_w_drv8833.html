@@ -1,0 +1,42 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pico W × DRV8833｜3.7V 空心杯馬達教學</title><style>body{font-family:system-ui,'Noto Sans TC',sans-serif;line-height:1.8;color:#183047;background:#f3f7fb;margin:0}header{background:#123653;color:white;padding:38px max(20px,calc((100vw - 900px)/2))}main{max-width:900px;margin:auto;padding:24px}section{background:white;border-radius:16px;padding:24px;margin:18px 0;box-shadow:0 2px 12px #12365312}h2{color:#126c83}pre{background:#10283a;color:#e7f5ff;padding:18px;overflow:auto;border-radius:10px}code{font-family:Consolas,monospace}table{width:100%;border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #dde6ee;text-align:left}.note{border-left:4px solid #d98b20;padding:12px;background:#fff8e9}button{padding:9px 15px;border:0;border-radius:9px;background:#126c83;color:white;cursor:pointer}input{width:100%}footer{text-align:center;padding:25px;color:#53697a}</style></head><body><header><h1>單元 03｜Pico W × DRV8833 雙馬達控制</h1><p>國高中生實作課程｜3.7 V 有刷空心杯馬達 × 單顆 18650 電池</p></header><main><section><h2>一、學習目標</h2><p>學會認識 H 橋、分辨邏輯訊號與馬達電源、用 Thonny 撰寫 MicroPython 程式，控制兩顆馬達的啟停、轉向及 PWM 速度。</p><p>本課程使用的是<strong>有刷空心杯馬達</strong>，不是三相無刷馬達。DRV8833 是雙 H 橋驅動器，適合有刷直流馬達。</p></section><section><h2>二、電池與供電</h2><table><tr><th>元件</th><th>規格與用途</th></tr><tr><td>18650 電池</td><td>單顆 1S；標稱約 3.7 V，充滿約 4.2 V</td></tr><tr><td>馬達</td><td>兩顆額定 3.7 V 的有刷空心杯馬達</td></tr><tr><td>DRV8833</td><td>雙 H 橋，馬達供電 VM 依模組資料確認</td></tr><tr><td>Pico W</td><td>3.3 V GPIO；建議以適當穩壓電源供應 VSYS</td></tr></table><p class="note">安全：使用具過充、過放及過流保護的 1S 電池組與合適充電器；不得短路、反接或直接把電池接到 GPIO。18650 充滿的 4.2 V 可能高於馬達容許電壓，須先查明規格；必要時加入適合馬達電流的穩壓模組。Pico W 與 DRV8833 控制訊號必須共地。請由教師確認馬達堵轉電流與驅動器散熱能力。</p></section><section><h2>三、接線表（示範 GPIO 配置）</h2><table><tr><th>Pico W</th><th>DRV8833</th><th>功能</th></tr><tr><td>GP14</td><td>AIN1</td><td>左馬達控制 A</td></tr><tr><td>GP15</td><td>AIN2</td><td>左馬達控制 B</td></tr><tr><td>GP16</td><td>BIN1</td><td>右馬達控制 A</td></tr><tr><td>GP17</td><td>BIN2</td><td>右馬達控制 B</td></tr><tr><td>GND</td><td>GND</td><td>共地</td></tr><tr><td>外部馬達電源正極</td><td>VM</td><td>馬達供電</td></tr><tr><td>左馬達兩端</td><td>AOUT1 / AOUT2</td><td>左馬達輸出</td></tr><tr><td>右馬達兩端</td><td>BOUT1 / BOUT2</td><td>右馬達輸出</td></tr></table><p>部分 DRV8833 模組具有 nSLEEP、SLP 或 STBY 腳位，必須依模組說明拉至啟用狀態；不同廠商板子的腳位排列可能不同。電池供電應經過保護與開關，Pico W 的供電則須符合 VSYS 規格。</p></section><section><h2>四、第一個馬達控制程式</h2><p>在 Thonny 選擇 MicroPython (Raspberry Pi Pico)，先用 USB 連接 Pico W，確認馬達固定牢靠、螺旋槳暫時拆除，再執行：</p><pre><code>from machine import Pin
+from time import sleep
+
+a1 = Pin(14, Pin.OUT)
+a2 = Pin(15, Pin.OUT)
+
+# 正轉 1 秒
+a1.value(1)
+a2.value(0)
+sleep(1)
+
+# 停止（滑行）
+a1.value(0)
+a2.value(0)</code></pre><p><code>Pin(14, Pin.OUT)</code>：把 GP14 設為輸出腳。<code>value(1)</code> 代表高電位，<code>value(0)</code> 代表低電位。兩個輸入一高一低時，馬達依接線方向轉動；兩個輸入皆低時為滑行停止。</p></section><section><h2>五、PWM 調速與雙馬達</h2><p><code>PWM</code> 會快速切換高低電位，<code>duty_u16(32768)</code> 約為 50% 占空比。以下程式示範前進、左轉、右轉、停止；僅在確認馬達及電源規格後實際測試。</p><pre><code>from machine import Pin, PWM
+from time import sleep
+
+LA = PWM(Pin(14))
+LB = Pin(15, Pin.OUT)
+RA = PWM(Pin(16))
+RB = Pin(17, Pin.OUT)
+
+LA.freq(1000)
+RA.freq(1000)
+LB.value(0)
+RB.value(0)
+
+def drive(left, right):
+    # 此入門範例僅示範單方向、0~100% 速度
+    left = max(0, min(100, left))
+    right = max(0, min(100, right))
+    LA.duty_u16(int(left * 65535 / 100))
+    RA.duty_u16(int(right * 65535 / 100))
+
+try:
+    drive(40, 40)  # 前進
+    sleep(2)
+    drive(20, 60)  # 左轉
+    sleep(2)
+    drive(60, 20)  # 右轉
+    sleep(2)
+finally:
+    drive(0, 0)   # 即使中斷也嘗試停止</code></pre><p>差速轉向：左馬達比右馬達慢，船通常向左轉；右馬達較慢則向右轉。實際方向也與馬達安裝方向、螺旋槳及船體有關。</p></section><section><h2>六、互動練習：預測船的方向</h2><label>左馬達 <output id="lv">40</output>%<input id="left" type="range" min="0" max="100" value="40"></label><label>右馬達 <output id="rv">40</output>%<input id="right" type="range" min="0" max="100" value="40"></label><h3 id="result">直線前進</h3><p>此模擬器僅用來理解差速控制，不會連線或操作實際馬達。</p><button onclick="document.querySelector('#left').value=0;document.querySelector('#right').value=0;update()">停止</button></section><section><h2>七、學生檢核</h2><p><label><input type="checkbox" style="width:auto"> 我能說明 Pico W 為何不能直接供電給馬達。</label></p><p><label><input type="checkbox" style="width:auto"> 我能區分 GPIO、VM 與 GND。</label></p><p><label><input type="checkbox" style="width:auto"> 我能解釋 <code>Pin</code>、<code>sleep</code> 與 <code>PWM</code>。</label></p><p><label><input type="checkbox" style="width:auto"> 我能用兩顆馬達做差速轉向。</label></p></section><section><h2>八、下一單元</h2><p>在完成硬體安全測試後，下一步將利用 Pico W 的 Wi-Fi 功能架設簡單的 HTTP 網頁伺服器，讓手機連上網頁，透過前進、左轉、右轉與停止按鈕控制風扇船。正式上船前需增加失聯自動停止與低電壓保護。</p></section></main><footer>教學用途｜Pico W × DRV8833 × 3.7 V 空心杯馬達</footer><script>function update(){let l=+document.querySelector('#left').value,r=+document.querySelector('#right').value;document.querySelector('#lv').textContent=l;document.querySelector('#rv').textContent=r;document.querySelector('#result').textContent=l===0&&r===0?'停止':Math.abs(l-r)<5?'直線前進':l<r?'向左轉':'向右轉'}document.querySelectorAll('input[type=range]').forEach(x=>x.addEventListener('input',update));</script></body></html>
